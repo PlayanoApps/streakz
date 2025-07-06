@@ -7,6 +7,8 @@ Streakz is designed for simplicity and focus, giving you a clean, minimalist spa
 With an intuitive interface, you can quickly add habits, mark them as complete, and visualize your consistency over time. Whether you want to exercise more, read every day, or simply stay hydrated — Streakz keeps you motivated and clearly tracks your journey.
 Stop feeling stuck. Build momentum day by day — and make success a habit.
 
+# --> Get streakz here: https://getstreakz.netlify.app/
+
 ## Getting Started
 A few resources to get you started if this is your first Flutter project:
 
