@@ -32,32 +32,57 @@ class MyDrawer extends StatelessWidget {
                 child: Divider(color: Colors.white),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: ListTile(
-                  leading: Icon(Icons.home, color: Theme.of(context).colorScheme.inversePrimary), 
-                  title: Text("H O M E"), 
-                  horizontalTitleGap: 20,
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
                   onTap: () {
-                    HapticFeedback.mediumImpact(); 
+                    HapticFeedback.mediumImpact();
                     Navigator.pop(context);
-                  }
+                  },
+                  child: ListTile(
+                    leading: Icon(Icons.home, color: Theme.of(context).colorScheme.inversePrimary),
+                    title: Text("H O M E"),
+                    horizontalTitleGap: 20,
+                  ),
+                )         
+              ),
+              // Settings
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () async {
+                    HapticFeedback.mediumImpact(); 
+                    await Future.delayed(Duration(milliseconds: 120));
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                  },
+                  child: ListTile(
+                    leading: Icon(Icons.settings, color: Theme.of(context).colorScheme.inversePrimary), 
+                    title: Text("S E T T I N G S"), 
+                    horizontalTitleGap: 20,
+                  )
                 )
               ),
+              // Theme
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: ListTile(
-                  leading: Icon(Icons.palette, color: Theme.of(context).colorScheme.inversePrimary), 
-                  title: Text("T H E M E"), 
-                  horizontalTitleGap: 20,
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
                   onTap: () async {
                     HapticFeedback.mediumImpact(); 
                     await Future.delayed(Duration(milliseconds: 120));
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(showThemes: true)));
-                  }
-                )
+                  },
+                  child: ListTile(
+                    leading: Icon(Icons.palette, color: Theme.of(context).colorScheme.inversePrimary), 
+                    title: Text("T H E M E"), 
+                    horizontalTitleGap: 20   
+                  )
+                )               
               ),
-              Padding(
+              /* Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: ListTile(
                   leading: Icon(Icons.analytics, color: Theme.of(context).colorScheme.inversePrimary), 
@@ -70,27 +95,14 @@ class MyDrawer extends StatelessWidget {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => StatisticsPage()));
                   }
                 )
-              ),
+              ), */
               
             ]
           ),
-          // Logout
+          // Bottom Items
           Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: ListTile(
-                  leading: Icon(Icons.settings, color: Theme.of(context).colorScheme.inversePrimary), 
-                  title: Text("S E T T I N G S"), 
-                  horizontalTitleGap: 20,
-                  onTap: () async {
-                    HapticFeedback.mediumImpact(); 
-                    await Future.delayed(Duration(milliseconds: 120));
-                    Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
-                  }
-                )
-              ),
+              // Logout
               Padding(
                 padding: const EdgeInsets.only(left: 25, right: 25, bottom: 40),
                 child: ListTile(

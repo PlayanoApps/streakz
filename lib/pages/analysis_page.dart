@@ -40,15 +40,29 @@ class HabitAnalysisPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 19, vertical: 10),
             child: Container(
-              //padding: EdgeInsets.symmetric(horizontal: 17, vertical: 3),
-              padding: EdgeInsets.only(left: 20, right: 0, top: 3, bottom: 3),
+              padding: EdgeInsets.only(left: 10, right: 0, top: 18, bottom: 5),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.secondaryFixed,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [_tileShadow()]
               ),
-              child: _habitHeatMap(context, habit)
+              child: Column(
+                children: [
+                  Transform.translate(
+                    offset: Offset(0, 4),
+                    child: Text("Last 30 Days",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 19,
+                        letterSpacing: 2
+                      ),
+                    ),
+                  ),
+                  _habitHeatMap(context, habit),
+                ],
+              )
             )
           ),
           Padding(
@@ -67,8 +81,8 @@ class HabitAnalysisPage extends StatelessWidget {
                     "Streaks",
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.inversePrimary,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 19,
                       letterSpacing: 2
                     ),
                   ),
@@ -78,6 +92,7 @@ class HabitAnalysisPage extends StatelessWidget {
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
                       fontSize: 17,
+                      fontWeight: FontWeight.w500,
                       letterSpacing: 1
                     ),
                   ),
@@ -120,8 +135,8 @@ Widget _habitHeatMap(context, habit) {
     {    
       if (snapshot.hasData) {
         return HeatMap(
-          startDate: DateTime.now().subtract(Duration(days: 30)),//snapshot.data!,
-          endDate: DateTime.now().add(Duration(days: 30)),
+          startDate: DateTime.now().subtract(Duration(days: 23)),//snapshot.data!,
+          endDate: DateTime.now().add(Duration(days: 0)),  // add 30
           colorMode: ColorMode.color,
           showColorTip: false,
           scrollable: true,

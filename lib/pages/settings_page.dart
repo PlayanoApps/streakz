@@ -203,6 +203,24 @@ class _SettingsPageState extends State<SettingsPage> {
             )
           ),
 
+          _settingsTile(
+            onTap: () => showCustomDialog(
+              context: context,
+              title: "Do not highlight completed habits",
+              text: "When enabled, completed habits are crossed out and shown with reduced visibility instead of being highlighted in the theme color, helping you to focus on habits you still need to complete.",
+              actions: (null, () => Navigator.pop(context)), labels: ("", "Understood  ")
+            ),
+            onLongPress: () {},
+            text: "Do not highlight completed habits",
+            trailing: CupertinoSwitch(          
+              value: (Provider.of<ThemeProvider>(context, listen: false).crossCompletedHabits),
+                onChanged: (value) { 
+                HapticFeedback.lightImpact();   
+                Provider.of<ThemeProvider>(context, listen: false).setCrossCompletedHabit = value;
+              }
+            )
+          ),
+
           // Dark Mode Tile
           /* Padding(
             padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 25),
@@ -307,8 +325,8 @@ class _SettingsPageState extends State<SettingsPage> {
           onTap: onTap,
           onLongPress: onLongPress,
           borderRadius: BorderRadius.circular(10),
-          splashColor: Colors.grey.withAlpha(50),
-          highlightColor:Colors.grey.withAlpha(100),
+          splashColor: Colors.grey.withAlpha(20),
+          highlightColor:Colors.grey.withAlpha(80),
       
           // Container
           child: Ink(

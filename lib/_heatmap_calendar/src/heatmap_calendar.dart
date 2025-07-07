@@ -11,6 +11,9 @@ class HeatMapCalendar extends StatefulWidget {
 
   /// The color value of every block's default color.
   final Color? defaultColor;
+  final Color? highlightedColor;
+  final double? highlightedBorderWith;
+  final Color? highlightedBorderColor;
 
   /// The colorsets which give the color value for its thresholds key value.
   ///
@@ -92,6 +95,11 @@ class HeatMapCalendar extends StatefulWidget {
     required this.colorsets,
     this.colorMode = ColorMode.opacity,
     this.defaultColor,
+
+    this.highlightedColor,  // new
+    this.highlightedBorderWith,
+    this.highlightedBorderColor,
+
     this.datasets,
     this.initDate,
     this.size = 42,
@@ -222,6 +230,11 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
             size: widget.size,
             fontSize: widget.fontSize,
             defaultColor: widget.defaultColor,
+
+            highlightedColor: widget.highlightedColor,
+            highlightedBorderWith: widget.highlightedBorderWith,
+            highlightedBorderColor: widget.highlightedBorderColor,
+
             textColor: widget.textColor,
             margin: widget.margin,
             datasets: widget.datasets,

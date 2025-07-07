@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 //import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
-import 'package:habit_tracker/components/dialog_box.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/theme_provider.dart';
@@ -20,20 +19,33 @@ class MyHeatmap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    //bool darkMode = Provider.of<ThemeProvider>(context).isDarkMode;
+    bool darkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: HeatMapCalendar(
         datasets: prepDataset(context),
       
         colorMode: ColorMode.color,
         defaultColor: Theme.of(context).colorScheme.secondary,
+
+        highlightedColor: !darkMode ? const Color.fromARGB(255, 230, 230, 230)  // def. 38
+                                    : Theme.of(context).colorScheme.secondary,
+        highlightedBorderColor: !darkMode ? Color.fromARGB(255, 238, 238, 238)
+                                    : Color.fromARGB(255, 70, 70, 70),
+        highlightedBorderWith: !darkMode? 2 : 1.5,
+
         textColor: Theme.of(context).colorScheme.tertiary,
         showColorTip: false,
         flexible: true,
         monthFontSize: 16,
         fontSize: 16,
         weekTextColor: Theme.of(context).colorScheme.primary,
-        onClick: (date) => showEditHeatmapDialog(date, context),//(date) => editEntry(date, context),
+        onClick: (date) => showEditHeatmapDialog(date, context),
+
+        // borderRadius: 5,
       
         colorsets: prepColorsets(context),
       ),
@@ -86,17 +98,6 @@ void toggleDateInHabit(context, value, habit, date) {
     Provider.of<HabitDatabase>(context, listen: false)
       .updateHabitCompletion(habit.id, value, date);
   }
-}
-
-void editEntry(DateTime date, context) {
-  TextEditingController controller = TextEditingController();
-
-  showCustomDialog(
-    context: context,
-    title: "Edit ${date.day}.${date.month}",
-    controller: controller, 
-    actions: (() {}, () {})
-  );
 }
 
 // Prepare heat map colorsets

@@ -95,8 +95,6 @@ class ThemeProvider extends ChangeNotifier
     7: Colors.deepPurple
   };
 
-
-
   void setAccentColor(int? settingsRadioValue) {
     selectedColor = settingsRadioValue ?? 1;  // Default to 1 if null
     updateSelectedColorInDatabase();
@@ -126,6 +124,38 @@ class ThemeProvider extends ChangeNotifier
         selectedColor = appSettings.selectedColor;
       else
         selectedColor = 1;
+    }
+    notifyListeners();
+  }
+
+  /* HIGHLIGHT COMPLETED HABITS OR CROSS THEM */
+
+  bool _crossCompletedHabits = true;
+
+  get crossCompletedHabits => _crossCompletedHabits;
+
+  set setCrossCompletedHabit(bool val) {
+    _crossCompletedHabits = val;
+    updateHabitCompletedPref();
+    notifyListeners();
+  }
+
+  Future<void> updateHabitCompletedPref() async {
+    Isar isar = HabitDatabase.isar;
+    final appSettings = await isar.appSettings.where().findFirst();
+
+    if (appSettings != null) {
+      appSettings.crossCompletedHabits = _crossCompletedHabits;
+      await isar.writeTxn(() => isar.appSettings.put(appSettings));
+    }
+  }
+
+  /* This is called in home_page init method */
+  Future<void> loadHabitCompletedPref() async {
+    final appSettings = await HabitDatabase.isar.appSettings.where().findFirst();
+
+    if (appSettings != null) {
+      _crossCompletedHabits = appSettings.crossCompletedHabits;
     }
     notifyListeners();
   }

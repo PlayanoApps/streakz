@@ -31,6 +31,9 @@ class HeatMapCalendarPage extends StatelessWidget {
 
   /// The default background color value of every blocks
   final Color? defaultColor;
+  final Color? highlightedColor;
+  final double? highlightedBorderWith;
+  final Color? highlightedBorderColor;
 
   /// The text color value of every blocks
   final Color? textColor;
@@ -69,6 +72,11 @@ class HeatMapCalendarPage extends StatelessWidget {
     this.size,
     this.fontSize,
     this.defaultColor,
+
+    this.highlightedColor,
+    this.highlightedBorderWith,
+    this.highlightedBorderColor,
+
     this.textColor,
     this.margin,
     this.datasets,
@@ -92,6 +100,9 @@ class HeatMapCalendarPage extends StatelessWidget {
             size: size,
             fontSize: fontSize,
             defaultColor: defaultColor,
+            highlightedColor: highlightedColor,
+            highlightedBorderWith: highlightedBorderWith,
+            highlightedBorderColor: highlightedBorderColor,
             colorsets: colorsets,
             textColor: textColor,
             borderRadius: borderRadius,

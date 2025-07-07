@@ -15,4 +15,6 @@ class AppSettings {
   bool darkModeEnabled = false;
 
   int selectedColor = 1;      // Accent color / theme
+
+  bool crossCompletedHabits = false;  // Wether completed habit should be highlighed or crossed
 }

@@ -78,6 +78,9 @@ class HabitTile extends StatelessWidget {
     bool darkMode = (Theme.of(context).brightness == Brightness.dark); //Provider.of<ThemeProvider>(context).isDarkMode;
     MaterialColor accentColor = Provider.of<ThemeProvider>(context).getAccentColor();
     
+    // cross completed habits instead of highlighting them
+    bool crossCompleted = Provider.of<ThemeProvider>(context).crossCompletedHabits;
+    print(crossCompleted);
 
     void navigateToHabitAnalysis({delay = 150}) async {
       HapticFeedback.mediumImpact(); 
@@ -101,12 +104,20 @@ class HabitTile extends StatelessWidget {
             ),
             SlidableAction(
               onPressed: deleteHabit,
-              backgroundColor: darkMode ? Colors.red.shade800 : Colors.red.shade400,
+              backgroundColor: darkMode ?Color.fromARGB(222, 198, 40, 40) : Color.fromARGB(233, 239, 83, 80),
               icon: Icons.delete,
               borderRadius: BorderRadius.circular(10),
             )
           ]
         ),
+        startActionPane: ActionPane(motion: StretchMotion(), children: [
+          SlidableAction(
+            onPressed: (BuildContext b) => navigateToHabitAnalysis(),
+            backgroundColor: darkMode ?Color.fromARGB(190, 33, 149, 243) : Color.fromARGB(190, 33, 149, 243),
+            icon: Icons.analytics,
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ]),
 
         // Habit Tile
         child: Material(
@@ -115,20 +126,20 @@ class HabitTile extends StatelessWidget {
             onTap: () => checkboxChanged!(!isCompleted),
             onLongPress: null,//() =>  navigateToHabitAnalysis(delay: 50),
             borderRadius: BorderRadius.circular(10),
-            splashColor: Colors.grey.withAlpha(30),
-            highlightColor: isCompleted ? accentColor[600] : Colors.grey.withAlpha(50),
+            splashColor: crossCompleted ? Colors.grey.withAlpha(10) : Colors.grey.withAlpha(30), // 30
+            highlightColor: isCompleted ? (crossCompleted ? null : accentColor[600]) : Colors.grey.withAlpha(50),
           
             // Container
             child: Ink(
               decoration: BoxDecoration(
-                color: isCompleted ? (darkMode ? accentColor[800] : accentColor[400]) : Theme.of(context).colorScheme.secondary, // " 800, 400
+                color: isCompleted ? (crossCompleted ? Theme.of(context).colorScheme.surface : (darkMode ? accentColor[800] : accentColor[400])) : Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(
                 // padding: EdgeInsets.only(left: 10, right: 0, top: 12, bottom: 12), // Old list tile padding
-                padding: EdgeInsets.only(left: 26, right: 24, top: 16, bottom: 16),
+                padding: EdgeInsets.only(left: 20, right: 24, top: 15, bottom: 15),   // old: 26, 24, 16
 
-                child: _newTile(context, darkMode, navigateToHabitAnalysis)
+                child: _newTile(context, darkMode, navigateToHabitAnalysis, crossCompleted)
               ) 
             ),
           ),
@@ -137,8 +148,8 @@ class HabitTile extends StatelessWidget {
     );
   }
 
-  Widget _newTile(context, darkMode, navigateToHabitAnalysis) {
-    return  Row(
+  Widget _newTile(context, darkMode, navigateToHabitAnalysis, bool crossCompleted) {
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // Leading
@@ -146,20 +157,21 @@ class HabitTile extends StatelessWidget {
           child: Row(
             children: [
               Checkbox(
-                activeColor: Colors.transparent,
-                checkColor: Colors.white,
+                activeColor: crossCompleted ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                checkColor: crossCompleted ? Theme.of(context).colorScheme.primary : Colors.white,
                 value: isCompleted, 
-                onChanged: checkboxChanged,
+                onChanged: checkboxChanged
               ),
               SizedBox(width: 16),
               Expanded(
                 child: Text(habit.name, //overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: isCompleted ? Colors.white : Theme.of(context).colorScheme.onPrimary,
+                    color: isCompleted ? (crossCompleted ? Theme.of(context).colorScheme.primary : Colors.white) : Theme.of(context).colorScheme.onPrimary,
                     fontSize: 16.5,
                     letterSpacing: 0.5,
-                    height: 1.4
+                    height: 1.4,
+                    decoration: (isCompleted && crossCompleted) ? TextDecoration.lineThrough : null
                   )
                 ),
               ),

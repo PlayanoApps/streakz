@@ -17,18 +17,23 @@ const AppSettingsSchema = CollectionSchema(
   name: r'AppSettings',
   id: -5633561779022347008,
   properties: {
-    r'darkModeEnabled': PropertySchema(
+    r'crossCompletedHabits': PropertySchema(
       id: 0,
+      name: r'crossCompletedHabits',
+      type: IsarType.bool,
+    ),
+    r'darkModeEnabled': PropertySchema(
+      id: 1,
       name: r'darkModeEnabled',
       type: IsarType.bool,
     ),
     r'firstLaunchDate': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'firstLaunchDate',
       type: IsarType.dateTime,
     ),
     r'selectedColor': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'selectedColor',
       type: IsarType.long,
     )
@@ -62,9 +67,10 @@ void _appSettingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeBool(offsets[0], object.darkModeEnabled);
-  writer.writeDateTime(offsets[1], object.firstLaunchDate);
-  writer.writeLong(offsets[2], object.selectedColor);
+  writer.writeBool(offsets[0], object.crossCompletedHabits);
+  writer.writeBool(offsets[1], object.darkModeEnabled);
+  writer.writeDateTime(offsets[2], object.firstLaunchDate);
+  writer.writeLong(offsets[3], object.selectedColor);
 }
 
 AppSettings _appSettingsDeserialize(
@@ -74,10 +80,11 @@ AppSettings _appSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = AppSettings();
-  object.darkModeEnabled = reader.readBool(offsets[0]);
-  object.firstLaunchDate = reader.readDateTimeOrNull(offsets[1]);
+  object.crossCompletedHabits = reader.readBool(offsets[0]);
+  object.darkModeEnabled = reader.readBool(offsets[1]);
+  object.firstLaunchDate = reader.readDateTimeOrNull(offsets[2]);
   object.id = id;
-  object.selectedColor = reader.readLong(offsets[2]);
+  object.selectedColor = reader.readLong(offsets[3]);
   return object;
 }
 
@@ -91,8 +98,10 @@ P _appSettingsDeserializeProp<P>(
     case 0:
       return (reader.readBool(offset)) as P;
     case 1:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 2:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 3:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -192,6 +201,16 @@ extension AppSettingsQueryWhere
 
 extension AppSettingsQueryFilter
     on QueryBuilder<AppSettings, AppSettings, QFilterCondition> {
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      crossCompletedHabitsEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'crossCompletedHabits',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       darkModeEnabledEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
@@ -394,6 +413,20 @@ extension AppSettingsQueryLinks
 
 extension AppSettingsQuerySortBy
     on QueryBuilder<AppSettings, AppSettings, QSortBy> {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      sortByCrossCompletedHabits() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'crossCompletedHabits', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      sortByCrossCompletedHabitsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'crossCompletedHabits', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByDarkModeEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'darkModeEnabled', Sort.asc);
@@ -436,6 +469,20 @@ extension AppSettingsQuerySortBy
 
 extension AppSettingsQuerySortThenBy
     on QueryBuilder<AppSettings, AppSettings, QSortThenBy> {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      thenByCrossCompletedHabits() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'crossCompletedHabits', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      thenByCrossCompletedHabitsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'crossCompletedHabits', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByDarkModeEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'darkModeEnabled', Sort.asc);
@@ -491,6 +538,13 @@ extension AppSettingsQuerySortThenBy
 extension AppSettingsQueryWhereDistinct
     on QueryBuilder<AppSettings, AppSettings, QDistinct> {
   QueryBuilder<AppSettings, AppSettings, QDistinct>
+      distinctByCrossCompletedHabits() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'crossCompletedHabits');
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QDistinct>
       distinctByDarkModeEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'darkModeEnabled');
@@ -516,6 +570,13 @@ extension AppSettingsQueryProperty
   QueryBuilder<AppSettings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<AppSettings, bool, QQueryOperations>
+      crossCompletedHabitsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'crossCompletedHabits');
     });
   }
 

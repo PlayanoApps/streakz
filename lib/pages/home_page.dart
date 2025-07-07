@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
     Provider.of<HabitDatabase>(context, listen: false).updateHabitList();
     Provider.of<ThemeProvider>(context, listen: false).loadTheme();
     Provider.of<ThemeProvider>(context, listen: false).loadAccentColor();
+    Provider.of<ThemeProvider>(context, listen: false).loadHabitCompletedPref();
 
     super.initState();
 
@@ -162,9 +163,9 @@ class _HomePageState extends State<HomePage> {
       ),
 
       drawer: MyDrawer(),
-      //drawerEnableOpenDragGesture: false,
+      drawerEnableOpenDragGesture: false,
 
-      body: ListView(
+      /* body: ListView(
         children: deviceWidth < 600 ? [
           _divider(),
           _buildHeatmap(),
@@ -186,7 +187,44 @@ class _HomePageState extends State<HomePage> {
             ],
           )
         ]
-      )
+      ) */
+      body: Stack(
+        children: [
+          ListView(
+            children: [
+              _divider(),
+              _buildHeatmap(),
+              SizedBox(height: 16),   // 15
+              _buildHabitList(),
+              SizedBox(height: 30),
+            ]
+          ),
+          _bottomGradient()
+        ],
+      ),
+    );
+  }
+
+  Widget _bottomGradient() {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: 25,
+      child: IgnorePointer( // So it doesn’t block touches
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                Theme.of(context).colorScheme.surface,
+                Theme.of(context).colorScheme.surface.withAlpha(0),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 

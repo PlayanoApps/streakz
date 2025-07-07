@@ -7,6 +7,8 @@ class HeatMapContainer extends StatelessWidget {
   final double? fontSize;
   final double? borderRadius;
   final Color? backgroundColor;
+  final Color? highlightedBorderColor;
+  final double? highlightedBorderWith;
   final Color? selectedColor;
   final Color? textColor;
   final EdgeInsets? margin;
@@ -21,6 +23,8 @@ class HeatMapContainer extends StatelessWidget {
     this.fontSize,
     this.borderRadius,
     this.backgroundColor,
+    this.highlightedBorderColor,
+    this.highlightedBorderWith,
     this.selectedColor,
     this.textColor,
     this.onClick,
@@ -35,17 +39,23 @@ class HeatMapContainer extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onLongPress: () async {
-            await Future.delayed(Duration(microseconds: 50));
-            onClick != null ? onClick!(date) : null;
+            await Future.delayed(const Duration(microseconds: 50));
+            if (onClick != null) onClick!(date);
           },
-          borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 5)),
+          borderRadius: BorderRadius.circular(borderRadius ?? 5),
           highlightColor: Colors.grey.withAlpha(70),
           splashColor: Colors.grey.withAlpha(40),
-
           child: Ink(
             decoration: BoxDecoration(
-              color: backgroundColor ?? HeatMapColor.defaultColor,
-              borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 5)),
+              color: selectedColor ?? backgroundColor ?? HeatMapColor.defaultColor,
+              borderRadius: BorderRadius.circular(borderRadius ?? 5),
+
+              // Background color highlight is determined in heatmap_calendar_row
+              // BORDER HIGHLIGHT
+              border: Border.all(
+                color: highlightedBorderColor ?? Colors.transparent,
+                width: highlightedBorderWith!,
+              ),
             ),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
@@ -53,17 +63,13 @@ class HeatMapContainer extends StatelessWidget {
               width: size,
               height: size,
               alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: selectedColor,
-                borderRadius:
-                    BorderRadius.all(Radius.circular(borderRadius ?? 5)),
-              ),
               child: (showText ?? true)
                   ? Text(
                       date.day.toString(),
                       style: TextStyle(
-                          color: textColor ?? const Color(0xFF8A8A8A),
-                          fontSize: fontSize),
+                        color: textColor ?? const Color(0xFF8A8A8A),
+                        fontSize: fontSize,
+                      ),
                     )
                   : null,
             ),
