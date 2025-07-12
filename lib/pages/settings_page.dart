@@ -169,6 +169,25 @@ class _SettingsPageState extends State<SettingsPage> {
           _settingsTile(
             onTap: () => showCustomDialog(
               context: context,
+              title: "Notifications",
+              text: "Dark and light modes now follow your device's system theme automatically.",
+              actions: (null, () => Navigator.pop(context)), labels: ("", "Understood  ")
+            ), //Provider.of<ThemeProvider>(context, listen: false).toggleTheme,
+            onLongPress: () {},
+            text: "Dark Mode (Auto)",
+            trailing: CupertinoSwitch(          
+              value: (Theme.of(context).brightness == Brightness.dark), //Provider.of<ThemeProvider>(context).isDarkMode, 
+                onChanged: null /* (value) { 
+                HapticFeedback.lightImpact();   
+                Provider.of<ThemeProvider>(context, listen: false)
+                  .toggleTheme();
+              } */
+            )
+          ),
+
+          _settingsTile(
+            onTap: () => showCustomDialog(
+              context: context,
               title: "Dark Mode",
               text: "Dark and light modes now follow your device's system theme automatically.",
               actions: (null, () => Navigator.pop(context)), labels: ("", "Understood  ")

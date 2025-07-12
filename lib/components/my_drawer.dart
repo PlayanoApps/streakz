@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:habit_tracker/pages/onboarding.dart";
 import "package:habit_tracker/pages/settings_page.dart";
-import "package:habit_tracker/pages/statistics_page.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class MyDrawer extends StatelessWidget {
