@@ -24,11 +24,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
 
+    /* Load the data inside of widget */
+    
     // Read habits from db into habit list on startup
     Provider.of<HabitDatabase>(context, listen: false).updateHabitList();
     Provider.of<ThemeProvider>(context, listen: false).loadTheme();
     Provider.of<ThemeProvider>(context, listen: false).loadAccentColor();
     Provider.of<ThemeProvider>(context, listen: false).loadHabitCompletedPref();
+    Provider.of<ThemeProvider>(context, listen: false).loadUseSystemTheme();
 
     super.initState();
 
@@ -219,8 +222,9 @@ class _HomePageState extends State<HomePage> {
               end: Alignment.topCenter,
               colors: [
                 Theme.of(context).colorScheme.surface,
-                Theme.of(context).colorScheme.surface.withAlpha(0),
+                Theme.of(context).colorScheme.surface.withOpacity(0),
               ],
+              stops: [0, 1]
             ),
           ),
         ),

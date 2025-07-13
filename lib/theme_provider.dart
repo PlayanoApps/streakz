@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/app_settings.dart';
 import 'package:isar/isar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 ThemeData lightMode = ThemeData(
   colorScheme: ColorScheme.light(
@@ -79,6 +80,24 @@ class ThemeProvider extends ChangeNotifier
       appSettings.darkModeEnabled = (_themeData == darkMode);
       await isar.writeTxn(() => isar.appSettings.put(appSettings));
     }
+  }
+
+  /* SYSTEM THEME */
+  bool _useSystemTheme = false;
+
+  bool get useSystemTheme => _useSystemTheme;
+
+  Future<void> loadUseSystemTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    _useSystemTheme = prefs.getBool('useSystemTheme') ?? false;
+    notifyListeners();
+  }
+
+  void toggleUseSystemTheme(bool value) async {
+    _useSystemTheme = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('useSystemTheme', value);
+    notifyListeners();
   }
 
   /* ACCENT COLOR */

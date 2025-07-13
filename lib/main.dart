@@ -19,13 +19,19 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final showOnboarding = prefs.getBool('showOnboarding') ?? true;
 
+  /* Load data in main instead of in home widget */
+  final themeProvider = ThemeProvider();  // Open instance here instead of in runApp
+  await themeProvider.loadTheme();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => HabitDatabase()),
-        ChangeNotifierProvider(create: (context) => ThemeProvider())
+        ChangeNotifierProvider(create: (context) => themeProvider)     // pass existing instance
       ],
-      child: App(showOnboarding: showOnboarding)
+      child: App(
+        showOnboarding: showOnboarding, 
+      )
     )
   );
 
@@ -45,20 +51,23 @@ class App extends StatelessWidget {
 
   const App({
     super.key, 
-    required this.showOnboarding
+    required this.showOnboarding,
   });
 
   @override
   Widget build(BuildContext context) {
+    
+    final useSystemTheme = Provider.of<ThemeProvider>(context).useSystemTheme;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: showOnboarding ? OnboardingPage() : HomePage(),
 
       // Don't use "listen: false" here because widget is rebuilt 
       // ThemeProvider must be created in the main function. Why? because it must be ready BEFORE the App Widget is built.
-      // theme: Provider.of<ThemeProvider>(context).themeData,
-      theme: lightMode,
-      darkTheme: darkMode,
+      
+      theme: useSystemTheme ? lightMode : Provider.of<ThemeProvider>(context).themeData,
+      darkTheme: useSystemTheme ? darkMode : null,
       themeMode: ThemeMode.system,
     );
   }

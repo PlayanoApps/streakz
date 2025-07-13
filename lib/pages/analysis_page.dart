@@ -39,31 +39,74 @@ class HabitAnalysisPage extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 19, vertical: 10),
-            child: Container(
-              padding: EdgeInsets.only(left: 10, right: 0, top: 18, bottom: 5),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryFixed,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [_tileShadow()]
-              ),
-              child: Column(
-                children: [
-                  Transform.translate(
-                    offset: Offset(0, 4),
-                    child: Text("Last 30 Days",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 19,
-                        letterSpacing: 2
+            child: Stack(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(left: 0, right: 0, top: 5, bottom: 5),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondaryFixed,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [_tileShadow()],
+                  ),
+                  child: _habitHeatMap(context, habit),
+                ),
+
+                // Left-side gradient 
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 60,
+                  child: IgnorePointer( // Allows taps to pass through
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Theme.of(context).colorScheme.secondaryFixed,
+                            Theme.of(context).colorScheme.secondaryFixed.withOpacity(0)
+                          ],
+                          stops: [0.2, 1],
+                        ),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          bottomLeft: Radius.circular(12),
+                        ),
                       ),
                     ),
                   ),
-                  _habitHeatMap(context, habit),
-                ],
-              )
-            )
+                ),
+
+                // Right-side gradient
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 60,
+                  child: IgnorePointer( // Allows taps to pass through
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerRight,
+                          end: Alignment.centerLeft,
+                          colors: [
+                            Theme.of(context).colorScheme.secondaryFixed,
+                            Theme.of(context).colorScheme.secondaryFixed.withOpacity(0)
+                          ],
+                          stops: [0.2, 1],
+                        ),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          bottomLeft: Radius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 19),
@@ -135,8 +178,8 @@ Widget _habitHeatMap(context, habit) {
     {    
       if (snapshot.hasData) {
         return HeatMap(
-          startDate: DateTime.now().subtract(Duration(days: 23)),//snapshot.data!,
-          endDate: DateTime.now().add(Duration(days: 0)),  // add 30
+          startDate: /* DateTime.now().subtract(Duration(days: 23)), */ snapshot.data!,
+          endDate: DateTime.now().add(Duration(days: 6)),  // add 30
           colorMode: ColorMode.color,
           showColorTip: false,
           scrollable: true,

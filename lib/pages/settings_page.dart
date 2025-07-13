@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:habit_tracker/components/dialog_box.dart';
 import 'package:habit_tracker/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   final bool showThemes;
@@ -14,6 +15,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
       barrierDismissible: true, 
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       pageBuilder: (context, x, y) => AlertDialog(
-        title: Text("Select Theme"),
+        title: Text("Select Color"),
         content: StatefulBuilder(
           builder: (context, StateSetter setState) =>
           Column(
@@ -88,61 +90,6 @@ class _SettingsPageState extends State<SettingsPage> {
     // Get current selected Color from Theme Provider
     int? selectedValue = Provider.of<ThemeProvider>(context).selectedColor;
 
-    /* Widget radioTile({required int value, required String text}) {
-      return Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return InkWell(
-            onTap: () => themeProvider.setAccentColor(value),
-            borderRadius: BorderRadius.circular(12),
-            child: Row(
-              children: [
-                Radio(
-                  value: value,
-                  groupValue: themeProvider.selectedColor,
-                  onChanged: (val) {
-                    if (val != null)
-                      themeProvider.setAccentColor(val);
-                  },
-                ),
-                Text(text),
-              ],
-            ),
-          );
-        },
-      );
-    } */
-
-    /* void showThemeDialog() {  
-      HapticFeedback.lightImpact();    
-      showGeneralDialog(
-        context: context, 
-        barrierDismissible: true, 
-        barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-        pageBuilder: (context, x, y) => AlertDialog(
-          title: Text("Select Theme"),
-          content: StatefulBuilder(
-            builder: (context, StateSetter setState) =>
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                radioTile(value: 1, text: "Mint (default)"),
-                Divider(color: Theme.of(context).colorScheme.primary), 
-                radioTile(value: 2, text: "Azure blue"),
-                radioTile(value: 3, text: "Vibrant red"),
-                radioTile(value: 4, text: "Magenta pink"),
-                Divider(color: Theme.of(context).colorScheme.primary), 
-                radioTile(value: 5, text: "Monochrome 1"),
-                radioTile(value: 6, text: "Monochrome 2"),
-                radioTile(value: 7, text: "Experimental"),
-              ],
-            ),
-          ),
-        ),
-        transitionDuration: Duration(milliseconds: 300),
-        transitionBuilder: moveUpTransition()
-      );
-    } */
-
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -167,40 +114,35 @@ class _SettingsPageState extends State<SettingsPage> {
           SizedBox(height: 5),
 
           _settingsTile(
-            onTap: () => showCustomDialog(
-              context: context,
-              title: "Notifications",
-              text: "Dark and light modes now follow your device's system theme automatically.",
-              actions: (null, () => Navigator.pop(context)), labels: ("", "Understood  ")
-            ), //Provider.of<ThemeProvider>(context, listen: false).toggleTheme,
+            onTap: () {
+              HapticFeedback.lightImpact();
+
+              final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+              bool currentValue = themeProvider.useSystemTheme;
+              themeProvider.toggleUseSystemTheme(!currentValue);
+            },
             onLongPress: () {},
-            text: "Dark Mode (Auto)",
+            text: "Follow theme of system settings",
             trailing: CupertinoSwitch(          
-              value: (Theme.of(context).brightness == Brightness.dark), //Provider.of<ThemeProvider>(context).isDarkMode, 
-                onChanged: null /* (value) { 
+              value: Provider.of<ThemeProvider>(context).useSystemTheme,
+              onChanged: (value) async { 
                 HapticFeedback.lightImpact();   
-                Provider.of<ThemeProvider>(context, listen: false)
-                  .toggleTheme();
-              } */
+
+                Provider.of<ThemeProvider>(context, listen: false).toggleUseSystemTheme(value);
+              }
             )
           ),
 
-          _settingsTile(
-            onTap: () => showCustomDialog(
-              context: context,
-              title: "Dark Mode",
-              text: "Dark and light modes now follow your device's system theme automatically.",
-              actions: (null, () => Navigator.pop(context)), labels: ("", "Understood  ")
-            ), //Provider.of<ThemeProvider>(context, listen: false).toggleTheme,
+          Provider.of<ThemeProvider>(context).useSystemTheme ? SizedBox() : _settingsTile(
+            onTap: Provider.of<ThemeProvider>(context, listen: false).toggleTheme,
             onLongPress: () {},
-            text: "Dark Mode (Auto)",
+            text: "Dark Mode",
             trailing: CupertinoSwitch(          
               value: (Theme.of(context).brightness == Brightness.dark), //Provider.of<ThemeProvider>(context).isDarkMode, 
-                onChanged: null /* (value) { 
+              onChanged: (value) { 
                 HapticFeedback.lightImpact();   
-                Provider.of<ThemeProvider>(context, listen: false)
-                  .toggleTheme();
-              } */
+                Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+              }
             )
           ),
           
@@ -212,7 +154,7 @@ class _SettingsPageState extends State<SettingsPage> {
               labels: ("Dismiss", "Open"),
               actions: (() => Navigator.pop(context), () { Navigator.pop(context); showThemeDialog(); })
             ), 
-            text: "Edit app theme", // accent color
+            text: "Edit accent color", // app theme
             trailing: Padding(
               padding: const EdgeInsets.only(right: 7),
               child: IconButton(
@@ -223,17 +165,24 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           _settingsTile(
-            onTap: () => showCustomDialog(
+            onTap: () {
+              HapticFeedback.lightImpact();
+
+              final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+              bool currentValue = themeProvider.crossCompletedHabits;
+              // Toggle the value
+              themeProvider.setCrossCompletedHabit = !currentValue;
+            },
+            onLongPress: () => showCustomDialog(
               context: context,
               title: "Do not highlight completed habits",
               text: "When enabled, completed habits are crossed out and shown with reduced visibility instead of being highlighted in the theme color, helping you to focus on habits you still need to complete.",
               actions: (null, () => Navigator.pop(context)), labels: ("", "Understood  ")
             ),
-            onLongPress: () {},
             text: "Do not highlight completed habits",
             trailing: CupertinoSwitch(          
               value: (Provider.of<ThemeProvider>(context, listen: false).crossCompletedHabits),
-                onChanged: (value) { 
+              onChanged: (value) { 
                 HapticFeedback.lightImpact();   
                 Provider.of<ThemeProvider>(context, listen: false).setCrossCompletedHabit = value;
               }

@@ -21,7 +21,7 @@ class MyHeatmap extends StatelessWidget {
   Widget build(BuildContext context) {
 
     //bool darkMode = Provider.of<ThemeProvider>(context).isDarkMode;
-    bool darkMode = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    bool darkMode = (Theme.of(context).brightness == Brightness.dark);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -41,11 +41,11 @@ class MyHeatmap extends StatelessWidget {
         showColorTip: false,
         flexible: true,
         monthFontSize: 16,
-        fontSize: 16,
+        fontSize: 15.5,
         weekTextColor: Theme.of(context).colorScheme.primary,
         onClick: (date) => showEditHeatmapDialog(date, context),
 
-        // borderRadius: 5,
+        //borderRadius: 4,
       
         colorsets: prepColorsets(context),
       ),

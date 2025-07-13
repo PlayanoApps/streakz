@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker/habit_database.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'data/heatmap_color_mode.dart';
 import 'widget/heatmap_calendar_page.dart';
 import 'widget/heatmap_color_tip.dart';
@@ -127,6 +130,9 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
   // The DateTime value of first day of the current month.
   DateTime? _currentDate;
 
+  /* NEW */
+  DateTime? _firstLaunchDate;
+
   @override
   void initState() {
     super.initState();
@@ -136,6 +142,25 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
       _currentDate =
           DateUtil.startDayOfMonth(widget.initDate ?? DateTime.now());
     });
+    /* NEW */
+    _loadFirstLaunchDate(); 
+  }
+
+  Future<void> _loadFirstLaunchDate() async {
+    final db = Provider.of<HabitDatabase>(context, listen: false);
+    final launchDate = await db.getFirstLaunchDate();
+    if (!mounted) return;
+
+    setState(() {
+      _firstLaunchDate = launchDate;
+    });
+  }
+
+  bool isAtFirstLaunchMonth() {
+    if (_firstLaunchDate == null || _currentDate == null) return false;
+
+    return _currentDate!.year == _firstLaunchDate!.year &&
+          _currentDate!.month == _firstLaunchDate!.month;
   }
 
   void changeMonth(int direction) {
@@ -145,6 +170,13 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
     });
     if (widget.onMonthChange != null) widget.onMonthChange!(_currentDate!);
   }
+
+  /* Future<DateTime?> getFirstMonth() async {
+    final db = Provider.of<HabitDatabase>(context, listen: false);
+    final launchDate = await db.getFirstLaunchDate();
+
+    return launchDate;
+  } */
 
   /// Header widget which shows left, right buttons and year/month text.
   Widget _header(context) {
@@ -156,9 +188,9 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
           icon: Icon(
             Icons.arrow_back_ios,
             size: 14,
-            color: Theme.of(context).colorScheme.inversePrimary,
+            color: isAtFirstLaunchMonth() ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.inversePrimary
           ),
-          onPressed: () => changeMonth(-1),
+          onPressed: () => isAtFirstLaunchMonth() ? null : changeMonth(-1),
         ),
 
         // Text which shows the current year and month
@@ -166,6 +198,7 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
           '${DateUtil.MONTH_LABEL[_currentDate?.month ?? 0]} ${_currentDate?.year}',
           style: TextStyle(
             fontSize: widget.monthFontSize ?? 12,
+            color: Theme.of(context).colorScheme.onPrimary
           ),
         ),
 

@@ -79,8 +79,7 @@ class HabitTile extends StatelessWidget {
     MaterialColor accentColor = Provider.of<ThemeProvider>(context).getAccentColor();
     
     // cross completed habits instead of highlighting them
-    bool crossCompleted = Provider.of<ThemeProvider>(context).crossCompletedHabits;
-    print(crossCompleted);
+    bool crossCompletedHabit = Provider.of<ThemeProvider>(context).crossCompletedHabits;
 
     void navigateToHabitAnalysis({delay = 150}) async {
       HapticFeedback.mediumImpact(); 
@@ -126,20 +125,19 @@ class HabitTile extends StatelessWidget {
             onTap: () => checkboxChanged!(!isCompleted),
             onLongPress: null,//() =>  navigateToHabitAnalysis(delay: 50),
             borderRadius: BorderRadius.circular(10),
-            splashColor: crossCompleted ? Colors.grey.withAlpha(10) : Colors.grey.withAlpha(30), // 30
-            highlightColor: isCompleted ? (crossCompleted ? null : accentColor[600]) : Colors.grey.withAlpha(50),
+            splashColor: crossCompletedHabit ? Colors.grey.withAlpha(0) : Colors.grey.withAlpha(30), // 30
+            highlightColor: isCompleted ? (crossCompletedHabit ? null : accentColor[600]) : Colors.grey.withAlpha(50),
           
             // Container
             child: Ink(
               decoration: BoxDecoration(
-                color: isCompleted ? (crossCompleted ? Theme.of(context).colorScheme.surface : (darkMode ? accentColor[800] : accentColor[400])) : Theme.of(context).colorScheme.secondary,
+                color: isCompleted ? (crossCompletedHabit ? Theme.of(context).colorScheme.surface : (darkMode ? accentColor[800] : accentColor[400])) : Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(
-                // padding: EdgeInsets.only(left: 10, right: 0, top: 12, bottom: 12), // Old list tile padding
-                padding: EdgeInsets.only(left: 20, right: 24, top: 15, bottom: 15),   // old: 26, 24, 16
+                padding: EdgeInsets.only(left: 26, right: 24, top: 16, bottom: 16),
 
-                child: _newTile(context, darkMode, navigateToHabitAnalysis, crossCompleted)
+                child: _newTile(context, darkMode, navigateToHabitAnalysis, crossCompletedHabit)
               ) 
             ),
           ),

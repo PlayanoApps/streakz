@@ -52,7 +52,7 @@ class MyDrawer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   onTap: () async {
                     HapticFeedback.mediumImpact(); 
-                    await Future.delayed(Duration(milliseconds: 120));
+                    await Future.delayed(Duration(milliseconds: 150));
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
                   },
@@ -70,7 +70,7 @@ class MyDrawer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   onTap: () async {
                     HapticFeedback.mediumImpact(); 
-                    await Future.delayed(Duration(milliseconds: 120));
+                    await Future.delayed(Duration(milliseconds: 150));
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(showThemes: true)));
                   },
@@ -103,19 +103,22 @@ class MyDrawer extends StatelessWidget {
             children: [
               // Logout
               Padding(
-                padding: const EdgeInsets.only(left: 25, right: 25, bottom: 40),
-                child: ListTile(
-                  leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.inversePrimary), 
-                  title: Text("L O G O U T"), 
-                  horizontalTitleGap: 20,
+                padding: EdgeInsets.only(left: 25, right: 25, bottom: 40),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
                   onTap: () async {
                     HapticFeedback.mediumImpact(); 
-                    await Future.delayed(Duration(milliseconds: 70));
+                    await Future.delayed(Duration(milliseconds: 200));
                     final prefs = await SharedPreferences.getInstance();
                     final showOnboarding = prefs.setBool('showOnboarding', true);
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingPage()));
-                  }
-                )
+                  },
+                  child: ListTile(
+                    leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.inversePrimary), 
+                    title: Text("L O G O U T"), 
+                    horizontalTitleGap: 20   
+                  )
+                )               
               )
             ]
           )
