@@ -3,6 +3,7 @@ import "package:flutter/services.dart";
 import "package:habit_tracker/habit_database.dart";
 import "package:habit_tracker/pages/home_page.dart";
 import "package:habit_tracker/pages/onboarding.dart";
+import "package:habit_tracker/services/noti_service.dart";
 import "package:habit_tracker/theme_provider.dart";
 import "package:provider/provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
@@ -14,6 +15,9 @@ void main() async {
   // These are asynchronous function that can run in parallel
   await HabitDatabase.initialize();
   await HabitDatabase.saveFirstLaunchSettings();
+
+  // Init notifications
+  await NotiService().initNotification();
 
   // Onboarding screen
   final prefs = await SharedPreferences.getInstance();
@@ -27,7 +31,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => HabitDatabase()),
-        ChangeNotifierProvider(create: (context) => themeProvider)     // pass existing instance
+        ChangeNotifierProvider(create: (context) => themeProvider),     // pass existing instance
+        ChangeNotifierProvider(create: (context) => NotiServiceProvider())
       ],
       child: App(
         showOnboarding: showOnboarding, 

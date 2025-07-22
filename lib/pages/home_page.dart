@@ -7,6 +7,7 @@ import 'package:habit_tracker/components/my_drawer.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/pages/settings_page.dart';
+import 'package:habit_tracker/services/noti_service.dart';
 import 'package:habit_tracker/theme_provider.dart';
 import 'package:habit_tracker/util/helper_functions.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,7 @@ class _HomePageState extends State<HomePage> {
     Provider.of<ThemeProvider>(context, listen: false).loadAccentColor();
     Provider.of<ThemeProvider>(context, listen: false).loadHabitCompletedPref();
     Provider.of<ThemeProvider>(context, listen: false).loadUseSystemTheme();
+    Provider.of<NotiServiceProvider>(context, listen: false).loadNotificationSetting();
 
     super.initState();
 

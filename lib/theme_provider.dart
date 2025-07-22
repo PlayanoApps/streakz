@@ -83,7 +83,7 @@ class ThemeProvider extends ChangeNotifier
   }
 
   /* SYSTEM THEME */
-  bool _useSystemTheme = false;
+  bool _useSystemTheme = true;
 
   bool get useSystemTheme => _useSystemTheme;
 

@@ -2,7 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:habit_tracker/components/dialog_box.dart';
+import 'package:habit_tracker/habit_database.dart';
+import 'package:habit_tracker/models/habit.dart';
+import 'package:habit_tracker/services/noti_service.dart';
 import 'package:habit_tracker/theme_provider.dart';
+import 'package:habit_tracker/util/helper_functions.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -90,6 +94,8 @@ class _SettingsPageState extends State<SettingsPage> {
     // Get current selected Color from Theme Provider
     int? selectedValue = Provider.of<ThemeProvider>(context).selectedColor;
 
+    List<Habit> habitsList = Provider.of<HabitDatabase>(context).habitsList;
+
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -116,7 +122,26 @@ class _SettingsPageState extends State<SettingsPage> {
           _settingsTile(
             onTap: () {
               HapticFeedback.lightImpact();
+              final notiServiceProvider = Provider.of<NotiServiceProvider>(context, listen: false);
+              bool currentValue = notiServiceProvider.notificationsEnabled;
+              notiServiceProvider.toggleNotificationSetting(!currentValue, habitsList);
+            },
+            onLongPress: () {},
+            text: "Notifications",
+            trailing: CupertinoSwitch(          
+              value: Provider.of<NotiServiceProvider>(context).notificationsEnabled,
+              onChanged: (value) async { 
+                HapticFeedback.lightImpact(); 
+                Provider.of<NotiServiceProvider>(context, listen: false).toggleNotificationSetting(value, habitsList);
+              }
+            )
+          ),
 
+          SizedBox(height: 25),
+
+          _settingsTile(
+            onTap: () {
+              HapticFeedback.lightImpact();
               final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
               bool currentValue = themeProvider.useSystemTheme;
               themeProvider.toggleUseSystemTheme(!currentValue);
@@ -127,14 +152,16 @@ class _SettingsPageState extends State<SettingsPage> {
               value: Provider.of<ThemeProvider>(context).useSystemTheme,
               onChanged: (value) async { 
                 HapticFeedback.lightImpact();   
-
                 Provider.of<ThemeProvider>(context, listen: false).toggleUseSystemTheme(value);
               }
             )
           ),
 
           Provider.of<ThemeProvider>(context).useSystemTheme ? SizedBox() : _settingsTile(
-            onTap: Provider.of<ThemeProvider>(context, listen: false).toggleTheme,
+            onTap: () {
+              HapticFeedback.lightImpact();
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+            },
             onLongPress: () {},
             text: "Dark Mode",
             trailing: CupertinoSwitch(          
@@ -145,6 +172,8 @@ class _SettingsPageState extends State<SettingsPage> {
               }
             )
           ),
+
+          SizedBox(height: 25),
           
           _settingsTile(
             onTap: showThemeDialog, 
@@ -176,8 +205,8 @@ class _SettingsPageState extends State<SettingsPage> {
             onLongPress: () => showCustomDialog(
               context: context,
               title: "Do not highlight completed habits",
-              text: "When enabled, completed habits are crossed out and shown with reduced visibility instead of being highlighted in the theme color, helping you to focus on habits you still need to complete.",
-              actions: (null, () => Navigator.pop(context)), labels: ("", "Understood  ")
+              text: "Completed habits are crossed out and shown with reduced visibility instead of being highlighted, helping you to focus on habits you still need to complete.",
+              actions: (null, () => Navigator.pop(context)), labels: ("", "Done  ")
             ),
             text: "Do not highlight completed habits",
             trailing: CupertinoSwitch(          
@@ -188,6 +217,35 @@ class _SettingsPageState extends State<SettingsPage> {
               }
             )
           ),
+
+          ElevatedButton(
+            onPressed: () {
+              NotiService().showNotification(
+                title: "Notifications",
+                body: "Notifications will now appear!"
+              );
+            }, 
+            child: Text("Notification")
+          ),
+          ElevatedButton(
+            onPressed: () {  
+              NotiService().scheduleNotification(
+                title: "Notification",
+                body: "${amountOfHabitsCompleted(DateTime.now(), Provider.of<HabitDatabase>(context, listen:false).habitsList)}",
+                hour: 19,
+                minute: 30,
+              );
+              HapticFeedback.lightImpact();   
+            }, 
+            child: Text("Scheduled Notification")
+          ),
+          ElevatedButton(
+            onPressed: () {  
+              NotiService().cancelAllNotifications();
+              HapticFeedback.lightImpact();   
+            }, 
+            child: Text("Cancel Notification")
+          )
 
           // Dark Mode Tile
           /* Padding(
@@ -287,7 +345,7 @@ class _SettingsPageState extends State<SettingsPage> {
       Widget? trailing
     }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 25),
+      padding: const EdgeInsets.symmetric(vertical: 5.5, horizontal: 25), // 7
       child: Material(
         child: InkWell(
           onTap: onTap,
@@ -303,7 +361,7 @@ class _SettingsPageState extends State<SettingsPage> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Padding(
-              padding: const EdgeInsets.only(top: 15, bottom: 15, left: 15, right: 5),
+              padding: const EdgeInsets.only(top: 13, bottom: 13, left: 15, right: 5),  // 15
 
               // List Tile
               child: ListTile(
