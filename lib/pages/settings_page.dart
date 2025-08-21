@@ -6,9 +6,7 @@ import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/services/noti_service.dart';
 import 'package:habit_tracker/theme_provider.dart';
-import 'package:habit_tracker/util/helper_functions.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   final bool showThemes;
@@ -116,8 +114,9 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 5),
+          SizedBox(height: 10),
 
           _settingsTile(
             onTap: () {
@@ -136,8 +135,7 @@ class _SettingsPageState extends State<SettingsPage> {
               }
             )
           ),
-
-          SizedBox(height: 25),
+          SizedBox(height: 14.5),
 
           _settingsTile(
             onTap: () {
@@ -172,8 +170,7 @@ class _SettingsPageState extends State<SettingsPage> {
               }
             )
           ),
-
-          SizedBox(height: 25),
+          SizedBox(height: 14.5),
           
           _settingsTile(
             onTap: showThemeDialog, 
@@ -187,7 +184,7 @@ class _SettingsPageState extends State<SettingsPage> {
             trailing: Padding(
               padding: const EdgeInsets.only(right: 7),
               child: IconButton(
-                onPressed: showThemeDialog, 
+                onPressed: showThemeDialog,
                 icon: Icon(Icons.arrow_forward, color: Theme.of(context).colorScheme.primary)
               ),
             )
@@ -216,9 +213,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 Provider.of<ThemeProvider>(context, listen: false).setCrossCompletedHabit = value;
               }
             )
-          ),
+          ), 
 
-          ElevatedButton(
+          /* ElevatedButton(
             onPressed: () {
               NotiService().showNotification(
                 title: "Notifications",
@@ -245,7 +242,7 @@ class _SettingsPageState extends State<SettingsPage> {
               HapticFeedback.lightImpact();   
             }, 
             child: Text("Cancel Notification")
-          )
+          ) */
 
           // Dark Mode Tile
           /* Padding(
@@ -351,8 +348,9 @@ class _SettingsPageState extends State<SettingsPage> {
           onTap: onTap,
           onLongPress: onLongPress,
           borderRadius: BorderRadius.circular(10),
-          splashColor: Colors.grey.withAlpha(20),
+          splashColor: Colors.grey.withAlpha(70),
           highlightColor:Colors.grey.withAlpha(80),
+          splashFactory: InkSparkle.splashFactory,
       
           // Container
           child: Ink(

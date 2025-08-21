@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       controller: textController,
       hintText: "Create a new habit",
-      actions: (clear, saveHabit)
+      actions: (clear, saveHabit),
     );
   }
 
@@ -114,6 +114,7 @@ class _HomePageState extends State<HomePage> {
       controller: textController,
       hintText: "New habit name",
       actions: (clear, () => editHabit(habit)),
+      zoomTransition: true
     );
   }
 
@@ -129,7 +130,8 @@ class _HomePageState extends State<HomePage> {
       controller: textController, 
       title: "Delete this habit?",
       actions: (clear, deleteHabit),
-      labels: ("Cancel", "Delete")
+      labels: ("Cancel", "Delete"),
+      zoomTransition: true
     );
   }
 

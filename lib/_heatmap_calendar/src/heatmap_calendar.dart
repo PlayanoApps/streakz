@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'data/heatmap_color_mode.dart';
 import 'widget/heatmap_calendar_page.dart';
 import 'widget/heatmap_color_tip.dart';

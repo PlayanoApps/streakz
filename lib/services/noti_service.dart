@@ -1,21 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:habit_tracker/util/helper_functions.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import "package:timezone/data/latest.dart" as tz;
 import "package:flutter_timezone/flutter_timezone.dart";
 
 class NotiService {
-  // Singleton setup
-  /* NotiService._internal();
-  static final NotiService _instance = NotiService._internal();
-  factory NotiService() => _instance; */
-
-
   final notificationsPlugin = FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
 
@@ -147,25 +138,37 @@ class NotiServiceProvider extends ChangeNotifier {
       id: 1
     );
 
-    NotiService().scheduleNotification(
+    /* NotiService().scheduleNotification(
       title: "Your stats for today",
       body: "Today, you've completed ${amountOfHabitsCompleted(DateTime.now(), habitsList)} out of ${habitsList.length} habits.",
       hour: 21,
       minute: 00,
       id: 2
     );
-        
-    NotiService().scheduleNotification(
-      title: "Discipline Mode: ON",
-      body: "Rise and shine - Let's start conquering the day",
-      hour: 6,
-      minute: 30,
-      id: 3
-    );
+
+    final index = Random().nextInt(2); // 0 or 1
+
+    if(index == 0) {
+      NotiService().scheduleNotification(
+        title: "Ready to Go?",
+        body: "Small habits lead to big results. Let's keep moving!",
+        hour: 6,
+        minute: 30,
+        id: 3
+      );
+    } else {
+      NotiService().scheduleNotification(
+        title: "Today is Yours",
+        body: "Each choice shapes your path. Choose well today.",
+        hour: 6,
+        minute: 30,
+        id: 3
+      );
+    } */
 
     NotiService().showNotification(
-      title: "Notifications",
-      body: "Notifications will now appear!"
+      title: "",
+      body: "You will now receive notifications"
     );
 
   }
