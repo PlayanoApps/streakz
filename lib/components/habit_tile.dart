@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/pages/analysis_page.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
-import 'package:habit_tracker/theme/themes.dart';
 import 'package:habit_tracker/util/helper_functions.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';

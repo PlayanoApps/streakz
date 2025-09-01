@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/services/auth/auth_gate.dart';
-import 'package:habit_tracker/pages/home_page.dart';
-import 'package:habit_tracker/services/auth/login_or_register.dart';
+import 'package:habit_tracker/auth/auth_gate.dart';
 import 'package:lottie/lottie.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -63,7 +60,7 @@ class _MyWidgetState extends State<OnboardingPage> {
                       prefs.setBool('showOnboarding', false); */
 
                       Navigator.pushAndRemoveUntil(context, 
-                        CupertinoPageRoute(builder: (context) => AuthPage()), // <- Changed this line
+                        CupertinoPageRoute(builder: (context) => AuthPage()),
                         (route) => false
                       );
                     }

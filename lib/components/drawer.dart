@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:habit_tracker/components/dialog_box.dart";
 import "package:habit_tracker/habit_database.dart";
-import "package:habit_tracker/pages/auth/profile_page.dart";
+import "package:habit_tracker/auth/profile_page.dart";
 import "package:habit_tracker/pages/settings_page.dart";
 
 class MyDrawer extends StatelessWidget {

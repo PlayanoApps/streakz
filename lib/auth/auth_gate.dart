@@ -161,7 +161,7 @@ import 'package:habit_tracker/firestore_database.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/pages/home_page.dart';
-import 'package:habit_tracker/services/auth/login_or_register.dart';
+import 'package:habit_tracker/auth/login_or_register.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});

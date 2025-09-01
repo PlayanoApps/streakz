@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/pages/auth/login_page.dart';
-import 'package:habit_tracker/pages/auth/register_page.dart';
+import 'package:habit_tracker/auth/login_page.dart';
+import 'package:habit_tracker/auth/register_page.dart';
 
 class LoginOrRegister extends StatefulWidget {
   @override
