@@ -4,9 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/pages/analysis_page.dart';
-import 'package:habit_tracker/theme_provider.dart';
+import 'package:habit_tracker/theme/theme_provider.dart';
+import 'package:habit_tracker/theme/themes.dart';
+import 'package:habit_tracker/util/helper_functions.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class HabitTile extends StatelessWidget {
@@ -22,7 +26,7 @@ class HabitTile extends StatelessWidget {
     required this.isCompleted,
     required this.checkboxChanged,
     required this.editHabit,
-    required this.deleteHabit
+    required this.deleteHabit,
   });
 
   /* @override
@@ -73,72 +77,56 @@ class HabitTile extends StatelessWidget {
     );
   } */
 
+  void navigateToHabitAnalysis(context, {delay = 150}) async {
+    HapticFeedback.mediumImpact(); 
+    await Future.delayed(Duration(milliseconds: delay));
+    Navigator.push(context, CupertinoPageRoute(
+      builder: (context) => HabitAnalysisPage(habit: habit)
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool darkMode = (Theme.of(context).brightness == Brightness.dark); //Provider.of<ThemeProvider>(context).isDarkMode;
+    bool darkMode = (Theme.of(context).brightness == Brightness.dark);
     MaterialColor accentColor = Provider.of<ThemeProvider>(context).getAccentColor();
     
-    // cross completed habits instead of highlighting them
+    // Cross completed habits instead of highlighting them
     bool crossCompletedHabit = Provider.of<ThemeProvider>(context).crossCompletedHabits;
 
-    void navigateToHabitAnalysis({delay = 150}) async {
-      HapticFeedback.mediumImpact(); 
-      await Future.delayed(Duration(milliseconds: delay));
-      Navigator.push(context, CupertinoPageRoute(
-        builder: (context) => HabitAnalysisPage(habit: habit)
-      ));
-    }
-
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25), // vertical 5
       child: Slidable(
-        endActionPane: ActionPane(
-          motion: StretchMotion(), 
-          children: [
-            SlidableAction(
-              onPressed: editHabit,
-              backgroundColor: darkMode ? Colors.grey.shade800 : Colors.grey.shade600,
-              icon: Icons.settings,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            SlidableAction(
-              onPressed: deleteHabit,
-              backgroundColor: darkMode ?Color.fromARGB(222, 198, 40, 40) : Color.fromARGB(233, 239, 83, 80),
-              icon: Icons.delete,
-              borderRadius: BorderRadius.circular(10),
-            )
-          ]
-        ),
-        startActionPane: ActionPane(motion: StretchMotion(), children: [
-          SlidableAction(
-            onPressed: (BuildContext b) => navigateToHabitAnalysis(),
-            backgroundColor: darkMode ?Color.fromARGB(190, 33, 149, 243) : Color.fromARGB(190, 33, 149, 243),
-            icon: Icons.analytics,
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ]),
+        endActionPane: _endActionPane(darkMode),
+        startActionPane: _startActionPane(darkMode),
 
         // Habit Tile
         child: Material(
           child: InkWell(
             // Checkbox provides value to callback function automatically
             onTap: () => checkboxChanged!(!isCompleted),
-            onLongPress: null,//() =>  navigateToHabitAnalysis(delay: 50),
-            borderRadius: BorderRadius.circular(10),
+            onLongPress: null,
+            borderRadius: BorderRadius.circular(18),  // 10
             splashColor: crossCompletedHabit ? Colors.grey.withAlpha(0) : Colors.grey.withAlpha(30), // 30
+            splashFactory: crossCompletedHabit ? (isCompleted ? null : NoSplash.splashFactory) : null,
             highlightColor: isCompleted ? (crossCompletedHabit ? null : accentColor[600]) : Colors.grey.withAlpha(50),
           
             // Container
             child: Ink(
               decoration: BoxDecoration(
                 color: isCompleted ? (crossCompletedHabit ? Theme.of(context).colorScheme.surface : (darkMode ? accentColor[800] : accentColor[400])) : Theme.of(context).colorScheme.secondary,
-                borderRadius: BorderRadius.circular(10),
+                // Border
+                border: Border.all(
+                  width: 1,
+                  color: isCompleted ? 
+                    // Completed
+                    (crossCompletedHabit ? Colors.transparent :
+                    darkMode ? Colors.green.shade700 : Colors.green.shade300)
+                    // Not completed
+                    : darkMode ? Colors.grey.withAlpha(30) : Colors.white.withAlpha(100)
+                ),
+                borderRadius: BorderRadius.circular(18),  // 10
               ),
-              child: Padding(
-                padding: EdgeInsets.only(left: 26, right: 24, top: 16, bottom: 16),
-
-                child: _newTile(context, darkMode, navigateToHabitAnalysis, crossCompletedHabit)
-              ) 
+              child: _tileContent(context, darkMode, navigateToHabitAnalysis, crossCompletedHabit)
             ),
           ),
         ),
@@ -146,45 +134,118 @@ class HabitTile extends StatelessWidget {
     );
   }
 
-  Widget _newTile(context, darkMode, navigateToHabitAnalysis, bool crossCompleted) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // Leading
-        Expanded(
-          child: Row(
-            children: [
-              Checkbox(
-                activeColor: crossCompleted ? Theme.of(context).colorScheme.secondary : Colors.transparent,
-                checkColor: crossCompleted ? Theme.of(context).colorScheme.primary : Colors.white,
-                value: isCompleted, 
-                onChanged: checkboxChanged
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: Text(habit.name, //overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: isCompleted ? (crossCompleted ? Theme.of(context).colorScheme.primary : Colors.white) : Theme.of(context).colorScheme.onPrimary,
-                    fontSize: 16.5,
-                    letterSpacing: 0.5,
-                    height: 1.4,
-                    decoration: (isCompleted && crossCompleted) ? TextDecoration.lineThrough : null
-                  )
+  Widget _tileContent(context, darkMode, navigateToHabitAnalysis, bool crossCompleted) {
+    return Padding(
+      padding: EdgeInsets.only(left: 26, right: 24, top: 16, bottom: 16), // top/btm 16
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Leading Checkbox & Text
+          Expanded(
+            child: Row(
+              children: [
+                Checkbox(
+                  activeColor: crossCompleted ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                  checkColor: crossCompleted ? Theme.of(context).colorScheme.primary : Colors.white,
+                  value: isCompleted, 
+                  onChanged: checkboxChanged
                 ),
-              ),
-            ]
+                SizedBox(width: 16),
+                // Text
+                Expanded(
+                  child: Text(habit.name, //overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: isCompleted ? (crossCompleted ? Theme.of(context).colorScheme.primary : Colors.white) : Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 16.5,
+                      letterSpacing: 0.5,
+                      height: 1.4,
+                      decoration: (isCompleted && crossCompleted) ? TextDecoration.lineThrough : null,
+                      decorationColor: darkMode ? Colors.white : Colors.black,
+                    )
+                  ),
+                ),
+              ]
+            ),
           ),
-        ),
-        // Trailing
-        !isCompleted ? IconButton(
-          onPressed: navigateToHabitAnalysis,                   
-          icon: Icon(Icons.arrow_forward, size: 24, 
-            color: Theme.of(context).colorScheme.primary
-          ) // else placeholder icon
-        ) : IconButton(onPressed: null, icon: Icon(Icons.abc, color: Colors.transparent))
-      ],
+          // Trailing Button
+          !isCompleted ? IconButton(
+            onPressed: () => navigateToHabitAnalysis(context),                   
+            icon: Icon(Icons.arrow_forward, size: 24, color: Theme.of(context).colorScheme.primary) 
+          ) 
+          : _showStreak(context, darkMode, crossCompleted) 
+            //IconButton(onPressed: null, icon: Icon(Icons.abc, color: Colors.transparent))
+        ],
+      ),
     );
+  }
+
+  Widget _showStreak(context, darkMode, crossCompleted) {
+    int streak = currentStreak(habit.completedDays);
+
+    if (streak < 2)
+      return Container();
+
+    return Padding(
+      padding: EdgeInsets.only(left: 5),
+      child: Column(
+        children: [
+          SizedBox(
+            width: 30.4, height: 30.4,
+            child: LottieBuilder.asset("assets/streak4.json"),
+          ),
+          Text(
+            "$streak",
+            style: GoogleFonts.roboto(
+              color: crossCompleted ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.tertiary,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w800
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+
+  ActionPane _endActionPane(bool darkMode) {
+    return ActionPane(
+      motion: StretchMotion(), 
+      children: [
+        SizedBox(width: 7),
+
+        SlidableAction(
+          onPressed: editHabit,
+          backgroundColor: darkMode ? Colors.grey.shade800 : Colors.grey.shade600,
+          icon: Icons.settings,
+          borderRadius: BorderRadius.circular(18),
+        ),
+
+        SizedBox(width: 7),
+
+        SlidableAction(
+          onPressed: deleteHabit,
+          backgroundColor: darkMode ?Color.fromARGB(222, 198, 40, 40) : Color.fromARGB(233, 239, 83, 80),
+          icon: Icons.delete,
+          borderRadius: BorderRadius.circular(18),
+        ),
+      ]
+    );
+  }
+
+  ActionPane _startActionPane(bool darkMode) {
+    return ActionPane(
+      motion: StretchMotion(), 
+      extentRatio: 0.4,
+      children: [
+      SlidableAction(
+        onPressed: (BuildContext context) => navigateToHabitAnalysis(context),
+        backgroundColor: darkMode ?Color.fromARGB(190, 33, 149, 243) : Color.fromARGB(190, 33, 149, 243),
+        icon: Icons.analytics,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      SizedBox(width: 7),
+    ]);
   }
 
   Widget _oldTile(context, darkMode, navigateToHabitAnalysis) {

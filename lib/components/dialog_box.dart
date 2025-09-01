@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/theme_provider.dart';
+import 'package:habit_tracker/habit_database.dart';
+import 'package:habit_tracker/util/helper_functions.dart';
 import 'package:provider/provider.dart';
 
 void showCustomDialog({
@@ -13,9 +14,11 @@ void showCustomDialog({
   (void Function()?, void Function()?)? actions,          // Functions for buttons
   (String?, String?) labels = ("Cancel", "Save"),           // MaterialButton labels
 
+  Widget? content,
+
   bool zoomTransition = false
 }) {
-  bool darkMode = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+  bool darkMode = (Theme.of(context).brightness == Brightness.dark);
 
   /* showDialog(
     context: context, 
@@ -58,8 +61,13 @@ void showCustomDialog({
     pageBuilder: (context, x, y) {   // like showDialog builder but with animation
       return AlertDialog(
         title: title == "" ? null : Text(title),
-        content: (hintText == "")
-          ? (text == "" ? null : Text(text))
+        titleTextStyle: TextStyle(
+          color: darkMode ? Colors.white : Colors.black,
+          fontSize: 24,
+        ),
+        content: _content(context, hintText, text, controller, darkMode, content),
+        /* (hintText == "") ? 
+          (text == "" ? null : Text(text))
           : TextField(
               controller: controller,
               decoration: InputDecoration(
@@ -82,7 +90,7 @@ void showCustomDialog({
                   ),
                 ),
               ),
-            ),
+            ), */
         actions: actions == null ? [] : [
           _button(context: context, text: labels.$1, onPressed: () async {
             await Future.delayed(Duration(milliseconds: 50));
@@ -99,6 +107,42 @@ void showCustomDialog({
     transitionBuilder: zoomTransition ? zoomInTransition() : moveUpTransition()
   ).then((value) => controller?.clear());  // Dialog dismissed
   
+}
+
+dynamic _content(context, hintText, text, controller, darkMode, content) {
+  if (hintText == "")
+    return text == "" ? null : Text(text, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),);
+  
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      TextField(
+        controller: controller,
+        style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+          filled: true,
+          fillColor: Theme.of(context).colorScheme.secondary,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: darkMode ? Colors.grey.shade800 : Theme.of(context).colorScheme.tertiary,
+              width: 1.4,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              width: 1.5,
+            ),
+          ),
+        ),
+      ),
+      (content == null) ? Container() : content
+    ],
+  );
 }
 
 Widget _button({required context, required text, required onPressed}) {
@@ -144,4 +188,48 @@ RouteTransitionsBuilder zoomInTransition() {
       ),
     );
   };
+}
+
+void showEditHeatmapDialog(date, context) {
+  showDialog(
+    context: context, 
+    builder: (context) => Consumer<HabitDatabase> (
+      builder: (context, value, child) => AlertDialog(
+        title: Text("${numberToMonth(date.month)} ${date.day}th", style: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimary
+        ),),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var habit in value.habitsList) 
+              InkWell(
+                onTap: () => toggleDateInHabit(context, !habitCompleted(habit.completedDays, date), habit, date),
+                borderRadius: BorderRadius.circular(12),
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: habitCompleted(habit.completedDays, date), 
+                      onChanged: (value) => toggleDateInHabit(context, value, habit, date)
+                    ),
+                    Expanded(child: Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Text(habit.name, overflow: TextOverflow.ellipsis, style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary
+                      ),),
+                    ))
+                  ],
+                ),
+              ),
+          ],
+        )
+      )
+    )
+  );
+}
+
+void toggleDateInHabit(context, value, habit, date) {
+  if (value != null) {
+    Provider.of<HabitDatabase>(context, listen: false)
+      .updateHabitCompletion(habit.id, value, date);
+  }
 }

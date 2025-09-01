@@ -1,15 +1,25 @@
+import "package:firebase_core/firebase_core.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:habit_tracker/firebase_options.dart";
 import "package:habit_tracker/habit_database.dart";
+import "package:habit_tracker/pages/auth/login_page.dart";
+import "package:habit_tracker/pages/onboarding_page.dart";
+import "package:habit_tracker/pages/auth/register_page.dart";
 import "package:habit_tracker/pages/home_page.dart";
-import "package:habit_tracker/pages/onboarding.dart";
+import "package:habit_tracker/services/auth/auth_gate.dart";
+import "package:habit_tracker/services/auth/login_or_register.dart";
 import "package:habit_tracker/services/noti_service.dart";
-import "package:habit_tracker/theme_provider.dart";
+import "package:habit_tracker/theme/theme_provider.dart";
+import "package:habit_tracker/theme/themes.dart";
 import "package:provider/provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
+import "package:showcaseview/showcaseview.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize database (await to not block the UI stream)
   // These are asynchronous function that can run in parallel
@@ -21,10 +31,10 @@ void main() async {
 
   // Onboarding screen
   final prefs = await SharedPreferences.getInstance();
-  final showOnboarding = prefs.getBool('showOnboarding') ?? true;
+  final showOnboarding = prefs.getBool("showOnboarding") ?? true;
 
-  /* Load data in main instead of in home widget */
-  final themeProvider = ThemeProvider();  // Open instance here instead of in runApp
+  /* Load data in main instead of home */
+  final themeProvider = ThemeProvider(prefs);  // Open instance here instead of in runApp
   await themeProvider.loadTheme();
 
   runApp(
@@ -64,16 +74,22 @@ class App extends StatelessWidget {
     
     final useSystemTheme = Provider.of<ThemeProvider>(context).useSystemTheme;
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: showOnboarding ? OnboardingPage() : HomePage(),
+    return ShowCaseWidget(
+      //enableShowcase: false,
 
-      // Don't use "listen: false" here because widget is rebuilt 
-      // ThemeProvider must be created in the main function. Why? because it must be ready BEFORE the App Widget is built.
+      builder: (context) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        //home: showOnboarding ? OnboardingPage() : HomePage(),
+        home: showOnboarding ? OnboardingPage() : AuthPage(),
       
-      theme: useSystemTheme ? lightMode : Provider.of<ThemeProvider>(context).themeData,
-      darkTheme: useSystemTheme ? darkMode : null,
-      themeMode: ThemeMode.system,
+      
+        // Don't use "listen: false" here because widget is rebuilt 
+        // ThemeProvider must be created in the main function. Why? because it must be ready BEFORE the App Widget is built.
+        
+        theme: useSystemTheme ? lightMode : Provider.of<ThemeProvider>(context).themeData,
+        darkTheme: useSystemTheme ? darkMode : null,
+        themeMode: ThemeMode.system,
+      ),
     );
   }
 }

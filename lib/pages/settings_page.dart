@@ -5,7 +5,7 @@ import 'package:habit_tracker/components/dialog_box.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/services/noti_service.dart';
-import 'package:habit_tracker/theme_provider.dart';
+import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -38,7 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
       barrierDismissible: true, 
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       pageBuilder: (context, x, y) => AlertDialog(
-        title: Text("Select Color"),
+        title: Text("Select Color", style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),),
         content: StatefulBuilder(
           builder: (context, StateSetter setState) =>
           Column(
@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     themeProvider.setAccentColor(val);
                 },
               ),
-              Text(text),
+              Text(text, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),),
             ],
           ),
         );
@@ -135,14 +135,14 @@ class _SettingsPageState extends State<SettingsPage> {
               }
             )
           ),
-          SizedBox(height: 14.5),
+          SizedBox(height: 14), // 14.5
 
           _settingsTile(
             onTap: () {
               HapticFeedback.lightImpact();
               final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
               bool currentValue = themeProvider.useSystemTheme;
-              themeProvider.toggleUseSystemTheme(!currentValue);
+              themeProvider.togglefollowSystemTheme(!currentValue);
             },
             onLongPress: () {},
             text: "Follow theme of system settings",
@@ -150,7 +150,7 @@ class _SettingsPageState extends State<SettingsPage> {
               value: Provider.of<ThemeProvider>(context).useSystemTheme,
               onChanged: (value) async { 
                 HapticFeedback.lightImpact();   
-                Provider.of<ThemeProvider>(context, listen: false).toggleUseSystemTheme(value);
+                Provider.of<ThemeProvider>(context, listen: false).togglefollowSystemTheme(value);
               }
             )
           ),
@@ -163,14 +163,14 @@ class _SettingsPageState extends State<SettingsPage> {
             onLongPress: () {},
             text: "Dark Mode",
             trailing: CupertinoSwitch(          
-              value: (Theme.of(context).brightness == Brightness.dark), //Provider.of<ThemeProvider>(context).isDarkMode, 
+              value: (Theme.of(context).brightness == Brightness.dark),
               onChanged: (value) { 
                 HapticFeedback.lightImpact();   
                 Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
               }
             )
           ),
-          SizedBox(height: 14.5),
+          SizedBox(height: 14),
           
           _settingsTile(
             onTap: showThemeDialog, 
@@ -180,7 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
               labels: ("Dismiss", "Open"),
               actions: (() => Navigator.pop(context), () { Navigator.pop(context); showThemeDialog(); })
             ), 
-            text: "Edit accent color", // app theme
+            text: "Customize Heatmap", // app theme
             trailing: Padding(
               padding: const EdgeInsets.only(right: 7),
               child: IconButton(
@@ -197,7 +197,8 @@ class _SettingsPageState extends State<SettingsPage> {
               final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
               bool currentValue = themeProvider.crossCompletedHabits;
               // Toggle the value
-              themeProvider.setCrossCompletedHabit = !currentValue;
+              //themeProvider.toggleCrossCompletedHabits = !currentValue;
+              themeProvider.toggleCrossCompletedHabits(!currentValue);
             },
             onLongPress: () => showCustomDialog(
               context: context,
@@ -210,7 +211,8 @@ class _SettingsPageState extends State<SettingsPage> {
               value: (Provider.of<ThemeProvider>(context, listen: false).crossCompletedHabits),
               onChanged: (value) { 
                 HapticFeedback.lightImpact();   
-                Provider.of<ThemeProvider>(context, listen: false).setCrossCompletedHabit = value;
+                //Provider.of<ThemeProvider>(context, listen: false).toggleCrossCompletedHabits = value;
+                Provider.of<ThemeProvider>(context, listen: false).toggleCrossCompletedHabits(value);
               }
             )
           ), 
@@ -341,13 +343,16 @@ class _SettingsPageState extends State<SettingsPage> {
       required String text,
       Widget? trailing
     }) {
+
+    bool darkMode = (Theme.of(context).brightness == Brightness.dark);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.5, horizontal: 25), // 7
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25), // 5.5
       child: Material(
         child: InkWell(
           onTap: onTap,
           onLongPress: onLongPress,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(18),
           splashColor: Colors.grey.withAlpha(70),
           highlightColor:Colors.grey.withAlpha(80),
           splashFactory: InkSparkle.splashFactory,
@@ -356,7 +361,11 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Ink(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.secondary,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                width: 1,
+                color: darkMode ? Colors.grey.withAlpha(30) : Colors.white.withAlpha(100)
+              )
             ),
             child: Padding(
               padding: const EdgeInsets.only(top: 13, bottom: 13, left: 15, right: 5),  // 15

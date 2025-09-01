@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "631623788562",
+    "project_id": "streakz-b6323",
+    "storage_bucket": "streakz-b6323.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631623788562:android:af69623a803ac0aaf550cb",
+        "android_client_info": {
+          "package_name": "com.playanoapps.streakz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChtPlS-h_AnkQg-BwBIbOshM6DB-tDoSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631623788562:android:08d3aa2157039efcf550cb",
+        "android_client_info": {
+          "package_name": "com.playanoapps.streakz.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChtPlS-h_AnkQg-BwBIbOshM6DB-tDoSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -24,6 +24,10 @@ class HeatMap extends StatefulWidget {
   /// The color value of every block's default color.
   final Color? defaultColor;
 
+  final Color? highlightedColor;
+  final double? highlightedBorderWith;
+  final Color? highlightedBorderColor;
+
   /// The text color value of every blocks.
   final Color? textColor;
 
@@ -101,6 +105,11 @@ class HeatMap extends StatefulWidget {
     this.borderRadius,
     this.datasets,
     this.defaultColor,
+
+    this.highlightedColor,  // new
+    this.highlightedBorderWith,
+    this.highlightedBorderColor,
+
     this.showText = false,
     this.showColorTip = true,
     this.scrollable = false,
@@ -118,6 +127,8 @@ class _HeatMap extends State<HeatMap> {
   Widget _scrollableHeatMap(Widget child) {
     return widget.scrollable
         ? SingleChildScrollView(
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            padding: const EdgeInsets.symmetric(horizontal: 13), // 👈 added
             reverse: true,
             scrollDirection: Axis.horizontal,
             child: child,
@@ -140,6 +151,11 @@ class _HeatMap extends State<HeatMap> {
           fontSize: widget.fontSize,
           datasets: widget.datasets,
           defaultColor: widget.defaultColor,
+
+          highlightedColor: widget.highlightedColor,
+          highlightedBorderColor: widget.highlightedBorderColor,
+          highlightedBorderWith: widget.highlightedBorderWith,
+
           textColor: widget.textColor,
           colorsets: widget.colorsets,
           borderRadius: widget.borderRadius,

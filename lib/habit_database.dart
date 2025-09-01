@@ -1,4 +1,7 @@
+import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/cupertino.dart";
+import "package:habit_tracker/firestore_database.dart";
 import "package:habit_tracker/models/app_settings.dart";
 import "package:habit_tracker/models/habit.dart";
 import "package:habit_tracker/util/helper_functions.dart";
@@ -48,32 +51,38 @@ class HabitDatabase extends ChangeNotifier {
       await isar.writeTxn(() => isar.appSettings.put(settings));
 
       // Add default habits
-      final lastDayOfMonth = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
-
-      final defaultHabits = [
-        Habit()..name = "Welcome! :)"..order = 0
-          ..completedDays = List.generate(
-            lastDayOfMonth.day,   // length
-            (i) => DateTime(DateTime.now().year, DateTime.now().month, i + 1),
-          ),
-        Habit()..name = "Swipe left to edit or delete habits"..order = 1
-          ..completedDays = List.generate(
-            (lastDayOfMonth.day ~/ 3),     // add every third day
-            (i) => DateTime(DateTime.now().year, DateTime.now().month, (i + 1) * 3),
-          ),
-        Habit()..name = "Long-press to reorder habits"..order = 2
-        ..completedDays = List.generate(
-            (lastDayOfMonth.day ~/ 5),     // add every third day
-            (i) => DateTime(DateTime.now().year, DateTime.now().month, (i + 1) * 5),
-          )
-      ];
-
-      await isar.writeTxn(() async {
-        for (final habit in defaultHabits) {
-          await isar.habits.put(habit);
-        }
-      });
+      loadDefaultHabits();
     }
+  }
+
+  static Future<void> loadDefaultHabits() async {
+    //final lastDayOfMonth = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
+    final lastDayOfMonth = DateTime.now();
+
+    final defaultHabits = [
+      Habit()..name = "Reading"..order = 0    // Welcome! :)
+        ..completedDays = List.generate(
+          lastDayOfMonth.day,   // length
+          (i) => DateTime(DateTime.now().year, DateTime.now().month, i + 1),
+        ),
+      Habit()..name = "Exercise"..order = 1  // Swipe left to edit or delete habits
+        ..completedDays = List.generate(
+          (lastDayOfMonth.day ~/ 3),     // add every third day
+          (i) => DateTime(DateTime.now().year, DateTime.now().month, (i + 1) * 3),
+        ),
+      Habit()..name = "Journaling"..order = 2   // Long-press to reorder habits
+      ..completedDays = List.generate(
+          (lastDayOfMonth.day ~/ 5),     // add every third day
+          (i) => DateTime(DateTime.now().year, DateTime.now().month, (i + 1) * 5),
+        )
+    ];
+
+    // Save them to db
+    await isar.writeTxn(() async {
+      for (final habit in defaultHabits) {
+        await isar.habits.put(habit);
+      }
+    });
   }
 
   // Get first date of app starting (for heatmap)
@@ -90,14 +99,21 @@ class HabitDatabase extends ChangeNotifier {
   /* Sync habits list with db and update UI */
   Future<void> updateHabitList() async {
     // when fetching habits, sort by order
-    // sortByOrder() generated specifically order variable
     List<Habit> habitsFromDb = await isar.habits.where().sortByOrder().findAll();
 
     // Update current habits list
     habitsList.clear();
     habitsList.addAll(habitsFromDb);
 
-    notifyListeners(); 
+    print("-----------------------------------------------------------------------");
+    print("HabitsList after adding: ${habitsList.length}"); // Debug line
+
+    notifyListeners();
+
+    //🔥Sync to firestore
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null)
+      await FirestoreDatabase(isar).syncToFirestore(user);
   }
 
   /* Add a new habit to db, update the list */
@@ -164,11 +180,24 @@ class HabitDatabase extends ChangeNotifier {
     updateHabitList();
   }  
 
-  Future<void> clearDatabase() async {
-    await isar.writeTxn(() async {
-      await isar.habits.clear();
-      await isar.appSettings.clear();
-    });
+  /* Habit descripiton */
+  Future<void> addDescription(int id, String newDescription) async {
+    final habit = await isar.habits.get(id);
+
+    if (habit != null) {
+      habit.description = newDescription;
+      await isar.writeTxn(() => isar.habits.put(habit));
+    }
+    updateHabitList();
+  }
+
+  Future<void> deleteDecription(int id) async {
+    final habit = await isar.habits.get(id);
+
+    if (habit != null) {
+      habit.description = "";
+      await isar.writeTxn(() => isar.habits.put(habit));
+    }
     updateHabitList();
   }
 
@@ -182,5 +211,13 @@ class HabitDatabase extends ChangeNotifier {
         await isar.habits.put(habitsList[i]); 
       }
     });
+  }
+
+  Future<void> clearDatabase() async {
+    await isar.writeTxn(() async {
+      await isar.habits.clear();
+      // await isar.appSettings.clear();
+    });
+    updateHabitList();
   }
 }

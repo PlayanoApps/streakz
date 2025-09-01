@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:habit_tracker/services/auth/auth_gate.dart';
 import 'package:habit_tracker/pages/home_page.dart';
+import 'package:habit_tracker/services/auth/login_or_register.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -19,6 +21,8 @@ class _MyWidgetState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final darkMode = (Theme.of(context).brightness == Brightness.dark);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -39,49 +43,45 @@ class _MyWidgetState extends State<OnboardingPage> {
 
           // Navigation
           Container(
-            alignment: Alignment(0, 0.75),
+            alignment: Alignment(0, 0.7),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 // dot indicator
-                SmoothPageIndicator(
-                  controller: _controller, 
-                  count: 3,
-                  effect: ExpandingDotsEffect(
-                    dotColor: Colors.white.withOpacity(0.5),
-                    activeDotColor: Theme.of(context).colorScheme.tertiary,         
-                    dotHeight: 20, 
-                    dotWidth: 25
-                  )
-                ),
-                // Next Button
+                dotIndicator(darkMode),
+                
                 SizedBox(height: 10),
+
+                // Next Button
                 GestureDetector(
                   onTap: () async {
                     HapticFeedback.lightImpact(); 
-                    // Go to Homescreen
-                    if (onLastPage) {
-                      // Local storage with SharedPreferences
-                      final prefs = await SharedPreferences.getInstance();
-                      prefs.setBool('showOnboarding', false);
 
-                      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => HomePage(showThemes: true)));
+                    if (onLastPage) {
+                      // Now in home
+                      /* final prefs = await SharedPreferences.getInstance();
+                      prefs.setBool('showOnboarding', false); */
+
+                      Navigator.pushAndRemoveUntil(context, 
+                        CupertinoPageRoute(builder: (context) => AuthPage()), // <- Changed this line
+                        (route) => false
+                      );
                     }
                     else
-                      _controller.nextPage(duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+                      _controller.nextPage(duration: Duration(milliseconds: 400), curve: Curves.easeOut);
                   },
                   child: Container(
                     width: 70,
-                    height: 50,
-                    
+                    height: 48,
                     margin: EdgeInsets.only(top: 35),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25),
-                      color: (onLastPage) ? Colors.white : Colors.grey[100],
+                      color: (!darkMode) ? (onLastPage) ? Colors.white : Colors.grey[100]
+                                        : (onLastPage) ? Colors.grey[700] : Colors.grey[800],
                     ),
                     child: Icon(
                       (onLastPage) ? Icons.done : Icons.arrow_forward, 
-                      color: Colors.grey[400]
+                      color: darkMode ? Colors.grey[400] : Colors.grey[400]
                     ),
                     
                   ),
@@ -94,11 +94,27 @@ class _MyWidgetState extends State<OnboardingPage> {
     );
   }
 
+  Widget dotIndicator(darkMode) {
+    return SmoothPageIndicator(
+      controller: _controller, 
+      count: 3,
+      effect: ExpandingDotsEffect(
+        dotColor: darkMode ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
+        activeDotColor: darkMode ? Colors.white.withOpacity(0.4) : Colors.white,      
+        dotHeight: 19, 
+        dotWidth: 26
+      )
+    );
+  }
+
   Widget introPage_1() {
+    final isDarkMode = (Theme.of(context).brightness == Brightness.dark);
+
     return Container(
-      color: Color.fromARGB(255, 230, 230, 230),
+      //color: Color.fromARGB(255, 230, 230, 230),
+      color: Theme.of(context).colorScheme.surface,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 300),
+        padding: const EdgeInsets.only(bottom: 320),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -113,7 +129,7 @@ class _MyWidgetState extends State<OnboardingPage> {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 48,
-                color: Colors.grey[800]          
+                color: !isDarkMode ? Colors.grey[800] : Colors.grey[300]
               ),
             ),
             SizedBox(height: 4),
@@ -133,10 +149,13 @@ class _MyWidgetState extends State<OnboardingPage> {
   }
 
   Widget introPage_2() {
+    final isDarkMode = (Theme.of(context).brightness == Brightness.dark);
+
     return Container(
-      color: Color.fromARGB(255, 230, 230, 230),
+      //color: Color.fromARGB(255, 230, 230, 230),
+      color: Theme.of(context).colorScheme.surface,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 300),
+        padding: const EdgeInsets.only(bottom: 320),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -153,7 +172,7 @@ class _MyWidgetState extends State<OnboardingPage> {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 49,
-                color: Colors.grey[800],
+                color: !isDarkMode ? Colors.grey[800] : Colors.grey[300],
                 //letterSpacing: -0.5    
               ),
             ),
@@ -173,10 +192,13 @@ class _MyWidgetState extends State<OnboardingPage> {
   }
 
   Widget introPage_3() {
+    final isDarkMode = (Theme.of(context).brightness == Brightness.dark);
+
     return Container(
-      color: Color.fromARGB(255, 230, 230, 230),
+      //color: Color.fromARGB(255, 230, 230, 230),
+      color: Theme.of(context).colorScheme.surface,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 300),
+        padding: const EdgeInsets.only(bottom: 320),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -192,7 +214,7 @@ class _MyWidgetState extends State<OnboardingPage> {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 50,
-                color: Colors.grey[800]          
+                color: !isDarkMode ? Colors.grey[800] : Colors.grey[300]      
               ),
             ),
             SizedBox(height: 6),

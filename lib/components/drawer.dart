@@ -1,14 +1,44 @@
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:habit_tracker/pages/onboarding.dart";
+import "package:habit_tracker/components/dialog_box.dart";
+import "package:habit_tracker/habit_database.dart";
+import "package:habit_tracker/pages/auth/profile_page.dart";
 import "package:habit_tracker/pages/settings_page.dart";
-import "package:shared_preferences/shared_preferences.dart";
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    Future<void> logout() async {
+      HapticFeedback.mediumImpact(); 
+      await Future.delayed(Duration(milliseconds: 200));
+
+      /* final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('showOnboarding', true); */
+
+      void signOut() async {
+        Navigator.pop(context);
+
+        // Clear Isar
+        await HabitDatabase().clearDatabase();
+
+        // Sign out
+        await FirebaseAuth.instance.signOut();
+      }
+
+      showCustomDialog(
+        context: context,
+        title: "Log out?",
+        labels: ("Yes", "Cancel"),
+        actions: (signOut, () => Navigator.pop(context))
+      );
+
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingPage()));
+    }
+
     return Drawer(
       // Access background color from color schemes defined in my custom theme (assigned in main.dart)
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -71,12 +101,14 @@ class MyDrawer extends StatelessWidget {
                   onTap: () async {
                     HapticFeedback.mediumImpact(); 
                     await Future.delayed(Duration(milliseconds: 150));
+
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(showThemes: true)));
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(showThemes: true)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
                   },
                   child: ListTile(
-                    leading: Icon(Icons.palette, color: Theme.of(context).colorScheme.inversePrimary), 
-                    title: Text("T H E M E"), 
+                    leading: Icon(Icons.person, color: Theme.of(context).colorScheme.inversePrimary), 
+                    title: Text("P R O F I L E"), 
                     horizontalTitleGap: 20   
                   )
                 )               
@@ -106,13 +138,7 @@ class MyDrawer extends StatelessWidget {
                 padding: EdgeInsets.only(left: 25, right: 25, bottom: 40),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap: () async {
-                    HapticFeedback.mediumImpact(); 
-                    await Future.delayed(Duration(milliseconds: 200));
-                    final prefs = await SharedPreferences.getInstance();
-                    final showOnboarding = prefs.setBool('showOnboarding', true);
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingPage()));
-                  },
+                  onTap: logout,
                   child: ListTile(
                     leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.inversePrimary), 
                     title: Text("L O G O U T"), 

@@ -2,8 +2,6 @@
 // For checking habit on and off (checkbox value)
 import 'dart:math';
 
-import 'package:habit_tracker/models/habit.dart';
-
 bool habitCompleted(List<DateTime> completedDays, DateTime dateToCheck) {
   DateTime today = DateTime.now();
 
@@ -55,7 +53,15 @@ int highestStreak(List<DateTime> completedDays) {
 
 DateTime normalize(DateTime date) => DateTime(date.year, date.month, date.day);
 
-int amountOfHabitsCompleted(DateTime date, List<Habit> habits) {
+String numberToMonth(int month) {
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  return months[month - 1]; // because list starts at 0
+}
+
+/* int amountOfHabitsCompleted(DateTime date, List<Habit> habits) {
   final normalizedDate = normalize(date);
   int count = 0;
 
@@ -70,4 +76,5 @@ int amountOfHabitsCompleted(DateTime date, List<Habit> habits) {
     }
   }
   return count;
-}
+} */
+

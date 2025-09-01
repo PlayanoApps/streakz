@@ -162,6 +162,10 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
           _currentDate!.month == _firstLaunchDate!.month;
   }
 
+  bool monthsInFuture(int amount) {
+    return _currentDate!.month == (DateTime.now().month + amount);
+  }
+
   void changeMonth(int direction) {
     setState(() {
       _currentDate =
@@ -187,9 +191,9 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
           icon: Icon(
             Icons.arrow_back_ios,
             size: 14,
-            color: isAtFirstLaunchMonth() ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.inversePrimary
+            color: isAtFirstLaunchMonth() ? Theme.of(context).colorScheme.primary.withAlpha(100) : Theme.of(context).colorScheme.inversePrimary
           ),
-          onPressed: () => isAtFirstLaunchMonth() ? null : changeMonth(-1),
+          onPressed: isAtFirstLaunchMonth() ? null : () => changeMonth(-1),
         ),
 
         // Text which shows the current year and month
@@ -206,9 +210,9 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
           icon: Icon(
             Icons.arrow_forward_ios,
             size: 14,
-            color: Theme.of(context).colorScheme.inversePrimary,
+            color: monthsInFuture(2) ? Theme.of(context).colorScheme.primary.withAlpha(100) : Theme.of(context).colorScheme.inversePrimary,
           ),
-          onPressed: () => changeMonth(1),
+          onPressed: monthsInFuture(2) ? null : () => changeMonth(1),
         ),
       ],
     );

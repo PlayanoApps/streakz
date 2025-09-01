@@ -54,7 +54,7 @@ class HeatMapContainer extends StatelessWidget {
               // BORDER HIGHLIGHT
               border: Border.all(
                 color: highlightedBorderColor ?? Colors.transparent,
-                width: highlightedBorderWith!,
+                width: highlightedBorderWith ?? 0,
               ),
             ),
             child: AnimatedContainer(

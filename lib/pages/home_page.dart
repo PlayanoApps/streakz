@@ -1,20 +1,24 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:habit_tracker/components/dialog_box.dart';
 import 'package:habit_tracker/components/habit_tile.dart';
 import 'package:habit_tracker/components/heatmap.dart';
-import 'package:habit_tracker/components/my_drawer.dart';
+import 'package:habit_tracker/components/drawer.dart';
+import 'package:habit_tracker/components/showcase.dart';
+import 'package:habit_tracker/components/snackbar.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:habit_tracker/pages/settings_page.dart';
 import 'package:habit_tracker/services/noti_service.dart';
-import 'package:habit_tracker/theme_provider.dart';
+import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:habit_tracker/util/helper_functions.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class HomePage extends StatefulWidget {
-  final bool showThemes;
-  const HomePage({super.key, this.showThemes = false});
+  //final bool onboarding;
+  const HomePage({super.key, /* this.onboarding = false */});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -22,50 +26,61 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  final GlobalKey _heatmapKey1 = GlobalKey();
+  final GlobalKey _heatmapKey2 = GlobalKey();
+  final GlobalKey _habitListKey1 = GlobalKey();
+  final GlobalKey _habitListKey2 = GlobalKey();
+  final GlobalKey _addHabitKey = GlobalKey();
+
   @override
   void initState() {
-
-    /* Load the data inside of widget */
+    super.initState();
     
-    // Read habits from db into habit list on startup
+    // Read habits from Database
     Provider.of<HabitDatabase>(context, listen: false).updateHabitList();
     Provider.of<ThemeProvider>(context, listen: false).loadTheme();
     Provider.of<ThemeProvider>(context, listen: false).loadAccentColor();
     Provider.of<ThemeProvider>(context, listen: false).loadHabitCompletedPref();
-    Provider.of<ThemeProvider>(context, listen: false).loadUseSystemTheme();
+    Provider.of<ThemeProvider>(context, listen: false).loadfollowSystemTheme();
     Provider.of<NotiServiceProvider>(context, listen: false).loadNotificationSetting();
 
-    super.initState();
-
-    if (widget.showThemes) {
-      // ensure that widget is fully built
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showThemes();
-      });
-    }
+    // Onboarding
+    //if (widget.onboarding)
+    handleOnboarding();
   }
 
-  void showThemes() async {
-    void openThemeSettings() {
-      Navigator.pop(context); // First dismiss the dialog
-      Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(showThemes: true)));
-    }
-    await Future.delayed(Duration(seconds: 3));
-    showCustomDialog(
-      context: context,
-      title: "Select a theme!",
-      text: "Personalize the look of the app to make it feel just right for you.",
-      labels: ("Not now", "Yes!"),
-      actions: (() => Navigator.pop(context), openThemeSettings),
-      zoomTransition: true
-    );
-  }
+  void handleOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
 
+    if (prefs.getBool("showOnboarding") == false)
+      return; 
+
+    // ensure that widget is fully built
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Start Showcase
+      await Future.delayed(Duration(milliseconds: 700));
+
+      ShowCaseWidget.of(context).startShowCase([
+        _heatmapKey1, _heatmapKey2, _habitListKey1,
+         _habitListKey2, _addHabitKey,
+      ]);
+
+      prefs.setBool('showOnboarding', false);
+
+      await Future.delayed(Duration(seconds: 10));
+      ScaffoldMessenger.of(context).showSnackBar(
+        mySnackBar(
+          context, 
+          "Delete the demo habits and add your own to get started!"
+        ),
+      );
+    });
+  }
 
   // text controller
   final TextEditingController textController = TextEditingController();
 
-  void clear() {
+  void clear() async {
     Navigator.pop(context);
     textController.clear();
   }
@@ -150,7 +165,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery. of (context).size.width;
-    print(deviceWidth);
 
     return Scaffold(
       appBar: AppBar(
@@ -161,40 +175,19 @@ class _HomePageState extends State<HomePage> {
           child: Text("S T R E A K Z", style: TextStyle(fontSize: 19))
         ),
         actions: [
-          IconButton(
-            onPressed: createNewHabit, 
-            icon: Icon(Icons.add, 
-              color: Theme.of(context).colorScheme.inversePrimary)
+          MyShowcase(
+            globalKey: _addHabitKey,
+            description: "Add new habits here",
+            child: IconButton(
+              onPressed: createNewHabit, 
+              icon: Icon(Icons.add, color: Theme.of(context).colorScheme.inversePrimary)
+            ),
           ) 
         ],
       ),
-
       drawer: MyDrawer(),
       drawerEnableOpenDragGesture: false,
 
-      /* body: ListView(
-        children: deviceWidth < 600 ? [
-          _divider(),
-          _buildHeatmap(),
-          SizedBox(height: 15),
-          _buildHabitList(),
-          SizedBox(height: 30)
-        ] : [
-          _divider(),
-          Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              deviceWidth > 900 ? Flexible(flex: 1, child: Container()) : SizedBox(),
-              Flexible(flex: 5, child: _buildHeatmap()),
-              Flexible(flex: 4, child: Padding(
-                padding: const EdgeInsets.only(top: 55),
-                child: _buildHabitList(),
-              )),
-              deviceWidth > 900 ? Flexible(flex: 1, child: Container()) : SizedBox(),
-            ],
-          )
-        ]
-      ) */
       body: Stack(
         children: [
           ListView(
@@ -206,7 +199,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 30),
             ]
           ),
-          _bottomGradient()
+          _bottomGradient(),
         ],
       ),
     );
@@ -217,18 +210,18 @@ class _HomePageState extends State<HomePage> {
       left: 0,
       right: 0,
       bottom: 0,
-      height: 25,
-      child: IgnorePointer( // So it doesn’t block touches
+      height: 35,
+      child: AbsorbPointer( // Block touches (vs IgnorePointer)
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
               colors: [
-                Theme.of(context).colorScheme.surface,
+                Theme.of(context).colorScheme.surface.withOpacity(1),
                 Theme.of(context).colorScheme.surface.withOpacity(0),
               ],
-              stops: [0, 1]
+              stops: [0.25, 1]
             ),
           ),
         ),
@@ -249,71 +242,74 @@ class _HomePageState extends State<HomePage> {
   Widget _buildHeatmap() {
     final database =  Provider.of<HabitDatabase>(context);
 
-    // Return heatmap, otherwise container
     return FutureBuilder(
       future: database.getFirstLaunchDate(), 
 
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return MyHeatmap(
-            startDate: snapshot.data!,
+        if (snapshot.hasData)
+          return MyShowcase(
+            globalKey: _heatmapKey2,
+            title: "Edit heatmap",
+            description: "You can long-press on any tile to edit your progress afterwards.",
+            child: MyShowcase(
+              globalKey: _heatmapKey1,
+              title: "Your Progress",
+              description: "Your habits are elegantly visualized in a beautiful heatmap.",
+              child: MyHeatmap(startDate: snapshot.data!)
+            ),
           );
-        } else 
-          return Container();
+        else 
+          return CupertinoActivityIndicator();
       }
     );
   }
 
   Widget _buildHabitList() {
+    final isDarkMode = (Theme.of(context).brightness == Brightness.dark);
+
     // Get list of habits
     List<Habit> habitsList = Provider.of<HabitDatabase>(context).habitsList;
 
+    /* if (habitsList.isEmpty)
+      Provider.of<HabitDatabase>(context, listen: false).updateHabitList(); */
+
     if (habitsList.isNotEmpty) {
-      return ReorderableListView(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        onReorder: (n, i) => reorderTile(habitsList, n, i),
-        children: [ 
-          for (final habit in habitsList) 
-            HabitTile(
-              key: ValueKey(habit.name),
-              habit: habit,
-              isCompleted: habitCompleted(habit.completedDays, DateTime.now()),
-              checkboxChanged: (value) => checkHabitOnOff(value, habit),
-              editHabit: (context) => editHabitBox(habit),
-              deleteHabit: (context) => deleteHabitBox(habit)
-            ) 
-        ]
-        
+      return MyShowcase(
+        globalKey: _habitListKey2,
+        title: "Habit Actions",
+        description: "You can swipe left on a habit to edit or delete it. To reorder, you can long-press.",
+        child: MyShowcase(
+          globalKey: _habitListKey1,
+          title: "Your Habits",
+          description: "As you check off your habits, the heatmap turns greener.",
+          
+          child: ReorderableListView(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            onReorder: (n, i) => reorderTile(habitsList, n, i),
+            children: [ 
+              for (final habit in habitsList) 
+                HabitTile(
+                  key: ValueKey(habit.name),
+                  habit: habit,
+                  isCompleted: habitCompleted(habit.completedDays, DateTime.now()),
+                  checkboxChanged: (value) => checkHabitOnOff(value, habit),
+                  editHabit: (context) => editHabitBox(habit),
+                  deleteHabit: (context) => deleteHabitBox(habit),
+                ),
+            ]
+            
+          ),
+        ),
       );
-      return ListView.builder(
-        itemCount: habitsList.length,
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-
-        itemBuilder: (context, index) {
-          final habit = habitsList[index];
-          bool isCompletedToday = habitCompleted(habit.completedDays, DateTime.now());
-
-          return HabitTile(
-            habit: habit, 
-            isCompleted: isCompletedToday,
-            checkboxChanged: (value) => checkHabitOnOff(value, habit),
-            editHabit: (context) => editHabitBox(habit),
-            deleteHabit: (context) => deleteHabitBox(habit),
-          );
-        }
-      );
-    }
-      
+    } 
     else return Center(
       child: Padding(
-        padding: const EdgeInsets.only(top: 110),
+        padding: EdgeInsets.only(top: 110),
         child: Text(
-          "No habits found.",
+          "Start by adding your first habit.",
           style: TextStyle(
-            color: Provider.of<ThemeProvider>(context).isDarkMode ? 
-              Colors.grey[600] : Colors.grey[500],
+            color: isDarkMode ? Colors.grey[600] : Colors.grey[500],
             fontSize: 16.2
           ),
         ),
@@ -321,4 +317,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-

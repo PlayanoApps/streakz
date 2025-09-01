@@ -10,64 +10,36 @@
   - to access functions below, use either consumer widget or:
       Provider.of<ThemeProvider>(context).isDarkMode, 
 */
-
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/app_settings.dart';
+import 'package:habit_tracker/theme/themes.dart';
 import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-ThemeData lightMode = ThemeData(
-  colorScheme: ColorScheme.light(
-    surface: Colors.grey.shade300, // background color
-    primary: Colors.grey.shade500,
-    secondary: Colors.grey.shade200,  // 200
-    secondaryFixed: const Color.fromARGB(250, 225, 225, 225), // Secondary but lighter (for heatmap background in analysis)
-    tertiary: Colors.white,
-    inversePrimary: Colors.grey.shade600,
-    onPrimary: Colors.grey.shade900         // Text color for elements on primary color
-  )
-);
-
-ThemeData darkMode = ThemeData(
-  colorScheme: ColorScheme.dark(
-    surface: Colors.grey.shade900,
-    primary: Colors.grey.shade600,
-    secondary: const Color.fromARGB(255, 47, 47, 47),
-    secondaryFixed:  Color.fromARGB(255, 40, 40, 40),   // 75
-    tertiary: Colors.grey.shade200,
-    inversePrimary: Colors.grey.shade300,
-    onPrimary: Colors.grey.shade300
-  )
-);
 
 class ThemeProvider extends ChangeNotifier 
 {
-  static ThemeData _themeData = lightMode;
+  final SharedPreferences _prefs;
 
-  /* Getter functions */
-  ThemeData get themeData => _themeData;
-  bool get isDarkMode => _themeData == darkMode;
+  ThemeProvider(this._prefs);   // pass as argument in main
 
-  /* Setter functions */
-  set themeData(ThemeData themeData) {
-    _themeData = themeData;
-    notifyListeners();
-  }
-
+  ThemeData themeData = lightMode;
+  
   void toggleTheme() {
-    _themeData = (_themeData == lightMode) ? darkMode : lightMode;
+    themeData = (themeData == lightMode) ? darkMode : lightMode;
+
     updateThemeInDatabase();
     notifyListeners();
   }
 
-  /* This is called in home_page init method */
+  /* Called in home init */
   Future<void> loadTheme() async {
     final appSettings = await HabitDatabase.isar.appSettings.where().findFirst();
 
     if (appSettings != null) {
       bool useDarkMode = appSettings.darkModeEnabled;
-      _themeData = useDarkMode ? darkMode : lightMode;
+      themeData = useDarkMode ? darkMode : lightMode;
     }
     notifyListeners();
   }
@@ -77,31 +49,14 @@ class ThemeProvider extends ChangeNotifier
     final appSettings = await isar.appSettings.where().findFirst();
 
     if (appSettings != null) {
-      appSettings.darkModeEnabled = (_themeData == darkMode);
+      appSettings.darkModeEnabled = (themeData == darkMode);
       await isar.writeTxn(() => isar.appSettings.put(appSettings));
     }
   }
 
-  /* SYSTEM THEME */
-  bool _useSystemTheme = true;
-
-  bool get useSystemTheme => _useSystemTheme;
-
-  Future<void> loadUseSystemTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    _useSystemTheme = prefs.getBool('useSystemTheme') ?? false;
-    notifyListeners();
-  }
-
-  void toggleUseSystemTheme(bool value) async {
-    _useSystemTheme = value;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('useSystemTheme', value);
-    notifyListeners();
-  }
+  /* S E T T I N G S */
 
   /* ACCENT COLOR */
-
   int selectedColor = 1;   // set from settings page
 
   final Map<int, MaterialColor> themeColors = {
@@ -113,15 +68,28 @@ class ThemeProvider extends ChangeNotifier
     6: Colors.brown,
     7: Colors.deepPurple
   };
+  
+  MaterialColor getAccentColor() => themeColors[selectedColor] ?? Colors.green;
 
-  void setAccentColor(int? settingsRadioValue) {
-    selectedColor = settingsRadioValue ?? 1;  // Default to 1 if null
-    updateSelectedColorInDatabase();
+  Future<void> setAccentColor(int? settingsRadioValue) async {
+    selectedColor = settingsRadioValue ?? 1; // Default: 1
+    await _setInt("selectedColor", selectedColor);
+  }
+
+  void loadAccentColor() {
+    selectedColor = _getInt('selectedColor', 1);
+
+    // Ensure the value exists in themeColors
+    if (!themeColors.containsKey(selectedColor)) 
+      selectedColor = 1;
+
     notifyListeners();
   }
 
-  MaterialColor getAccentColor() {
-    return themeColors[selectedColor] ?? Colors.green;
+  /* void setAccentColor(int? settingsRadioValue) {
+    selectedColor = settingsRadioValue ?? 1;  // Default: 1 
+    updateSelectedColorInDatabase();
+    notifyListeners();
   }
 
   Future<void> updateSelectedColorInDatabase() async {
@@ -134,7 +102,6 @@ class ThemeProvider extends ChangeNotifier
     }
   }
 
-  /* This is called in home_page init method */
   Future<void> loadAccentColor() async {
     final appSettings = await HabitDatabase.isar.appSettings.where().findFirst();
 
@@ -145,21 +112,50 @@ class ThemeProvider extends ChangeNotifier
         selectedColor = 1;
     }
     notifyListeners();
-  }
+  } */
 
-  /* HIGHLIGHT COMPLETED HABITS OR CROSS THEM */
+  /* USE SYSTEM THEME */
+  bool _followSystemTheme = true;
 
-  bool _crossCompletedHabits = true;
+  bool get useSystemTheme => _followSystemTheme;
 
-  get crossCompletedHabits => _crossCompletedHabits;
-
-  set setCrossCompletedHabit(bool val) {
-    _crossCompletedHabits = val;
-    updateHabitCompletedPref();
+  void loadfollowSystemTheme() {
+    _followSystemTheme = _getBool("useSystemTheme", true);
     notifyListeners();
   }
 
-  Future<void> updateHabitCompletedPref() async {
+  Future<void> togglefollowSystemTheme(bool value) async {
+    _followSystemTheme = value;
+    await _setBool('useSystemTheme', value); 
+  }
+
+  /* HIGHLIGHT COMPLETED HABITS OR CROSS THEM */
+  bool crossCompletedHabits = true;
+
+  Future<void> toggleCrossCompletedHabits(bool val) async {
+    crossCompletedHabits = val;
+    await _setBool('crossCompletedHabits', val); // uses generic setter
+  }
+
+  void loadHabitCompletedPref() {
+    crossCompletedHabits = _getBool('crossCompletedHabits', true); // uses generic getter
+    notifyListeners();
+  }
+
+  /* P R E F S */
+  bool _getBool(String key, bool defaultValue) => _prefs.getBool(key) ?? defaultValue;
+  Future<void> _setBool(String key, bool value) async {
+    await _prefs.setBool(key, value);
+    notifyListeners();
+  }
+
+  int _getInt(String key, int defaultValue) => _prefs.getInt(key) ?? defaultValue;
+  Future<void> _setInt(String key, int value) async {
+    await _prefs.setInt(key, value);
+    notifyListeners();
+  }
+
+  /* Future<void> updateHabitCompletedPref() async {
     Isar isar = HabitDatabase.isar;
     final appSettings = await isar.appSettings.where().findFirst();
 
@@ -169,7 +165,6 @@ class ThemeProvider extends ChangeNotifier
     }
   }
 
-  /* This is called in home_page init method */
   Future<void> loadHabitCompletedPref() async {
     final appSettings = await HabitDatabase.isar.appSettings.where().findFirst();
 
@@ -177,5 +172,5 @@ class ThemeProvider extends ChangeNotifier
       _crossCompletedHabits = appSettings.crossCompletedHabits;
     }
     notifyListeners();
-  }
+  } */
 }

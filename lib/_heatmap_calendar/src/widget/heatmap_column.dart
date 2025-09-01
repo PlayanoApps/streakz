@@ -31,6 +31,10 @@ class HeatMapColumn extends StatelessWidget {
   /// The default background color value of [HeatMapContainer].
   final Color? defaultColor;
 
+  final Color? highlightedColor;
+  final double? highlightedBorderWith;
+  final Color? highlightedBorderColor;
+
   /// The datasets which fill blocks based on its value.
   ///
   /// datasets keys have to greater or equal to [startDate] and
@@ -82,6 +86,11 @@ class HeatMapColumn extends StatelessWidget {
     this.size,
     this.fontSize,
     this.defaultColor,
+
+    this.highlightedColor,  // new
+    this.highlightedBorderWith,
+    this.highlightedBorderColor,
+    
     this.datasets,
     this.textColor,
     this.borderRadius,
@@ -96,7 +105,35 @@ class HeatMapColumn extends StatelessWidget {
           numDays,
           (i) => HeatMapContainer(
             date: DateUtil.changeDay(startDate, i),
-            backgroundColor: defaultColor,
+            backgroundColor: (() {
+              final currentDate = DateTime(startDate.year,startDate.month, startDate.day - startDate.weekday % 7 + i);
+              final normalizedCurrentDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
+
+              final today = DateTime.now();
+              final normalizedToday = DateTime(today.year, today.month, today.day);
+
+              final isToday = (normalizedCurrentDate == normalizedToday);
+              final noHabitCompleted = datasets?[normalizedCurrentDate] ?? 0;
+
+              // If this tile is todays tile and no habits are yet completed
+              return (isToday && noHabitCompleted == 0 && highlightedColor != null) ? highlightedColor : defaultColor;
+            })(),
+            highlightedBorderColor: (() {
+              final currentDate = DateTime(startDate.year,startDate.month, startDate.day - startDate.weekday % 7 + i);
+              final normalizedCurrentDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
+
+              final today = DateTime.now();
+              final normalizedToday = DateTime(today.year, today.month, today.day);
+
+              final isToday = (normalizedCurrentDate == normalizedToday);
+              final noHabitCompleted = datasets?[normalizedCurrentDate] ?? 0;
+
+              // If this tile is todays tile and no habits are yet completed
+              return (isToday && noHabitCompleted == 0 && highlightedBorderColor != null) ? highlightedBorderColor 
+                    // Habit completed border
+                    : (isToday && highlightedBorderColor != null) ? Colors.green.shade500 : null; 
+            })(),
+            highlightedBorderWith: highlightedBorderWith,
             size: size,
             fontSize: fontSize,
             textColor: textColor,

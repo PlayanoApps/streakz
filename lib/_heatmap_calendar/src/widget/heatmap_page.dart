@@ -45,6 +45,10 @@ class HeatMapPage extends StatelessWidget {
   /// The default background color value of every blocks.
   final Color? defaultColor;
 
+  final Color? highlightedColor;
+  final double? highlightedBorderWith;
+  final Color? highlightedBorderColor;
+
   /// The text color value of every blocks.
   final Color? textColor;
 
@@ -84,6 +88,11 @@ class HeatMapPage extends StatelessWidget {
     this.fontSize,
     this.datasets,
     this.defaultColor,
+
+    this.highlightedColor,  // new
+    this.highlightedBorderWith,
+    this.highlightedBorderColor,
+
     this.textColor,
     this.colorsets,
     this.borderRadius,
@@ -121,6 +130,11 @@ class HeatMapPage extends StatelessWidget {
         size: size,
         fontSize: fontSize,
         defaultColor: defaultColor,
+
+        highlightedColor: highlightedColor,
+        highlightedBorderColor: highlightedBorderColor,
+        highlightedBorderWith: highlightedBorderWith,
+
         colorsets: colorsets,
         textColor: textColor,
         borderRadius: borderRadius,
