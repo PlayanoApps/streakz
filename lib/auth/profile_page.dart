@@ -25,28 +25,6 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      /* appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-
-        title: Center(
-          child: Text("P R O F I L E", style: TextStyle(
-            color: Theme.of(context).colorScheme.inversePrimary,
-            fontSize: 20
-          ),)
-        ),
-        leading: IconButton(
-          onPressed: () async {
-            await Future.delayed(Duration(milliseconds: 100));
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.inversePrimary)
-        ),
-        actions: [
-          IconButton(onPressed: null, icon: SizedBox())
-        ],
-      ), */
-
 
       body: Column(
         children: [

@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:habit_tracker/components/auth/auth_button.dart';
 import 'package:habit_tracker/components/auth/auth_textfield.dart';
 import 'package:habit_tracker/components/dialog_box.dart';
-import 'package:habit_tracker/firestore_database.dart';
-import 'package:habit_tracker/habit_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {

@@ -5,9 +5,6 @@ import 'package:habit_tracker/components/auth/auth_button.dart';
 import 'package:habit_tracker/components/auth/auth_textfield.dart';
 import 'package:habit_tracker/components/dialog_box.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:habit_tracker/firestore_database.dart';
-import 'package:habit_tracker/habit_database.dart';
-import 'package:habit_tracker/models/habit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterPage extends StatefulWidget {
