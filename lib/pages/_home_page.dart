@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/dialog_box.dart';
-import 'package:habit_tracker/components/habit_tile.dart';
-import 'package:habit_tracker/components/heatmap.dart';
-import 'package:habit_tracker/components/drawer.dart';
-import 'package:habit_tracker/components/showcase.dart';
-import 'package:habit_tracker/components/snackbar.dart';
+import 'package:habit_tracker/components/custom_dialog.dart';
+import 'package:habit_tracker/components/home/habit_tile.dart';
+import 'package:habit_tracker/components/home/heatmap.dart';
+import 'package:habit_tracker/components/home/drawer.dart';
+import 'package:habit_tracker/components/home/showcase.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/services/noti_service.dart';
@@ -44,8 +43,6 @@ class _HomePageState extends State<HomePage> {
     Provider.of<ThemeProvider>(context, listen: false).loadfollowSystemTheme();
     Provider.of<NotiServiceProvider>(context, listen: false).loadNotificationSetting();
 
-    // Onboarding
-    //if (widget.onboarding)
     handleOnboarding();
   }
 
@@ -57,7 +54,6 @@ class _HomePageState extends State<HomePage> {
 
     // ensure that widget is fully built
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // Start Showcase
       await Future.delayed(Duration(milliseconds: 700));
 
       ShowCaseWidget.of(context).startShowCase([
@@ -65,15 +61,16 @@ class _HomePageState extends State<HomePage> {
          _habitListKey2, _addHabitKey,
       ]);
 
-      prefs.setBool('showOnboarding', false);
+      // Delete default habits after showcase --> main
+      // Set Onboarding pref to false --> main
 
-      await Future.delayed(Duration(seconds: 10));
+      /* await Future.delayed(Duration(seconds: 10));
       ScaffoldMessenger.of(context).showSnackBar(
         mySnackBar(
           context, 
           "Delete the demo habits and add your own to get started!"
         ),
-      );
+      ); */
     });
   }
 
@@ -82,7 +79,7 @@ class _HomePageState extends State<HomePage> {
 
   void clear() async {
     Navigator.pop(context);
-    textController.clear();
+    //textController.clear();
   }
 
   void createNewHabit() async {
@@ -95,7 +92,7 @@ class _HomePageState extends State<HomePage> {
     }
   	await Future.delayed(Duration(milliseconds: 100));
     showCustomDialog(
-      context: context,
+      context,
       controller: textController,
       hintText: "Create a new habit",
       actions: (clear, saveHabit),
@@ -125,7 +122,7 @@ class _HomePageState extends State<HomePage> {
       }
     }
     showCustomDialog(
-      context: context,
+      context,
       controller: textController,
       hintText: "New habit name",
       actions: (clear, () => editHabit(habit)),
@@ -141,7 +138,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     showCustomDialog(
-      context: context, 
+      context, 
       controller: textController, 
       title: "Delete this habit?",
       actions: (clear, deleteHabit),
@@ -254,12 +251,12 @@ class _HomePageState extends State<HomePage> {
             child: MyShowcase(
               globalKey: _heatmapKey1,
               title: "Your Progress",
-              description: "Your habits are elegantly visualized in a beautiful heatmap.",
+              description: "Your habits are elegantly visualized in a beautiful heatmap. Check out how one month of consistency lights it up! 🔥",
               child: MyHeatmap(startDate: snapshot.data!)
-            ),
+            )
           );
         else 
-          return CupertinoActivityIndicator();
+          return CupertinoActivityIndicator(); 
       }
     );
   }
@@ -270,9 +267,6 @@ class _HomePageState extends State<HomePage> {
     // Get list of habits
     List<Habit> habitsList = Provider.of<HabitDatabase>(context).habitsList;
 
-    /* if (habitsList.isEmpty)
-      Provider.of<HabitDatabase>(context, listen: false).updateHabitList(); */
-
     if (habitsList.isNotEmpty) {
       return MyShowcase(
         globalKey: _habitListKey2,
@@ -281,7 +275,7 @@ class _HomePageState extends State<HomePage> {
         child: MyShowcase(
           globalKey: _habitListKey1,
           title: "Your Habits",
-          description: "As you check off your habits, the heatmap turns greener.",
+          description: "As you check off your habits, the heatmap turns greener ✅",
           
           child: ReorderableListView(
             shrinkWrap: true,
@@ -316,4 +310,6 @@ class _HomePageState extends State<HomePage> {
       )
     );
   }
-}
+
+
+} 

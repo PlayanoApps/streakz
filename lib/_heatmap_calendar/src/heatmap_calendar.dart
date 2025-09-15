@@ -148,6 +148,8 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
   Future<void> _loadFirstLaunchDate() async {
     final db = Provider.of<HabitDatabase>(context, listen: false);
     final launchDate = await db.getFirstLaunchDate();
+    print("-----------------------------------------------------------");
+    print(launchDate!.day);
     if (!mounted) return;
 
     setState(() {

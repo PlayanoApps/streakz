@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/dialog_box.dart';
+import 'package:habit_tracker/components/custom_dialog.dart';
 //import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import "../_heatmap_calendar/flutter_heatmap_calendar.dart";
 import 'package:habit_tracker/habit_database.dart';
@@ -40,7 +40,7 @@ class HabitAnalysisPage extends StatelessWidget {
         }
       }
       showCustomDialog(
-        context: context,
+        context,
         controller: nameTextController,
         title: "Edit name",
         hintText: "New habit name",
@@ -61,7 +61,7 @@ class HabitAnalysisPage extends StatelessWidget {
       descriptionTextController.text = habit.description;
 
       showCustomDialog(
-        context: context,
+        context,
         controller: descriptionTextController,
         title: "Add description",
         hintText: "Add description",
@@ -303,7 +303,9 @@ Widget _streaks(context, habit) {
 
 Widget _heatMap(context, habit) {
   final database =  Provider.of<HabitDatabase>(context);
-  bool darkMode = (Theme.of(context).brightness == Brightness.dark); //Provider.of<ThemeProvider>(context).isDarkMode;
+
+  bool darkMode = (Theme.of(context).brightness == Brightness.dark); 
+
   MaterialColor accentColor = Provider.of<ThemeProvider>(context, listen: false).getAccentColor();
 
   int completeWeek() {

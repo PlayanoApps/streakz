@@ -37,13 +37,12 @@ class HabitDatabase extends ChangeNotifier {
   }
 
   // Save first launch date (for heatmap)
-  static Future<void> saveFirstLaunchSettings() async {  // MAKE STATIC AND OMIT () IN LINE 13 MAIN?
+  static Future<void> saveFirstLaunchSettings() async {
 
     // Check if any record exists
-    final existingSettings = await isar.appSettings.get(0);//await isar.appSettings.where().findFirst();
+    final existingSettings = await isar.appSettings.get(0);
 
-    if (existingSettings == null)   // Nothing saved yet
-    {
+    if (existingSettings == null) {
       // Save first launch date
       final settings = AppSettings()        // Initialize start date
         ..firstLaunchDate = DateTime.now(); 
@@ -55,8 +54,8 @@ class HabitDatabase extends ChangeNotifier {
   }
 
   static Future<void> loadDefaultHabits() async {
-    //final lastDayOfMonth = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
-    final lastDayOfMonth = DateTime.now();
+    final lastDayOfMonth = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
+    // final lastDayOfMonth = DateTime.now();
 
     final defaultHabits = [
       Habit()..name = "Reading"..order = 0    // Welcome! :)
@@ -104,12 +103,10 @@ class HabitDatabase extends ChangeNotifier {
     habitsList.clear();
     habitsList.addAll(habitsFromDb);
 
-    print("-----------------------------------------------------------------------");
-    print("HabitsList after adding: ${habitsList.length}"); // Debug line
-
     notifyListeners();
 
     //🔥Sync to firestore
+    // syncToFirestore();
     final user = FirebaseAuth.instance.currentUser;
     if (user != null)
       await FirestoreDatabase(isar).syncToFirestore(user);
@@ -212,7 +209,7 @@ class HabitDatabase extends ChangeNotifier {
     });
   }
 
-  Future<void> clearDatabase() async {
+  Future<void> deleteHabits() async {
     await isar.writeTxn(() async {
       await isar.habits.clear();
       // await isar.appSettings.clear();

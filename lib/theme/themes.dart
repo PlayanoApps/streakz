@@ -5,7 +5,7 @@ ThemeData lightMode = ThemeData(
   colorScheme: ColorScheme.light(
     surface: Colors.grey.shade300, // background color
     primary: Colors.grey.shade500,
-    secondary: Colors.grey.shade200,  // 200
+    secondary: Colors.grey.shade200,
     secondaryFixed: Color.fromARGB(250, 225, 225, 225), // Secondary but lighter (for heatmap background in analysis)
     tertiary: Colors.white,
     inversePrimary: Colors.grey.shade600,

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/components/auth/auth_button.dart';
 import 'package:habit_tracker/components/auth/auth_textfield.dart';
-import 'package:habit_tracker/components/dialog_box.dart';
+import 'package:habit_tracker/components/custom_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,10 +41,10 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     // Make sure passwords match
-    if (passwordController.text != confirmPwController.text) {
+    if (passwordController.text.trim() != confirmPwController.text.trim()) {
       if (mounted)
         Navigator.pop(context); // Pop loading circle
-      showCustomDialog(context: context, title: "Passwords don't match");
+      showCustomDialog(context, title: "Unable to register", text: "Passwords don't match");
       return;
     }
 
@@ -56,8 +56,8 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       UserCredential? userCredential = 
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text, 
-          password: passwordController.text
+          email: emailController.text.trim(), 
+          password: passwordController.text.trim()
       );
 
       await createUserDocument(userCredential);   // Save user
@@ -72,7 +72,17 @@ class _RegisterPageState extends State<RegisterPage> {
     } 
     on FirebaseAuthException catch(e) {
       Navigator.pop(context);   // Pop loading circle
-      showCustomDialog(context: context, title: e.code);
+
+      String message = e.code;
+
+      if (e.code == "channel-error")
+        message = "Incomplete information";
+      if (e.code == "weak-password")
+        message = "Password must be at least 6 characters long.";
+
+      showCustomDialog(context, title: "Unable to register",
+        text: message
+      );
     }
   }
 
@@ -111,7 +121,9 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 25),
           
               // App name 
-              Text("S T R E A K Z", style: TextStyle(fontSize: 20)),
+              Text("S T R E A K Z", style: TextStyle(fontSize: 20, 
+                color: Theme.of(context).colorScheme.inversePrimary)
+              ),
 
               const SizedBox(height: 50),
 
@@ -135,7 +147,6 @@ class _RegisterPageState extends State<RegisterPage> {
               MyTextField(
                 hintText: "Password",
                 controller: passwordController,
-                obscureText: true,
               ),
 
               SizedBox(height: 10),
@@ -144,7 +155,6 @@ class _RegisterPageState extends State<RegisterPage> {
               MyTextField(
                 hintText: "Confirm Password",
                 controller: confirmPwController,
-                obscureText: true,
               ),
 
               SizedBox(height: 10),

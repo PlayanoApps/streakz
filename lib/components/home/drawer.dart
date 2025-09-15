@@ -1,10 +1,12 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:habit_tracker/components/dialog_box.dart";
+import "package:habit_tracker/components/custom_dialog.dart";
 import "package:habit_tracker/habit_database.dart";
-import "package:habit_tracker/auth/profile_page.dart";
+import "package:habit_tracker/pages/profile_page.dart";
 import "package:habit_tracker/pages/settings_page.dart";
+import "package:lottie/lottie.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -23,14 +25,17 @@ class MyDrawer extends StatelessWidget {
         Navigator.pop(context);
 
         // Clear Isar
-        await HabitDatabase().clearDatabase();
+        await HabitDatabase().deleteHabits();
 
         // Sign out
         await FirebaseAuth.instance.signOut();
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove("profile_image");
       }
 
       showCustomDialog(
-        context: context,
+        context,
         title: "Log out?",
         labels: ("Yes", "Cancel"),
         actions: (signOut, () => Navigator.pop(context))
@@ -48,13 +53,18 @@ class MyDrawer extends StatelessWidget {
         children: [
           Column(
             children: [
-              SizedBox(height: 100),
-              Icon(
+              SizedBox(height: 90),  // 100
+              /* Icon(
                 Icons.favorite, 
                 size: 48,
                 color: Theme.of(context).colorScheme.inversePrimary,
+              ), */
+              SizedBox(
+                width: 60,
+                child: LottieBuilder.asset("assets/streak4.json")
               ),
-              SizedBox(height: 60),
+              
+              SizedBox(height: 50), // 60
               // Divider
               Padding(
                 padding: const EdgeInsets.only(left: 25, right: 25, bottom: 20),
@@ -82,7 +92,7 @@ class MyDrawer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   onTap: () async {
                     HapticFeedback.mediumImpact(); 
-                    await Future.delayed(Duration(milliseconds: 150));
+                    await Future.delayed(Duration(milliseconds: 155));
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
                   },
@@ -93,14 +103,14 @@ class MyDrawer extends StatelessWidget {
                   )
                 )
               ),
-              // Theme
+              // Profile
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
                   onTap: () async {
                     HapticFeedback.mediumImpact(); 
-                    await Future.delayed(Duration(milliseconds: 150));
+                    await Future.delayed(Duration(milliseconds: 155));
 
                     Navigator.pop(context);
                     //Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(showThemes: true)));

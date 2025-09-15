@@ -3,8 +3,9 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:habit_tracker/firebase_options.dart";
 import "package:habit_tracker/habit_database.dart";
+import "package:habit_tracker/models/habit.dart";
 import "package:habit_tracker/pages/onboarding_page.dart";
-import "package:habit_tracker/auth/auth_gate.dart";
+import "package:habit_tracker/pages/auth/auth_gate.dart";
 import "package:habit_tracker/services/noti_service.dart";
 import "package:habit_tracker/theme/theme_provider.dart";
 import "package:habit_tracker/theme/themes.dart";
@@ -71,17 +72,21 @@ class App extends StatelessWidget {
     final useSystemTheme = Provider.of<ThemeProvider>(context).useSystemTheme;
 
     return ShowCaseWidget(
-      //enableShowcase: false,
+      // Delete habits after showcase finished
+      onFinish: () async {
+        final localCount = await HabitDatabase.isar.habits.count();
+        
+        Provider.of<HabitDatabase>(context, listen: false)
+          .deleteHabits();
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setBool('showOnboarding', false);
+      },
 
       builder: (context) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        //home: showOnboarding ? OnboardingPage() : HomePage(),
+        // home: showOnboarding ? OnboardingPage() : HomePage(),
         home: showOnboarding ? OnboardingPage() : AuthPage(),
-      
-      
-        // Don't use "listen: false" here because widget is rebuilt 
-        // ThemeProvider must be created in the main function. Why? because it must be ready BEFORE the App Widget is built.
-        
+    
         theme: useSystemTheme ? lightMode : Provider.of<ThemeProvider>(context).themeData,
         darkTheme: useSystemTheme ? darkMode : null,
         themeMode: ThemeMode.system,

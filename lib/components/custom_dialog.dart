@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/util/helper_functions.dart';
 import 'package:provider/provider.dart';
 
-void showCustomDialog({
+void showCustomDialog(context, {
   /* MAP */
-  required BuildContext context,                  
-  TextEditingController? controller, 
+  //required BuildContext context,                  
 
+  bool zoomTransition = false,
   String title = "",
   String text = "",
-  String hintText = "",                       
+
+  String hintText = "",  
+  String secondHintText = "",
+  TextEditingController? controller, 
+  TextEditingController? secondController,
+
   (void Function()?, void Function()?)? actions,          // Functions for buttons
-  (String?, String?) labels = ("Cancel", "Save"),           // MaterialButton labels
+  (String?, String?) labels = ("Cancel", "Save"),         // MaterialButton labels
 
-  Widget? content,
-
-  bool zoomTransition = false
+  Widget? content
 }) {
   bool darkMode = (Theme.of(context).brightness == Brightness.dark);
 
@@ -60,37 +64,14 @@ void showCustomDialog({
 
     pageBuilder: (context, x, y) {   // like showDialog builder but with animation
       return AlertDialog(
-        title: title == "" ? null : Text(title),
+        title: (title == "") ? null 
+          : Text(title, style: GoogleFonts.lato(color: Theme.of(context).colorScheme.onPrimary)),
         titleTextStyle: TextStyle(
           color: darkMode ? Colors.white : Colors.black,
           fontSize: 24,
         ),
-        content: _content(context, hintText, text, controller, darkMode, content),
-        /* (hintText == "") ? 
-          (text == "" ? null : Text(text))
-          : TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: hintText,
-                hintStyle: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.secondary,
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(
-                    color: darkMode ? Colors.grey.shade800 : Theme.of(context).colorScheme.tertiary,
-                    width: 1.4,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
-                    width: 1.5,
-                  ),
-                ),
-              ),
-            ), */
+        content: _content(context, text, hintText, secondHintText, controller, secondController, content),
+    
         actions: actions == null ? [] : [
           _button(context: context, text: labels.$1, onPressed: () async {
             await Future.delayed(Duration(milliseconds: 50));
@@ -105,43 +86,66 @@ void showCustomDialog({
     },
     transitionDuration: const Duration(milliseconds: 300),
     transitionBuilder: zoomTransition ? zoomInTransition() : moveUpTransition()
-  ).then((value) => controller?.clear());  // Dialog dismissed
-  
+  ).then((value) => controller?.clear());  // Dialog dismissed 
 }
 
-dynamic _content(context, hintText, text, controller, darkMode, content) {
+dynamic _content(context, text, hintText, secondHintText, controller, secondController, content) {
   if (hintText == "")
     return text == "" ? null : Text(text, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),);
   
   return Column(
     mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.start,
+
     children: [
-      TextField(
-        controller: controller,
-        style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
-          filled: true,
-          fillColor: Theme.of(context).colorScheme.secondary,
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
-              color: darkMode ? Colors.grey.shade800 : Theme.of(context).colorScheme.tertiary,
-              width: 1.4,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.primary,
-              width: 1.5,
-            ),
-          ),
+      if (text != "") ... [
+        Padding(
+          padding: EdgeInsets.only(top: 1, bottom: 20),
+          child: Text(text, style: TextStyle(
+            color: Theme.of(context).colorScheme.primary,
+            fontSize: 15,
+          )),
         ),
-      ),
+      ],
+
+      _textField(context, controller, hintText),
+      
+      if (secondController != null) ...[
+        SizedBox(height: 10),
+        _textField(context, secondController, secondHintText),
+      ],
+      
       (content == null) ? Container() : content
     ],
+  );
+}
+
+Widget _textField(context, controller, hintText) {
+  bool darkMode = (Theme.of(context).brightness == Brightness.dark);
+  
+  return TextField(
+    controller: controller,
+    style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+    decoration: InputDecoration(
+      hintText: hintText,
+      hintStyle: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+      filled: true,
+      fillColor: Theme.of(context).colorScheme.secondary,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(
+          color: darkMode ? Colors.grey.shade800 : Theme.of(context).colorScheme.tertiary,
+          width: 1.4,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(
+          color: Theme.of(context).colorScheme.primary,
+          width: 1.5,
+        ),
+      ),
+    ),
   );
 }
 

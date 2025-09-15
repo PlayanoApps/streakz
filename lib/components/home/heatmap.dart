@@ -1,11 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/dialog_box.dart';
+import 'package:habit_tracker/components/custom_dialog.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
-import "../_heatmap_calendar/flutter_heatmap_calendar.dart";
+import "../../_heatmap_calendar/flutter_heatmap_calendar.dart";
 
 /* class MyHeatmap extends StatelessWidget {
   final DateTime startDate;

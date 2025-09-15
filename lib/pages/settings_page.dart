@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/dialog_box.dart';
+import 'package:habit_tracker/components/custom_dialog.dart';
 import 'package:habit_tracker/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/services/noti_service.dart';
@@ -104,7 +104,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         leading: IconButton(
           onPressed: () async {
-            await Future.delayed(Duration(milliseconds: 100));
+            await Future.delayed(Duration(milliseconds: 120));
             Navigator.pop(context);
           },
           icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.inversePrimary)
@@ -175,7 +175,7 @@ class _SettingsPageState extends State<SettingsPage> {
           _settingsTile(
             onTap: showThemeDialog, 
             onLongPress: () => showCustomDialog(
-              context: context, title: "Accent color", 
+              context, title: "Accent color", 
               text: "The accent color is used throughout the app, including in the heatmap, analysis, and habit completion indicators.",
               labels: ("Dismiss", "Open"),
               actions: (() => Navigator.pop(context), () { Navigator.pop(context); showThemeDialog(); })
@@ -201,7 +201,7 @@ class _SettingsPageState extends State<SettingsPage> {
               themeProvider.toggleCrossCompletedHabits(!currentValue);
             },
             onLongPress: () => showCustomDialog(
-              context: context,
+              context,
               title: "Do not highlight completed habits",
               text: "Completed habits are crossed out and shown with reduced visibility instead of being highlighted, helping you to focus on habits you still need to complete.",
               actions: (null, () => Navigator.pop(context)), labels: ("", "Done  ")

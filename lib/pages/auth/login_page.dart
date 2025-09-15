@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/components/auth/auth_button.dart';
 import 'package:habit_tracker/components/auth/auth_textfield.dart';
-import 'package:habit_tracker/components/dialog_box.dart';
+import 'package:habit_tracker/components/custom_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -38,8 +38,8 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text, 
-        password: passwordController.text
+        email: emailController.text.trim(), 
+        password: passwordController.text.trim()
       );
 
       // Logged in --> Load habits from firestore NOW IN AUTH GATE
@@ -52,7 +52,19 @@ class _LoginPageState extends State<LoginPage> {
     } 
     on FirebaseAuthException catch (e) {
       Navigator.pop(context); // Pop loading circle
-      showCustomDialog(context: context, title: e.code);
+
+      String message = e.code;
+
+      if (e.code == "invalid-credential")
+        message = "Please check your email and password.\n\nSupport: playano.info@gmail.com";
+      if (e.code == "invalid-email")
+        message = "This email does not exist.";
+
+      showCustomDialog(
+        context, title: "Unable to log in", text: message,
+        labels: ("", "Done"),
+        actions: (null, () => Navigator.pop(context))
+      );
     }
   }
 
@@ -74,14 +86,14 @@ class _LoginPageState extends State<LoginPage> {
                 color: Theme.of(context).colorScheme.inversePrimary,
               ),
           
-              const SizedBox(height: 25),
+              SizedBox(height: 25),
           
               // App name 
               Text("S T R E A K Z", style: TextStyle(
                 fontSize: 20, color: Theme.of(context).colorScheme.inversePrimary)
               ),
 
-              const SizedBox(height: 50),
+              SizedBox(height: 50),
           
               // Email textfield
               MyTextField(
@@ -95,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
               MyTextField(
                 hintText: "Password",
                 controller: passwordController,
-                obscureText: true,
+                // obscureText: true,
               ),
 
               SizedBox(height: 10),
@@ -104,9 +116,15 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text("Forgot password?", style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary
-                  ),),
+                  GestureDetector(
+                    onTap: () => showCustomDialog(
+                      context, title: "Forgot password", 
+                      text: "Contact the dev under playano.info@gmail.com",
+                    ),
+                    child: Text("Forgot password?", style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary
+                    ),),
+                  ),
                 ],
               ),
 
