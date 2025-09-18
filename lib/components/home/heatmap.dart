@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/custom_dialog.dart';
-import 'package:habit_tracker/habit_database.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -109,18 +109,20 @@ class MyHeatmap extends StatefulWidget {
     super.key,
     required this.startDate,
     this.animate = true,
-    this.animationDuration = const Duration(milliseconds: 2500), // Good pace for one-by-one effect
+    this.animationDuration = const Duration(
+      milliseconds: 2500,
+    ), // Good pace for one-by-one effect
   });
 
   @override
   State<MyHeatmap> createState() => _MyHeatmapState();
 }
 
-class _MyHeatmapState extends State<MyHeatmap> 
+class _MyHeatmapState extends State<MyHeatmap>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
-  
+
   @override
   void initState() {
     super.initState();
@@ -128,20 +130,16 @@ class _MyHeatmapState extends State<MyHeatmap>
       duration: widget.animationDuration,
       vsync: this,
     );
-    
-    _animation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
+    );
 
     if (widget.animate) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _animationController.forward();
       });
-    } else 
+    } else
       _animationController.value = 1.0;
   }
 
@@ -171,17 +169,27 @@ class _MyHeatmapState extends State<MyHeatmap>
         builder: (context, child) {
           return RepaintBoundary(
             child: HeatMapCalendar(
-              datasets: animation.prepAnimatedDataset(context, _animation.value),
-              colorsets: animation.prepAnimatedColorsets(context, _animation.value),
-              
+              datasets: animation.prepAnimatedDataset(
+                context,
+                _animation.value,
+              ),
+              colorsets: animation.prepAnimatedColorsets(
+                context,
+                _animation.value,
+              ),
+
               colorMode: ColorMode.color,
               defaultColor: Theme.of(context).colorScheme.secondary,
 
-              highlightedColor: !darkMode ? const Color.fromARGB(255, 230, 230, 230)
-                                          : Theme.of(context).colorScheme.secondary,
-              highlightedBorderColor: !darkMode ? Color.fromARGB(255, 238, 238, 238)
-                                          : Color.fromARGB(255, 70, 70, 70),
-              highlightedBorderWith: !darkMode? 2 : 1.5,
+              highlightedColor:
+                  !darkMode
+                      ? const Color.fromARGB(255, 230, 230, 230)
+                      : Theme.of(context).colorScheme.secondary,
+              highlightedBorderColor:
+                  !darkMode
+                      ? Color.fromARGB(255, 238, 238, 238)
+                      : Color.fromARGB(255, 70, 70, 70),
+              highlightedBorderWith: !darkMode ? 2 : 1.5,
 
               textColor: Theme.of(context).colorScheme.tertiary,
               showColorTip: false,
@@ -202,8 +210,10 @@ class _MyHeatmapState extends State<MyHeatmap>
 
 class HeatmapAnimation {
   // Prepare animated colorsets with smooth fade transitions
-  Map<int, Color> prepAnimatedColorsets(BuildContext context, double animationValue) {
-    
+  Map<int, Color> prepAnimatedColorsets(
+    BuildContext context,
+    double animationValue,
+  ) {
     int habitsAmount = Provider.of<HabitDatabase>(context).habitsList.length;
     List<Habit> habits = Provider.of<HabitDatabase>(context).habitsList;
 
@@ -223,9 +233,9 @@ class HeatmapAnimation {
         allDates.add(DateTime(date.year, date.month, date.day));
       }
     }
-    
-    List<DateTime> sortedDates = allDates.toList()
-      ..sort((a, b) => a.compareTo(b));
+
+    List<DateTime> sortedDates =
+        allDates.toList()..sort((a, b) => a.compareTo(b));
 
     Color accentColor = Provider.of<ThemeProvider>(context).getAccentColor();
     Color baseColor = Theme.of(context).colorScheme.secondary;
@@ -237,69 +247,89 @@ class HeatmapAnimation {
       return { 
         1: Color.lerp(baseColor.withOpacity(0.1), fullColor, fadeOpacity) ?? fullColor 
       }; */
-      return { 1: accentColor.withAlpha(maxAlpha-80) };
+      return {1: accentColor.withAlpha(maxAlpha - 80)};
     }
 
     Map<int, Color> animatedColorsets = {};
-    int incrementStep = habitsAmount > 1 ? ((maxAlpha - alpha) / (habitsAmount - 1)).toInt() : 0;
+    int incrementStep =
+        habitsAmount > 1
+            ? ((maxAlpha - alpha) / (habitsAmount - 1)).toInt()
+            : 0;
 
     for (int i = 1; i <= habitsAmount; i++) {
-      int currentAlpha = (i == 1) ? alpha : min(alpha + incrementStep * (i - 1), maxAlpha);
+      int currentAlpha =
+          (i == 1) ? alpha : min(alpha + incrementStep * (i - 1), maxAlpha);
       Color targetColor = accentColor.withAlpha(currentAlpha);
-      
+
       // Calculate average fade opacity for this intensity level
       double totalOpacity = 0.0;
       int count = 0;
-      
+
       // Get current animated dataset to see which dates are at this intensity
-      Map<DateTime, int> currentDataset = prepAnimatedDataset(context, animationValue);
+      Map<DateTime, int> currentDataset = prepAnimatedDataset(
+        context,
+        animationValue,
+      );
       currentDataset.forEach((date, value) {
         if (value == i) {
-          totalOpacity += _calculateDateOpacity(sortedDates, animationValue, date);
+          totalOpacity += _calculateDateOpacity(
+            sortedDates,
+            animationValue,
+            date,
+          );
           count++;
         }
       });
-      
+
       double avgOpacity = count > 0 ? totalOpacity / count : 0.0;
-      
+
       // Smooth fade from base color to target color
-      animatedColorsets[i] = Color.lerp(
-        baseColor.withOpacity(0.15), 
-        targetColor, 
-        avgOpacity
-      ) ?? targetColor;
+      animatedColorsets[i] =
+          Color.lerp(baseColor.withOpacity(0.15), targetColor, avgOpacity) ??
+          targetColor;
     }
-    
+
     return animatedColorsets;
   }
 
   // Calculate smooth opacity for a specific date based on animation progress
-  double _calculateDateOpacity(List<DateTime> sortedDates, double animationValue, DateTime targetDate) {
+  double _calculateDateOpacity(
+    List<DateTime> sortedDates,
+    double animationValue,
+    DateTime targetDate,
+  ) {
     if (sortedDates.isEmpty) return 0.0;
-    
+
     int dateIndex = sortedDates.indexOf(targetDate);
     if (dateIndex == -1) return 0.0;
-    
+
     // ADJUST THESE VALUES TO CONTROL FADE TIMING:
-    double staggerAmount = 0.15;  
-    double fadeInDuration = 1; 
-    
+    double staggerAmount = 0.15;
+    double fadeInDuration = 1;
+
     double dateStartProgress = (dateIndex / sortedDates.length) * staggerAmount;
-    double dateEndProgress = (dateStartProgress + fadeInDuration).clamp(0.0, 1.0);
-    
+    double dateEndProgress = (dateStartProgress + fadeInDuration).clamp(
+      0.0,
+      1.0,
+    );
+
     if (animationValue <= dateStartProgress) {
       return 0.0; // Not started yet
     } else if (animationValue >= dateEndProgress) {
       return 1.0; // Fully visible
     } else {
       // Quick, snappy fade-in
-      double fadeProgress = (animationValue - dateStartProgress) / fadeInDuration;
+      double fadeProgress =
+          (animationValue - dateStartProgress) / fadeInDuration;
       return Curves.easeOutQuart.transform(fadeProgress); // Snappier curve
     }
   }
 
   // Prepare animated dataset - always include all dates but control visibility via colors
-  Map<DateTime, int> prepAnimatedDataset(BuildContext context, double animationValue) {
+  Map<DateTime, int> prepAnimatedDataset(
+    BuildContext context,
+    double animationValue,
+  ) {
     List<Habit> habits = Provider.of<HabitDatabase>(context).habitsList;
 
     Map<DateTime, int> dataset = {};
@@ -311,10 +341,10 @@ class HeatmapAnimation {
         if (dataset.containsKey(normalizedDate))
           dataset[normalizedDate] = dataset[normalizedDate]! + 1;
         else
-          dataset[normalizedDate] = 1; 
+          dataset[normalizedDate] = 1;
       }
     }
-    
+
     // Always return all data - opacity is controlled by colors
     return dataset;
   }

@@ -1,9 +1,9 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/cupertino.dart";
-import "package:habit_tracker/firestore_database.dart";
+import "package:habit_tracker/database/firestore_database.dart";
 import "package:habit_tracker/models/app_settings.dart";
 import "package:habit_tracker/models/habit.dart";
-import "package:habit_tracker/util/helper_functions.dart";
+import "package:habit_tracker/util/habit_helpers.dart";
 import "package:isar/isar.dart";
 import "package:path_provider/path_provider.dart";
 

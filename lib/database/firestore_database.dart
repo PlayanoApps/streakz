@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:habit_tracker/components/custom_dialog.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:habit_tracker/models/app_settings.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:isar/isar.dart';
@@ -17,10 +17,7 @@ class FirestoreDatabase {
 
   // Habit collection for a specific user
   CollectionReference _habitCollection(User user) {
-    return _firestore
-        .collection("Users")
-        .doc(user.email)
-        .collection("Habits");
+    return _firestore.collection("Users").doc(user.email).collection("Habits");
   }
 
   // App settings document for a specific user
@@ -35,17 +32,15 @@ class FirestoreDatabase {
   // Weil es Fehler gab dass "Journal/Medidate" als 2 Habits interpretiert wurden
   String _sanitizeHabitName(String name) {
     return name
-        .replaceAll('/', '_')     // Slash durch Underscore
-        .replaceAll('\\', '_')    // Backslash durch Underscore  
-        .replaceAll('.', '_');    // Punkt durch Underscore (falls vorhanden)
+        .replaceAll('/', '_') // Slash durch Underscore
+        .replaceAll('\\', '_') // Backslash durch Underscore
+        .replaceAll('.', '_'); // Punkt durch Underscore (falls vorhanden)
   }
 
   // Upload all habits from Isar into Firestore for a specific user
   // Called in Isar updateHabitsList() fucntion --> whenever list changes, sync with firestore
   Future<void> syncToFirestore(User user, {context = ""}) async {
-
     try {
-
       // 1) Load local data from Isar
       final localHabits = await isar.habits.where().findAll();
       final localAppSettings = await isar.appSettings.get(0);
@@ -60,14 +55,20 @@ class FirestoreDatabase {
         await deleteBatch.commit();
       } catch (e) {
         if (debug)
-          showCustomDialog(context, title: "syncToFirestore(): Failed to delete existing Firestore data: $e");
+          showCustomDialog(
+            context,
+            title:
+                "syncToFirestore(): Failed to delete existing Firestore data: $e",
+          );
       }
 
       // 3) Upload local habits
       try {
         final uploadBatch = _firestore.batch();
         for (final habit in localHabits) {
-          final docRef = _habitCollection(user).doc(_sanitizeHabitName(habit.name));
+          final docRef = _habitCollection(
+            user,
+          ).doc(_sanitizeHabitName(habit.name));
           uploadBatch.set(docRef, {
             "id": habit.id,
             "name": habit.name,
@@ -82,14 +83,18 @@ class FirestoreDatabase {
         if (localAppSettings != null) {
           uploadBatch.set(_appSettingsDoc(user), {
             "id": localAppSettings.id,
-            "firstLaunchDate": localAppSettings.firstLaunchDate?.toIso8601String(),
+            "firstLaunchDate":
+                localAppSettings.firstLaunchDate?.toIso8601String(),
           });
         }
 
         await uploadBatch.commit();
       } catch (e) {
         if (debug)
-          showCustomDialog(context, title: "syncToFirestore(): Failed to upload data to Firestore: $e");
+          showCustomDialog(
+            context,
+            title: "syncToFirestore(): Failed to upload data to Firestore: $e",
+          );
       }
     } catch (e) {
       if (debug) {
@@ -104,33 +109,37 @@ class FirestoreDatabase {
   Future<void> loadFromFirestore(User user, context) async {
     List<Habit> firestoreHabits = [];
     AppSettings? firestoreAppSettings;
-    
+
     try {
       // Download habits
       final habitSnapshot = await _habitCollection(user).get();
-      firestoreHabits = habitSnapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return Habit()
-          ..id = data["id"]
-          ..name = data["name"] ?? ""
-          ..description = data["description"] ?? ""
-          ..completedDays = (data["completedDays"] as List<dynamic>? ?? [])
-              .map((d) => DateTime.parse(d.toString()))
-              .toList()
-          ..order = data["order"] ?? 0;
-      }).toList();
+      firestoreHabits =
+          habitSnapshot.docs.map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return Habit()
+              ..id = data["id"]
+              ..name = data["name"] ?? ""
+              ..description = data["description"] ?? ""
+              ..completedDays =
+                  (data["completedDays"] as List<dynamic>? ?? [])
+                      .map((d) => DateTime.parse(d.toString()))
+                      .toList()
+              ..order = data["order"] ?? 0;
+          }).toList();
 
       // Download app settings
       final settingsSnapshot = await _appSettingsDoc(user).get();
       if (settingsSnapshot.exists) {
         final data = settingsSnapshot.data() as Map<String, dynamic>;
-        firestoreAppSettings = AppSettings()
-          ..id = data["id"]
-          ..firstLaunchDate = data["firstLaunchDate"] != null
-              ? DateTime.parse(data["firstLaunchDate"])
-              : null;
+        firestoreAppSettings =
+            AppSettings()
+              ..id = data["id"]
+              ..firstLaunchDate =
+                  data["firstLaunchDate"] != null
+                      ? DateTime.parse(data["firstLaunchDate"])
+                      : null;
       }
-      
+
       // Only update Isar if Firestore download was successful
       await isar.writeTxn(() async {
         await isar.habits.clear();
@@ -143,7 +152,6 @@ class FirestoreDatabase {
           await isar.appSettings.put(firestoreAppSettings);
         }
       });
-      
     } catch (e) {
       if (debug)
         showCustomDialog(context, title: "Failed to load data from cloud");

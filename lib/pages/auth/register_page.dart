@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/auth/auth_button.dart';
-import 'package:habit_tracker/components/auth/auth_textfield.dart';
-import 'package:habit_tracker/components/custom_dialog.dart';
+import 'package:habit_tracker/components/general/auth_button.dart';
+import 'package:habit_tracker/components/general/auth_textfield.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,20 +31,25 @@ class _RegisterPageState extends State<RegisterPage> {
     BuildContext? loadingContext;
 
     showDialog(
-      context: context, 
+      context: context,
       builder: (context) {
         loadingContext = context;
         return Center(
-          child: CupertinoActivityIndicator(color: Theme.of(context).colorScheme.tertiary,)
+          child: CupertinoActivityIndicator(
+            color: Theme.of(context).colorScheme.tertiary,
+          ),
         );
-      }
+      },
     );
 
     // Make sure passwords match
     if (passwordController.text.trim() != confirmPwController.text.trim()) {
-      if (mounted)
-        Navigator.pop(context); // Pop loading circle
-      showCustomDialog(context, title: "Unable to register", text: "Passwords don't match");
+      if (mounted) Navigator.pop(context); // Pop loading circle
+      showCustomDialog(
+        context,
+        title: "Unable to register",
+        text: "Passwords don't match",
+      );
       return;
     }
 
@@ -54,13 +59,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
     // Try creating new user
     try {
-      UserCredential? userCredential = 
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text.trim(), 
-          password: passwordController.text.trim()
-      );
+      UserCredential? userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
 
-      await createUserDocument(userCredential);   // Save user
+      await createUserDocument(userCredential); // Save user
 
       // Show default habits for new account if isar is empty
       /* final count = await HabitDatabase.isar.habits.count();
@@ -68,21 +73,17 @@ class _RegisterPageState extends State<RegisterPage> {
         HabitDatabase.loadDefaultHabits();  
       */
 
-      Navigator.pop(loadingContext!);        // Pop loading circle
-    } 
-    on FirebaseAuthException catch(e) {
-      Navigator.pop(context);   // Pop loading circle
+      Navigator.pop(loadingContext!); // Pop loading circle
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context); // Pop loading circle
 
       String message = e.code;
 
-      if (e.code == "channel-error")
-        message = "Incomplete information";
+      if (e.code == "channel-error") message = "Incomplete information";
       if (e.code == "weak-password")
         message = "Password must be at least 6 characters long.";
 
-      showCustomDialog(context, title: "Unable to register",
-        text: message
-      );
+      showCustomDialog(context, title: "Unable to register", text: message);
     }
   }
 
@@ -90,15 +91,14 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> createUserDocument(UserCredential? userCredential) async {
     if (userCredential != null && userCredential.user != null)
       await FirebaseFirestore.instance
-        .collection("Users")
-        .doc(userCredential.user!.email)
-        .set({
-          "email": userCredential.user!.email,
-          "username": usernameController.text,
-          "password": passwordController.text
-        });
+          .collection("Users")
+          .doc(userCredential.user!.email)
+          .set({
+            "email": userCredential.user!.email,
+            "username": usernameController.text,
+            "password": passwordController.text,
+          });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -117,37 +117,32 @@ class _RegisterPageState extends State<RegisterPage> {
                 size: 80,
                 color: Theme.of(context).colorScheme.inversePrimary,
               ),
-          
+
               const SizedBox(height: 25),
-          
-              // App name 
-              Text("S T R E A K Z", style: TextStyle(fontSize: 20, 
-                color: Theme.of(context).colorScheme.inversePrimary)
+
+              // App name
+              Text(
+                "S T R E A K Z",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                ),
               ),
 
               const SizedBox(height: 50),
 
               // User textfield
-              MyTextField(
-                hintText: "Username",
-                controller: usernameController
-              ),
+              MyTextField(hintText: "Username", controller: usernameController),
 
               SizedBox(height: 10),
-          
+
               // Email textfield
-              MyTextField(
-                hintText: "Email",
-                controller: emailController
-              ),
+              MyTextField(hintText: "Email", controller: emailController),
 
               SizedBox(height: 10),
-          
+
               // Password textfield
-              MyTextField(
-                hintText: "Password",
-                controller: passwordController,
-              ),
+              MyTextField(hintText: "Password", controller: passwordController),
 
               SizedBox(height: 10),
 
@@ -158,48 +153,50 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
 
               SizedBox(height: 10),
-          
-              // Forgot password 
+
+              // Forgot password
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text("Forgot password?", style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary
-                  ),),
+                  Text(
+                    "Forgot password?",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
                 ],
               ),
 
               SizedBox(height: 10),
-          
+
               // Register button
-              MyButton(
-                text: "Register", 
-                onTap: register
-              ),
+              MyButton(text: "Register", onTap: register),
 
               SizedBox(height: 25),
-          
+
               // Don't have an account? Register here
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Already have an account?", style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary
-                  ),),
+                  Text(
+                    "Already have an account?",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                  ),
                   GestureDetector(
                     onTap: widget.onTap,
                     child: Text(
-                      " Login Here", 
+                      " Login Here",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.inversePrimary
+                        color: Theme.of(context).colorScheme.inversePrimary,
                       ),
                     ),
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
-            
           ),
         ),
       ),

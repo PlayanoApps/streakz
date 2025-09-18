@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/auth/auth_button.dart';
-import 'package:habit_tracker/components/auth/auth_textfield.dart';
-import 'package:habit_tracker/components/custom_dialog.dart';
+import 'package:habit_tracker/components/general/auth_button.dart';
+import 'package:habit_tracker/components/general/auth_textfield.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -25,11 +25,15 @@ class _LoginPageState extends State<LoginPage> {
     // Show loading circle
     BuildContext? loadingContext;
     showDialog(
-      context: context, 
-      builder: (context) { 
+      context: context,
+      builder: (context) {
         loadingContext = context;
-        return Center(child: CupertinoActivityIndicator(color: Theme.of(context).colorScheme.tertiary,));
-      }
+        return Center(
+          child: CupertinoActivityIndicator(
+            color: Theme.of(context).colorScheme.tertiary,
+          ),
+        );
+      },
     );
 
     // Do not show Onboarding for existing account
@@ -38,8 +42,8 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(), 
-        password: passwordController.text.trim()
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
 
       // Logged in --> Load habits from firestore NOW IN AUTH GATE
@@ -48,22 +52,23 @@ class _LoginPageState extends State<LoginPage> {
         await FirestoreDatabase(HabitDatabase.isar).downloadHabitsToIsar(user); */
 
       // Pop loading circle
-      Navigator.pop(loadingContext!); 
-    } 
-    on FirebaseAuthException catch (e) {
+      Navigator.pop(loadingContext!);
+    } on FirebaseAuthException catch (e) {
       Navigator.pop(context); // Pop loading circle
 
       String message = e.code;
 
       if (e.code == "invalid-credential")
-        message = "Please check your email and password.\n\nSupport: playano.info@gmail.com";
-      if (e.code == "invalid-email")
-        message = "This email does not exist.";
+        message =
+            "Please check your email and password.\n\nSupport: playano.info@gmail.com";
+      if (e.code == "invalid-email") message = "This email does not exist.";
 
       showCustomDialog(
-        context, title: "Unable to log in", text: message,
+        context,
+        title: "Unable to log in",
+        text: message,
         labels: ("", "Done"),
-        actions: (null, () => Navigator.pop(context))
+        actions: (null, () => Navigator.pop(context)),
       );
     }
   }
@@ -85,24 +90,25 @@ class _LoginPageState extends State<LoginPage> {
                 size: 80,
                 color: Theme.of(context).colorScheme.inversePrimary,
               ),
-          
+
               SizedBox(height: 25),
-          
-              // App name 
-              Text("S T R E A K Z", style: TextStyle(
-                fontSize: 20, color: Theme.of(context).colorScheme.inversePrimary)
+
+              // App name
+              Text(
+                "S T R E A K Z",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                ),
               ),
 
               SizedBox(height: 50),
-          
+
               // Email textfield
-              MyTextField(
-                hintText: "Email",
-                controller: emailController
-              ),
+              MyTextField(hintText: "Email", controller: emailController),
 
               SizedBox(height: 10),
-          
+
               // Password textfield
               MyTextField(
                 hintText: "Password",
@@ -111,54 +117,58 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               SizedBox(height: 10),
-          
-              // Forgot password 
+
+              // Forgot password
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
-                    onTap: () => showCustomDialog(
-                      context, title: "Forgot password", 
-                      text: "Contact the dev under playano.info@gmail.com",
+                    onTap:
+                        () => showCustomDialog(
+                          context,
+                          title: "Forgot password",
+                          text: "Contact the dev under playano.info@gmail.com",
+                        ),
+                    child: Text(
+                      "Forgot password?",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
-                    child: Text("Forgot password?", style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary
-                    ),),
                   ),
                 ],
               ),
 
               SizedBox(height: 10),
-          
+
               // Login button
-              MyButton(
-                text: "Login", 
-                onTap: login
-              ),
+              MyButton(text: "Login", onTap: login),
 
               SizedBox(height: 25),
-          
+
               // Don't have an account? Register here
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don't have an account?", style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary
-                  ),),
+                  Text(
+                    "Don't have an account?",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                  ),
                   GestureDetector(
                     onTap: widget.onTap,
                     child: Text(
-                      " Register Here", 
+                      " Register Here",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.inversePrimary
+                        color: Theme.of(context).colorScheme.inversePrimary,
                       ),
                     ),
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
-            
           ),
         ),
       ),

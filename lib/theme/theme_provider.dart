@@ -11,21 +11,19 @@
       Provider.of<ThemeProvider>(context).isDarkMode, 
 */
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/habit_database.dart';
+import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/app_settings.dart';
 import 'package:habit_tracker/theme/themes.dart';
 import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-class ThemeProvider extends ChangeNotifier 
-{
+class ThemeProvider extends ChangeNotifier {
   final SharedPreferences _prefs;
 
-  ThemeProvider(this._prefs);   // pass as argument in main
+  ThemeProvider(this._prefs); // pass as argument in main
 
   ThemeData themeData = lightMode;
-  
+
   void toggleTheme() {
     themeData = (themeData == lightMode) ? darkMode : lightMode;
 
@@ -35,7 +33,8 @@ class ThemeProvider extends ChangeNotifier
 
   /* Called in home init */
   Future<void> loadTheme() async {
-    final appSettings = await HabitDatabase.isar.appSettings.where().findFirst();
+    final appSettings =
+        await HabitDatabase.isar.appSettings.where().findFirst();
 
     if (appSettings != null) {
       bool useDarkMode = appSettings.darkModeEnabled;
@@ -57,18 +56,18 @@ class ThemeProvider extends ChangeNotifier
   /* S E T T I N G S */
 
   /* ACCENT COLOR */
-  int selectedColor = 1;   // set from settings page
+  int selectedColor = 1; // set from settings page
 
   final Map<int, MaterialColor> themeColors = {
     1: Colors.green,
     2: Colors.blue,
     3: Colors.red,
-    4: Colors.pink, 
+    4: Colors.pink,
     5: Colors.blueGrey,
     6: Colors.brown,
-    7: Colors.deepPurple
+    7: Colors.deepPurple,
   };
-  
+
   MaterialColor getAccentColor() => themeColors[selectedColor] ?? Colors.green;
 
   Future<void> setAccentColor(int? settingsRadioValue) async {
@@ -80,8 +79,7 @@ class ThemeProvider extends ChangeNotifier
     selectedColor = _getInt('selectedColor', 1);
 
     // Ensure the value exists in themeColors
-    if (!themeColors.containsKey(selectedColor)) 
-      selectedColor = 1;
+    if (!themeColors.containsKey(selectedColor)) selectedColor = 1;
 
     notifyListeners();
   }
@@ -126,7 +124,7 @@ class ThemeProvider extends ChangeNotifier
 
   Future<void> togglefollowSystemTheme(bool value) async {
     _followSystemTheme = value;
-    await _setBool('useSystemTheme', value); 
+    await _setBool('useSystemTheme', value);
   }
 
   /* HIGHLIGHT COMPLETED HABITS OR CROSS THEM */
@@ -138,18 +136,23 @@ class ThemeProvider extends ChangeNotifier
   }
 
   void loadHabitCompletedPref() {
-    crossCompletedHabits = _getBool('crossCompletedHabits', true); // uses generic getter
+    crossCompletedHabits = _getBool(
+      'crossCompletedHabits',
+      true,
+    ); // uses generic getter
     notifyListeners();
   }
 
   /* P R E F S */
-  bool _getBool(String key, bool defaultValue) => _prefs.getBool(key) ?? defaultValue;
+  bool _getBool(String key, bool defaultValue) =>
+      _prefs.getBool(key) ?? defaultValue;
   Future<void> _setBool(String key, bool value) async {
     await _prefs.setBool(key, value);
     notifyListeners();
   }
 
-  int _getInt(String key, int defaultValue) => _prefs.getInt(key) ?? defaultValue;
+  int _getInt(String key, int defaultValue) =>
+      _prefs.getInt(key) ?? defaultValue;
   Future<void> _setInt(String key, int value) async {
     await _prefs.setInt(key, value);
     notifyListeners();

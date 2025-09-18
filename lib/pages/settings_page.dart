@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/custom_dialog.dart';
-import 'package:habit_tracker/habit_database.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/services/noti_service.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
@@ -17,12 +17,11 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-
   @override
   void initState() {
     super.initState();
 
-    // Check if theme dialog should be shown 
+    // Check if theme dialog should be shown
     if (widget.showThemes) {
       // ensure the context is ready
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -31,34 +30,38 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  void showThemeDialog() {  
-    HapticFeedback.lightImpact();    
+  void showThemeDialog() {
+    HapticFeedback.lightImpact();
     showGeneralDialog(
-      context: context, 
-      barrierDismissible: true, 
+      context: context,
+      barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      pageBuilder: (context, x, y) => AlertDialog(
-        title: Text("Select Color", style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),),
-        content: StatefulBuilder(
-          builder: (context, StateSetter setState) =>
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              radioTile(value: 1, text: "Mint (default)"),
-              Divider(color: Theme.of(context).colorScheme.primary), 
-              radioTile(value: 2, text: "Azure blue"),
-              radioTile(value: 3, text: "Vibrant red"),
-              radioTile(value: 4, text: "Magenta pink"),
-              Divider(color: Theme.of(context).colorScheme.primary), 
-              radioTile(value: 5, text: "Monochrome 1"),
-              radioTile(value: 6, text: "Monochrome 2"),
-              radioTile(value: 7, text: "Experimental"),
-            ],
+      pageBuilder:
+          (context, x, y) => AlertDialog(
+            title: Text(
+              "Select Color",
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+            ),
+            content: StatefulBuilder(
+              builder:
+                  (context, StateSetter setState) => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      radioTile(value: 1, text: "Mint (default)"),
+                      Divider(color: Theme.of(context).colorScheme.primary),
+                      radioTile(value: 2, text: "Azure blue"),
+                      radioTile(value: 3, text: "Vibrant red"),
+                      radioTile(value: 4, text: "Magenta pink"),
+                      Divider(color: Theme.of(context).colorScheme.primary),
+                      radioTile(value: 5, text: "Monochrome 1"),
+                      radioTile(value: 6, text: "Monochrome 2"),
+                      radioTile(value: 7, text: "Experimental"),
+                    ],
+                  ),
+            ),
           ),
-        ),
-      ),
       transitionDuration: Duration(milliseconds: 300),
-      transitionBuilder: moveUpTransition()
+      transitionBuilder: moveUpTransition(),
     );
   }
 
@@ -74,18 +77,21 @@ class _SettingsPageState extends State<SettingsPage> {
                 value: value,
                 groupValue: themeProvider.selectedColor,
                 onChanged: (val) {
-                  if (val != null)
-                    themeProvider.setAccentColor(val);
+                  if (val != null) themeProvider.setAccentColor(val);
                 },
               ),
-              Text(text, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),),
+              Text(
+                text,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
             ],
           ),
         );
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -97,20 +103,30 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text("S E T T I N G S", style: TextStyle(
-            color: Theme.of(context).colorScheme.inversePrimary,
-            fontSize: 20
-          )),
+          child: Text(
+            "S E T T I N G S",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.inversePrimary,
+              fontSize: 20,
+            ),
+          ),
         ),
         leading: IconButton(
           onPressed: () async {
             await Future.delayed(Duration(milliseconds: 120));
             Navigator.pop(context);
           },
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.inversePrimary)
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).colorScheme.inversePrimary,
+          ),
         ),
-        actions: [  // Placeholder Icon so that title centered
-          IconButton(onPressed: null, icon: Icon(Icons.abc, color: Colors.transparent))
+        actions: [
+          // Placeholder Icon so that title centered
+          IconButton(
+            onPressed: null,
+            icon: Icon(Icons.abc, color: Colors.transparent),
+          ),
         ],
       ),
       body: Column(
@@ -121,101 +137,152 @@ class _SettingsPageState extends State<SettingsPage> {
           _settingsTile(
             onTap: () {
               HapticFeedback.lightImpact();
-              final notiServiceProvider = Provider.of<NotiServiceProvider>(context, listen: false);
+              final notiServiceProvider = Provider.of<NotiServiceProvider>(
+                context,
+                listen: false,
+              );
               bool currentValue = notiServiceProvider.notificationsEnabled;
-              notiServiceProvider.toggleNotificationSetting(!currentValue, habitsList);
+              notiServiceProvider.toggleNotificationSetting(
+                !currentValue,
+                habitsList,
+              );
             },
             onLongPress: () {},
             text: "Notifications",
-            trailing: CupertinoSwitch(          
-              value: Provider.of<NotiServiceProvider>(context).notificationsEnabled,
-              onChanged: (value) async { 
-                HapticFeedback.lightImpact(); 
-                Provider.of<NotiServiceProvider>(context, listen: false).toggleNotificationSetting(value, habitsList);
-              }
-            )
+            trailing: CupertinoSwitch(
+              value:
+                  Provider.of<NotiServiceProvider>(
+                    context,
+                  ).notificationsEnabled,
+              onChanged: (value) async {
+                HapticFeedback.lightImpact();
+                Provider.of<NotiServiceProvider>(
+                  context,
+                  listen: false,
+                ).toggleNotificationSetting(value, habitsList);
+              },
+            ),
           ),
           SizedBox(height: 14), // 14.5
 
           _settingsTile(
             onTap: () {
               HapticFeedback.lightImpact();
-              final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+              final themeProvider = Provider.of<ThemeProvider>(
+                context,
+                listen: false,
+              );
               bool currentValue = themeProvider.useSystemTheme;
               themeProvider.togglefollowSystemTheme(!currentValue);
             },
             onLongPress: () {},
             text: "Follow theme of system settings",
-            trailing: CupertinoSwitch(          
+            trailing: CupertinoSwitch(
               value: Provider.of<ThemeProvider>(context).useSystemTheme,
-              onChanged: (value) async { 
-                HapticFeedback.lightImpact();   
-                Provider.of<ThemeProvider>(context, listen: false).togglefollowSystemTheme(value);
-              }
-            )
+              onChanged: (value) async {
+                HapticFeedback.lightImpact();
+                Provider.of<ThemeProvider>(
+                  context,
+                  listen: false,
+                ).togglefollowSystemTheme(value);
+              },
+            ),
           ),
 
-          Provider.of<ThemeProvider>(context).useSystemTheme ? SizedBox() : _settingsTile(
-            onTap: () {
-              HapticFeedback.lightImpact();
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-            },
-            onLongPress: () {},
-            text: "Dark Mode",
-            trailing: CupertinoSwitch(          
-              value: (Theme.of(context).brightness == Brightness.dark),
-              onChanged: (value) { 
-                HapticFeedback.lightImpact();   
-                Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-              }
-            )
-          ),
+          Provider.of<ThemeProvider>(context).useSystemTheme
+              ? SizedBox()
+              : _settingsTile(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  Provider.of<ThemeProvider>(
+                    context,
+                    listen: false,
+                  ).toggleTheme();
+                },
+                onLongPress: () {},
+                text: "Dark Mode",
+                trailing: CupertinoSwitch(
+                  value: (Theme.of(context).brightness == Brightness.dark),
+                  onChanged: (value) {
+                    HapticFeedback.lightImpact();
+                    Provider.of<ThemeProvider>(
+                      context,
+                      listen: false,
+                    ).toggleTheme();
+                  },
+                ),
+              ),
           SizedBox(height: 14),
-          
+
           _settingsTile(
-            onTap: showThemeDialog, 
-            onLongPress: () => showCustomDialog(
-              context, title: "Accent color", 
-              text: "The accent color is used throughout the app, including in the heatmap, analysis, and habit completion indicators.",
-              labels: ("Dismiss", "Open"),
-              actions: (() => Navigator.pop(context), () { Navigator.pop(context); showThemeDialog(); })
-            ), 
+            onTap: showThemeDialog,
+            onLongPress:
+                () => showCustomDialog(
+                  context,
+                  title: "Accent color",
+                  text:
+                      "The accent color is used throughout the app, including in the heatmap, analysis, and habit completion indicators.",
+                  labels: ("Dismiss", "Open"),
+                  actions: (
+                    () => Navigator.pop(context),
+                    () {
+                      Navigator.pop(context);
+                      showThemeDialog();
+                    },
+                  ),
+                ),
             text: "Customize Heatmap", // app theme
             trailing: Padding(
               padding: const EdgeInsets.only(right: 7),
               child: IconButton(
                 onPressed: showThemeDialog,
-                icon: Icon(Icons.arrow_forward, color: Theme.of(context).colorScheme.primary)
+                icon: Icon(
+                  Icons.arrow_forward,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
-            )
+            ),
           ),
 
           _settingsTile(
             onTap: () {
               HapticFeedback.lightImpact();
 
-              final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+              final themeProvider = Provider.of<ThemeProvider>(
+                context,
+                listen: false,
+              );
               bool currentValue = themeProvider.crossCompletedHabits;
               // Toggle the value
               //themeProvider.toggleCrossCompletedHabits = !currentValue;
               themeProvider.toggleCrossCompletedHabits(!currentValue);
             },
-            onLongPress: () => showCustomDialog(
-              context,
-              title: "Do not highlight completed habits",
-              text: "Completed habits are crossed out and shown with reduced visibility instead of being highlighted, helping you to focus on habits you still need to complete.",
-              actions: (null, () => Navigator.pop(context)), labels: ("", "Done  ")
-            ),
+            onLongPress:
+                () => showCustomDialog(
+                  context,
+                  title: "Do not highlight completed habits",
+                  text:
+                      "Completed habits are crossed out and shown with reduced visibility instead of being highlighted, helping you to focus on habits you still need to complete.",
+                  actions: (null, () => Navigator.pop(context)),
+                  labels: ("", "Done  "),
+                ),
             text: "Do not highlight completed habits",
-            trailing: CupertinoSwitch(          
-              value: (Provider.of<ThemeProvider>(context, listen: false).crossCompletedHabits),
-              onChanged: (value) { 
-                HapticFeedback.lightImpact();   
+            trailing: CupertinoSwitch(
+              value:
+                  (Provider.of<ThemeProvider>(
+                    context,
+                    listen: false,
+                  ).crossCompletedHabits),
+              onChanged: (value) {
+                HapticFeedback.lightImpact();
                 //Provider.of<ThemeProvider>(context, listen: false).toggleCrossCompletedHabits = value;
-                Provider.of<ThemeProvider>(context, listen: false).toggleCrossCompletedHabits(value);
-              }
-            )
-          ), 
+                Provider.of<ThemeProvider>(
+                  context,
+                  listen: false,
+                ).toggleCrossCompletedHabits(value);
+              },
+            ),
+          ),
 
           /* ElevatedButton(
             onPressed: () {
@@ -331,19 +398,17 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
           ) */
-        ]
-      
+        ],
       ),
-    ); 
+    );
   }
 
   Widget _settingsTile({
-      required void Function()? onTap, 
-      required void Function()? onLongPress,
-      required String text,
-      Widget? trailing
-    }) {
-
+    required void Function()? onTap,
+    required void Function()? onLongPress,
+    required String text,
+    Widget? trailing,
+  }) {
     bool darkMode = (Theme.of(context).brightness == Brightness.dark);
 
     return Padding(
@@ -354,9 +419,9 @@ class _SettingsPageState extends State<SettingsPage> {
           onLongPress: onLongPress,
           borderRadius: BorderRadius.circular(18),
           splashColor: Colors.grey.withAlpha(70),
-          highlightColor:Colors.grey.withAlpha(80),
+          highlightColor: Colors.grey.withAlpha(80),
           splashFactory: InkSparkle.splashFactory,
-      
+
           // Container
           child: Ink(
             decoration: BoxDecoration(
@@ -364,12 +429,19 @@ class _SettingsPageState extends State<SettingsPage> {
               borderRadius: BorderRadius.circular(18),
               border: Border.all(
                 width: 1,
-                color: darkMode ? Colors.grey.withAlpha(30) : Colors.white.withAlpha(100)
-              )
+                color:
+                    darkMode
+                        ? Colors.grey.withAlpha(30)
+                        : Colors.white.withAlpha(100),
+              ),
             ),
             child: Padding(
-              padding: const EdgeInsets.only(top: 13, bottom: 13, left: 15, right: 5),  // 15
-
+              padding: const EdgeInsets.only(
+                top: 13,
+                bottom: 13,
+                left: 15,
+                right: 5,
+              ), // 15
               // List Tile
               child: ListTile(
                 title: Text(
@@ -377,10 +449,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Theme.of(context).colorScheme.onPrimary
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
-                trailing: trailing
+                trailing: trailing,
               ),
             ),
           ),

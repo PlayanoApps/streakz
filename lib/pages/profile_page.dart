@@ -5,11 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/auth/auth_button.dart';
-import 'package:habit_tracker/components/auth/back_button.dart';
-import 'package:habit_tracker/components/custom_dialog.dart';
-import 'package:habit_tracker/habit_database.dart';
-import 'package:habit_tracker/util/helper_functions.dart';
+import 'package:habit_tracker/components/general/auth_button.dart';
+import 'package:habit_tracker/components/general/back_button.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/database/habit_database.dart';
+import 'package:habit_tracker/util/habit_helpers.dart';
+import 'package:habit_tracker/util/profile_helpers.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,39 +69,45 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return await FirebaseFirestore.instance
-      .collection("Users")
-      .doc(currentUser.email)
-      .get();
+        .collection("Users")
+        .doc(currentUser.email)
+        .get();
   }
 
   Future<void> deleteProfile(context) async {
-    HapticFeedback.lightImpact(); 
+    HapticFeedback.lightImpact();
     await Future.delayed(Duration(milliseconds: 100));
 
     showCustomDialog(
-      context, 
+      context,
       title: "Delete Account",
       text: "This action cannot be undone.",
       labels: ("Delete", "Cancel"),
       zoomTransition: true,
-      actions: (() { 
-        Navigator.pop(context);
-        showCustomDialog(
-          context,
-          title: "Are you sure?",
-          labels: ("No", "Yes"),
-          actions: (() => Navigator.pop(context), () => deleteAccount(context))
-        );
-      }, () => Navigator.pop(context)),
+      actions: (
+        () {
+          Navigator.pop(context);
+          showCustomDialog(
+            context,
+            title: "Are you sure?",
+            labels: ("No", "Yes"),
+            actions: (
+              () => Navigator.pop(context),
+              () => deleteAccount(context),
+            ),
+          );
+        },
+        () => Navigator.pop(context),
+      ),
     );
   }
 
-  void updateProfile(context) async { 
+  void updateProfile(context) async {
     usernameController.text = await getUsername();
     pwController.text = await getPassword();
 
     showCustomDialog(
-      context, 
+      context,
       title: "Your Profile",
       text: "You can edit your username and password below.",
       hintText: "New username",
@@ -108,17 +115,19 @@ class _ProfilePageState extends State<ProfilePage> {
       controller: usernameController,
       secondController: pwController,
       labels: ("Cancel", "Confirm"),
-      actions: (() => Navigator.pop(context), 
-      () async {
-        updateUsername(usernameController.text);
+      actions: (
+        () => Navigator.pop(context),
+        () async {
+          updateUsername(usernameController.text);
 
-        // Update password if it changed
-        if (pwController.text != await getPassword())
-          updatePassword(context, pwController.text);
+          // Update password if it changed
+          if (pwController.text != await getPassword())
+            updatePassword(context, pwController.text);
 
-        Navigator.pop(context);
-      }),
-    );    
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   @override
@@ -134,11 +143,14 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 MyBackButton(),
                 SizedBox(width: 15),
-                Text("Profile", style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  fontSize: 23,
-                  fontWeight: FontWeight.bold
-                ))
+                Text(
+                  "Profile",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),
@@ -148,7 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
           displayFirstLaunchDate(context),
 
           MyButton(
-            text: "Delete Account", 
+            text: "Delete Account",
             onTap: () => deleteProfile(context),
             margin: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
             padding: EdgeInsets.all(10),
@@ -165,14 +177,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget displayCurrentUser() {
     return FutureBuilder(
-      future: getUserDetails(), 
+      future: getUserDetails(),
       builder: (context, snapshot) {
         // Loading
         if (snapshot.connectionState == ConnectionState.waiting)
           return Center(child: CupertinoActivityIndicator());
-        if (snapshot.hasError)
-          return Text("Error: ${snapshot.error}");
-    
+        if (snapshot.hasError) return Text("Error: ${snapshot.error}");
+
         // User data received
         if (snapshot.hasData) {
           Map<String, dynamic>? user = snapshot.data!.data();
@@ -197,15 +208,16 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 100,
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(24)
+                      borderRadius: BorderRadius.circular(24),
                     ),
                     padding: EdgeInsets.all((image == null) ? 20 : 5),
-                    child: (image == null) 
-                      ? Icon(Icons.person, size: 64)
-                      : ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.file(image!, fit: BoxFit.cover)
-                      ),
+                    child:
+                        (image == null)
+                            ? Icon(Icons.person, size: 64)
+                            : ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.file(image!, fit: BoxFit.cover),
+                            ),
                   ),
                 ),
 
@@ -215,43 +227,54 @@ class _ProfilePageState extends State<ProfilePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(username, style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold
-                    )),
+                    Text(
+                      username,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     SizedBox(width: 1),
                     InkWell(
                       onTap: () => updateProfile(context),
                       borderRadius: BorderRadius.circular(10),
-                      splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                      highlightColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                      splashColor: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.2),
+                      highlightColor: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.2),
                       child: Container(
                         padding: EdgeInsets.all(8),
                         child: Icon(
-                          Icons.edit, size: 21, 
+                          Icons.edit,
+                          size: 21,
                           color: Theme.of(context).colorScheme.inversePrimary,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
 
                 SizedBox(height: 5),
 
                 // Email
-                Text(email, style: TextStyle(
-                  color: Theme.of(context).colorScheme.inversePrimary,
-                ))
+                Text(
+                  email,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                  ),
+                ),
               ],
             ),
           );
-        } else return Text("No data found", 
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primary
-          )
-        );
-      }
+        } else
+          return Text(
+            "No data found",
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          );
+      },
     );
   }
 
@@ -259,31 +282,28 @@ class _ProfilePageState extends State<ProfilePage> {
     return FutureBuilder(
       future: Provider.of<HabitDatabase>(context).getFirstLaunchDate(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) 
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            !snapshot.hasData)
           return SizedBox.shrink();
 
-        final date = snapshot.data!;  // First launch date
+        final date = snapshot.data!; // First launch date
 
         return Text(
           "Member since ${numberToMonth(date.month)} ${date.day}th",
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.primary
-          ),
+          style: TextStyle(color: Theme.of(context).colorScheme.primary),
         );
-      }
+      },
     );
   }
 
   Widget displayAllUsers() {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("Users").snapshots(), 
+      stream: FirebaseFirestore.instance.collection("Users").snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting)
           return Center(child: CupertinoActivityIndicator());
-        if (snapshot.hasError)
-          return Text("Error: ${snapshot.error}");
-        if (snapshot.data == null)
-          return Text("No data");
+        if (snapshot.hasError) return Text("Error: ${snapshot.error}");
+        if (snapshot.data == null) return Text("No data");
 
         // Get all users
         final users = snapshot.data!.docs;
@@ -305,21 +325,31 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  color: Theme.of(context).colorScheme.secondary
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
                 child: ListTile(
-                  title: Center(child: Text(username, style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary)
-                  )),
-                  subtitle: Center(child: Text(email, style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary
-                  ),)),
+                  title: Center(
+                    child: Text(
+                      username,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                    ),
+                  ),
+                  subtitle: Center(
+                    child: Text(
+                      email,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             );
-          }
+          },
         );
-      }
+      },
     );
-  } 
+  }
 }

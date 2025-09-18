@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/habit_database.dart';
+import 'package:habit_tracker/database/habit_database.dart';
 import 'package:provider/provider.dart';
 import 'data/heatmap_color_mode.dart';
 import 'widget/heatmap_calendar_page.dart';
@@ -98,7 +98,7 @@ class HeatMapCalendar extends StatefulWidget {
     this.colorMode = ColorMode.opacity,
     this.defaultColor,
 
-    this.highlightedColor,  // new
+    this.highlightedColor, // new
     this.highlightedBorderWith,
     this.highlightedBorderColor,
 
@@ -138,11 +138,12 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
     setState(() {
       // Set _currentDate value to first day of initialized date or
       // today's month if widget.initDate is null.
-      _currentDate =
-          DateUtil.startDayOfMonth(widget.initDate ?? DateTime.now());
+      _currentDate = DateUtil.startDayOfMonth(
+        widget.initDate ?? DateTime.now(),
+      );
     });
     /* NEW */
-    _loadFirstLaunchDate(); 
+    _loadFirstLaunchDate();
   }
 
   Future<void> _loadFirstLaunchDate() async {
@@ -161,7 +162,7 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
     if (_firstLaunchDate == null || _currentDate == null) return false;
 
     return _currentDate!.year == _firstLaunchDate!.year &&
-          _currentDate!.month == _firstLaunchDate!.month;
+        _currentDate!.month == _firstLaunchDate!.month;
   }
 
   bool monthsInFuture(int amount) {
@@ -170,8 +171,10 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
 
   void changeMonth(int direction) {
     setState(() {
-      _currentDate =
-          DateUtil.changeMonth(_currentDate ?? DateTime.now(), direction);
+      _currentDate = DateUtil.changeMonth(
+        _currentDate ?? DateTime.now(),
+        direction,
+      );
     });
     if (widget.onMonthChange != null) widget.onMonthChange!(_currentDate!);
   }
@@ -193,7 +196,10 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
           icon: Icon(
             Icons.arrow_back_ios,
             size: 14,
-            color: isAtFirstLaunchMonth() ? Theme.of(context).colorScheme.primary.withAlpha(100) : Theme.of(context).colorScheme.inversePrimary
+            color:
+                isAtFirstLaunchMonth()
+                    ? Theme.of(context).colorScheme.primary.withAlpha(100)
+                    : Theme.of(context).colorScheme.inversePrimary,
           ),
           onPressed: isAtFirstLaunchMonth() ? null : () => changeMonth(-1),
         ),
@@ -203,7 +209,7 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
           '${DateUtil.MONTH_LABEL[_currentDate?.month ?? 0]} ${_currentDate?.year}',
           style: TextStyle(
             fontSize: widget.monthFontSize ?? 12,
-            color: Theme.of(context).colorScheme.onPrimary
+            color: Theme.of(context).colorScheme.onPrimary,
           ),
         ),
 
@@ -212,7 +218,10 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
           icon: Icon(
             Icons.arrow_forward_ios,
             size: 14,
-            color: monthsInFuture(2) ? Theme.of(context).colorScheme.primary.withAlpha(100) : Theme.of(context).colorScheme.inversePrimary,
+            color:
+                monthsInFuture(2)
+                    ? Theme.of(context).colorScheme.primary.withAlpha(100)
+                    : Theme.of(context).colorScheme.inversePrimary,
           ),
           onPressed: monthsInFuture(2) ? null : () => changeMonth(1),
         ),
@@ -230,8 +239,9 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
             false,
             Container(
               margin: EdgeInsets.only(
-                  left: widget.margin?.left ?? 2,
-                  right: widget.margin?.right ?? 2),
+                left: widget.margin?.left ?? 2,
+                right: widget.margin?.right ?? 2,
+              ),
               width: widget.size ?? 42,
               alignment: Alignment.center,
               child: Text(
@@ -248,9 +258,7 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
   }
 
   /// Expand width dynamically if [flexible] is true.
-  Widget _intrinsicWidth({
-    required Widget child,
-  }) =>
+  Widget _intrinsicWidth({required Widget child}) =>
       (widget.flexible ?? false) ? child : IntrinsicWidth(child: child);
 
   @override

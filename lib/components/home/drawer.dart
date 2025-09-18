@@ -1,8 +1,8 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:habit_tracker/components/custom_dialog.dart";
-import "package:habit_tracker/habit_database.dart";
+import "package:habit_tracker/components/general/custom_dialog.dart";
+import "package:habit_tracker/database/habit_database.dart";
 import "package:habit_tracker/pages/profile_page.dart";
 import "package:habit_tracker/pages/settings_page.dart";
 import "package:lottie/lottie.dart";
@@ -13,9 +13,8 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Future<void> logout() async {
-      HapticFeedback.mediumImpact(); 
+      HapticFeedback.mediumImpact();
       await Future.delayed(Duration(milliseconds: 200));
 
       /* final prefs = await SharedPreferences.getInstance();
@@ -38,7 +37,7 @@ class MyDrawer extends StatelessWidget {
         context,
         title: "Log out?",
         labels: ("Yes", "Cancel"),
-        actions: (signOut, () => Navigator.pop(context))
+        actions: (signOut, () => Navigator.pop(context)),
       );
 
       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingPage()));
@@ -53,7 +52,7 @@ class MyDrawer extends StatelessWidget {
         children: [
           Column(
             children: [
-              SizedBox(height: 90),  // 100
+              SizedBox(height: 90), // 100
               /* Icon(
                 Icons.favorite, 
                 size: 48,
@@ -61,9 +60,9 @@ class MyDrawer extends StatelessWidget {
               ), */
               SizedBox(
                 width: 60,
-                child: LottieBuilder.asset("assets/streak4.json")
+                child: LottieBuilder.asset("assets/streak4.json"),
               ),
-              
+
               SizedBox(height: 50), // 60
               // Divider
               Padding(
@@ -79,11 +78,14 @@ class MyDrawer extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   child: ListTile(
-                    leading: Icon(Icons.home, color: Theme.of(context).colorScheme.inversePrimary),
+                    leading: Icon(
+                      Icons.home,
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
                     title: Text("H O M E"),
                     horizontalTitleGap: 20,
                   ),
-                )         
+                ),
               ),
               // Settings
               Padding(
@@ -91,17 +93,23 @@ class MyDrawer extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
                   onTap: () async {
-                    HapticFeedback.mediumImpact(); 
+                    HapticFeedback.mediumImpact();
                     await Future.delayed(Duration(milliseconds: 155));
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsPage()),
+                    );
                   },
                   child: ListTile(
-                    leading: Icon(Icons.settings, color: Theme.of(context).colorScheme.inversePrimary), 
-                    title: Text("S E T T I N G S"), 
+                    leading: Icon(
+                      Icons.settings,
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                    title: Text("S E T T I N G S"),
                     horizontalTitleGap: 20,
-                  )
-                )
+                  ),
+                ),
               ),
               // Profile
               Padding(
@@ -109,20 +117,27 @@ class MyDrawer extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
                   onTap: () async {
-                    HapticFeedback.mediumImpact(); 
+                    HapticFeedback.mediumImpact();
                     await Future.delayed(Duration(milliseconds: 155));
 
                     Navigator.pop(context);
                     //Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(showThemes: true)));
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()),
+                    );
                   },
                   child: ListTile(
-                    leading: Icon(Icons.person, color: Theme.of(context).colorScheme.inversePrimary), 
-                    title: Text("P R O F I L E"), 
-                    horizontalTitleGap: 20   
-                  )
-                )               
+                    leading: Icon(
+                      Icons.person,
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                    title: Text("P R O F I L E"),
+                    horizontalTitleGap: 20,
+                  ),
+                ),
               ),
+
               /* Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: ListTile(
@@ -137,8 +152,7 @@ class MyDrawer extends StatelessWidget {
                   }
                 )
               ), */
-              
-            ]
+            ],
           ),
           // Bottom Items
           Column(
@@ -150,15 +164,17 @@ class MyDrawer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   onTap: logout,
                   child: ListTile(
-                    leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.inversePrimary), 
-                    title: Text("L O G O U T"), 
-                    horizontalTitleGap: 20   
-                  )
-                )               
-              )
-            ]
-          )
-          
+                    leading: Icon(
+                      Icons.logout,
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                    title: Text("L O G O U T"),
+                    horizontalTitleGap: 20,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
