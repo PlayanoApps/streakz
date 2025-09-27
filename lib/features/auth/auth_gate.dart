@@ -37,7 +37,7 @@ import 'package:habit_tracker/components/common/custom_dialog.dart';
 import 'package:habit_tracker/database/firestore_database.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:habit_tracker/features/home_page.dart';
+import 'package:habit_tracker/features/home/home_page.dart';
 import 'package:habit_tracker/features/auth/login_or_register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

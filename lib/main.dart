@@ -4,7 +4,7 @@ import "package:flutter/services.dart";
 import "package:habit_tracker/firebase_options.dart";
 import "package:habit_tracker/database/habit_database.dart";
 import "package:habit_tracker/models/habit.dart";
-import "package:habit_tracker/features/onboarding_page.dart";
+import "package:habit_tracker/features/auth/onboarding_page.dart";
 import "package:habit_tracker/features/auth/auth_gate.dart";
 import "package:habit_tracker/services/noti_service.dart";
 import "package:habit_tracker/theme/theme_provider.dart";
