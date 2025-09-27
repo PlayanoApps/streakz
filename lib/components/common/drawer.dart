@@ -1,10 +1,10 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:habit_tracker/components/general/custom_dialog.dart";
+import "package:habit_tracker/components/common/custom_dialog.dart";
 import "package:habit_tracker/database/habit_database.dart";
-import "package:habit_tracker/pages/profile_page.dart";
-import "package:habit_tracker/pages/settings_page.dart";
+import "package:habit_tracker/features/profile/profile_page.dart";
+import "package:habit_tracker/features/settings/settings_page.dart";
 import "package:lottie/lottie.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
@@ -20,24 +20,29 @@ class MyDrawer extends StatelessWidget {
       /* final prefs = await SharedPreferences.getInstance();
       prefs.setBool('showOnboarding', true); */
 
-      void signOut() async {
+      Future<void> signOut() async {
         Navigator.pop(context);
 
-        // Clear Isar
-        await HabitDatabase().deleteHabits();
+        try {
+          // Clear Isar
+          await HabitDatabase().deleteHabits();
 
-        // Sign out
-        await FirebaseAuth.instance.signOut();
+          // Sign out
+          await FirebaseAuth.instance.signOut();
 
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.remove("profile_image");
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.remove("profile_image");
+        } catch (e) {
+          showCustomDialog(context, title: "Failed to sign out");
+          await FirebaseAuth.instance.signOut();
+        }
       }
 
       showCustomDialog(
         context,
         title: "Log out?",
         labels: ("Yes", "Cancel"),
-        actions: (signOut, () => Navigator.pop(context)),
+        actions: (() => signOut(), () => Navigator.pop(context)),
       );
 
       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingPage()));

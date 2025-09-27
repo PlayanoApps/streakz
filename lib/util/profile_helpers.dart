@@ -3,7 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/components/common/custom_dialog.dart';
 
 Future<String> getPassword() async {
   final currentUser = FirebaseAuth.instance.currentUser;

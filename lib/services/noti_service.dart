@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import "package:timezone/data/latest.dart" as tz;
 import "package:flutter_timezone/flutter_timezone.dart";
@@ -18,14 +19,16 @@ class NotiService {
 
     // Init timezone
     tz.initializeTimeZones();
-    final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+    final TimezoneInfo currentTimeZoneInfo =
+        await FlutterTimezone.getLocalTimezone();
+    final String currentTimeZone = currentTimeZoneInfo.identifier;
     tz.setLocalLocation(tz.getLocation(currentTimeZone));
 
     // Init settings
     const initSettings = InitializationSettings(
-      android: AndroidInitializationSettings("@mipmap/launcher_icon")
+      android: AndroidInitializationSettings("@mipmap/launcher_icon"),
     );
-    
+
     await notificationsPlugin.initialize(initSettings);
 
     _isInitialized = true;
@@ -35,12 +38,12 @@ class NotiService {
   NotificationDetails notificationDetails() {
     return NotificationDetails(
       android: AndroidNotificationDetails(
-        "daily_channel_id", 
+        "daily_channel_id",
         "Daily Notifications",
         channelDescription: "Daily Notification Channel",
         importance: Importance.max,
-        priority: Priority.high
-      )
+        priority: Priority.high,
+      ),
     );
   }
 
@@ -50,30 +53,32 @@ class NotiService {
     String? body,
   }) async {
     final androidImplementation =
-    notificationsPlugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+        notificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
     await androidImplementation?.requestNotificationsPermission();
 
-    return notificationsPlugin.show(
-      id, 
-      title, 
-      body,
-      notificationDetails()
-    );
+    return notificationsPlugin.show(id, title, body, notificationDetails());
   }
 
   Future<void> scheduleNotification({
     int id = 1,
-    required String title, required String body,
-    required int hour, required int minute
+    required String title,
+    required String body,
+    required int hour,
+    required int minute,
   }) async {
     // Get the current date/time in device's local timezone
     final now = tz.TZDateTime.now(tz.local);
 
     var scheduledDate = tz.TZDateTime(
       tz.local,
-      now.year, now.month, now.day, 
-      hour, minute,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
     );
 
     if (scheduledDate.isBefore(now))
@@ -81,12 +86,16 @@ class NotiService {
 
     // Schedule the notification
     await notificationsPlugin.zonedSchedule(
-      id, title, body, scheduledDate, notificationDetails(), 
+      id,
+      title,
+      body,
+      scheduledDate,
+      notificationDetails(),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       // Make notification repeat daily at same time
-      matchDateTimeComponents: DateTimeComponents.time
+      matchDateTimeComponents: DateTimeComponents.time,
     );
-    
+
     print("----------------------------------------------");
     print("NOW: ${tz.TZDateTime.now(tz.local)}");
     print("SCHEDULED FOR: $scheduledDate");
@@ -100,7 +109,6 @@ class NotiService {
 
 /* For saving the boolean wether notifications are enabled */
 class NotiServiceProvider extends ChangeNotifier {
-
   bool _notifications = true;
   bool get notificationsEnabled => _notifications;
 
@@ -135,7 +143,7 @@ class NotiServiceProvider extends ChangeNotifier {
       body: "Dont't forget to log your habits!",
       hour: 20,
       minute: 00,
-      id: 1
+      id: 1,
     );
 
     /* NotiService().scheduleNotification(
@@ -168,9 +176,8 @@ class NotiServiceProvider extends ChangeNotifier {
 
     NotiService().showNotification(
       title: "",
-      body: "You will now receive notifications"
+      body: "You will now receive notifications",
     );
-
   }
 
   void disableNotifications() => NotiService().cancelAllNotifications();

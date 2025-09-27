@@ -47,7 +47,8 @@ class HeatMapContainer extends StatelessWidget {
           splashColor: Colors.grey.withAlpha(40),
           child: Ink(
             decoration: BoxDecoration(
-              color: selectedColor ?? backgroundColor ?? HeatMapColor.defaultColor,
+              color:
+                  selectedColor ?? backgroundColor ?? HeatMapColor.defaultColor,
               borderRadius: BorderRadius.circular(borderRadius ?? 5),
 
               // Background color highlight is determined in heatmap_calendar_row
@@ -63,15 +64,16 @@ class HeatMapContainer extends StatelessWidget {
               width: size,
               height: size,
               alignment: Alignment.center,
-              child: (showText ?? true)
-                  ? Text(
-                      date.day.toString(),
-                      style: TextStyle(
-                        color: textColor ?? const Color(0xFF8A8A8A),
-                        fontSize: fontSize,
-                      ),
-                    )
-                  : null,
+              child:
+                  (showText ?? true)
+                      ? Text(
+                        date.day.toString(),
+                        style: TextStyle(
+                          color: textColor ?? const Color(0xFF8A8A8A),
+                          fontSize: fontSize,
+                        ),
+                      )
+                      : null,
             ),
           ),
         ),

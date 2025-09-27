@@ -219,11 +219,11 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
             Icons.arrow_forward_ios,
             size: 14,
             color:
-                monthsInFuture(2)
+                monthsInFuture(0)
                     ? Theme.of(context).colorScheme.primary.withAlpha(100)
                     : Theme.of(context).colorScheme.inversePrimary,
           ),
-          onPressed: monthsInFuture(2) ? null : () => changeMonth(1),
+          onPressed: monthsInFuture(0) ? null : () => changeMonth(1),
         ),
       ],
     );

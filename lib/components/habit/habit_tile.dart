@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:habit_tracker/pages/analysis_page.dart';
+import 'package:habit_tracker/features/analysis/analysis_page.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
 import 'package:lottie/lottie.dart';
@@ -99,7 +99,7 @@ class HabitTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25), // vertical 5
       child: Slidable(
         endActionPane: _endActionPane(darkMode),
-        startActionPane: _startActionPane(darkMode),
+        // startActionPane: _startActionPane(darkMode),
 
         // Habit Tile
         child: Material(
@@ -107,7 +107,7 @@ class HabitTile extends StatelessWidget {
             // Checkbox provides value to callback function automatically
             onTap: () => checkboxChanged!(!isCompleted),
             onLongPress: null,
-            borderRadius: BorderRadius.circular(18), // 10
+            borderRadius: BorderRadius.circular(16), // 10, 18
             splashColor:
                 crossCompletedHabit
                     ? Colors.grey.withAlpha(0)
@@ -132,17 +132,14 @@ class HabitTile extends StatelessWidget {
                         : Theme.of(context).colorScheme.secondary,
                 // Border
                 border: Border.all(
-                  width: 1,
+                  width: 0.9,
                   color:
                       isCompleted
-                          ?
-                          // Completed
-                          (crossCompletedHabit
+                          ? (crossCompletedHabit
                               ? Colors.transparent
-                              : darkMode
-                              ? Colors.green.shade700
-                              : Colors.green.shade300)
-                          // Not completed
+                              : (darkMode
+                                  ? accentColor[700] ?? accentColor
+                                  : accentColor[500] ?? accentColor))
                           : darkMode
                           ? Colors.grey.withAlpha(30)
                           : Colors.white.withAlpha(100),
@@ -198,7 +195,8 @@ class HabitTile extends StatelessWidget {
                 // Text
                 Expanded(
                   child: Text(
-                    habit.name, //overflow: TextOverflow.ellipsis,
+                    habit.name,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color:
@@ -248,8 +246,8 @@ class HabitTile extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            width: 30.4,
-            height: 30.4,
+            width: 35,
+            height: 30.2,
             child: LottieBuilder.asset("assets/streak4.json"),
           ),
           Text(
@@ -275,7 +273,9 @@ class HabitTile extends StatelessWidget {
         SizedBox(width: 7),
 
         SlidableAction(
-          onPressed: editHabit,
+          onPressed:
+              (context) =>
+                  navigateToHabitAnalysis(context, delay: 100), //editHabit,
           backgroundColor:
               darkMode ? Colors.grey.shade800 : Colors.grey.shade600,
           icon: Icons.settings,
@@ -285,7 +285,10 @@ class HabitTile extends StatelessWidget {
         SizedBox(width: 7),
 
         SlidableAction(
-          onPressed: deleteHabit,
+          onPressed: (context) {
+            deleteHabit!(context);
+            HapticFeedback.mediumImpact();
+          },
           backgroundColor:
               darkMode
                   ? Color.fromARGB(222, 198, 40, 40)

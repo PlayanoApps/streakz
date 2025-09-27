@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/general/custom_dialog.dart';
-import 'package:habit_tracker/components/home/habit_tile.dart';
-import 'package:habit_tracker/components/home/heatmap.dart';
-import 'package:habit_tracker/components/home/drawer.dart';
-import 'package:habit_tracker/components/home/showcase.dart';
+import 'package:habit_tracker/components/common/custom_dialog.dart';
+import 'package:habit_tracker/components/habit/habit_tile.dart';
+import 'package:habit_tracker/components/habit/heatmap.dart';
+import 'package:habit_tracker/components/common/drawer.dart';
+import 'package:habit_tracker/components/habit/showcase.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/services/noti_service.dart';
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
   void checkHabitOnOff(bool? value, Habit habit) {
     // Update habit completion status
     if (value != null) {
-      HapticFeedback.mediumImpact();
+      HapticFeedback.lightImpact();
       Provider.of<HabitDatabase>(
         context,
         listen: false,
@@ -205,8 +205,10 @@ class _HomePageState extends State<HomePage> {
           ListView(
             children: [
               _divider(),
+
+              //SizedBox(height: 0, child: _buildHeatmap()),
               _buildHeatmap(),
-              SizedBox(height: 16), // 15
+              SizedBox(height: 24), // 16
               _buildHabitList(),
               SizedBox(height: 30),
             ],
@@ -279,10 +281,17 @@ class _HomePageState extends State<HomePage> {
   Widget _buildHabitList() {
     final isDarkMode = (Theme.of(context).brightness == Brightness.dark);
 
-    // Get list of habits
+    // Get list of habits, sort out archieved
     List<Habit> habitsList = Provider.of<HabitDatabase>(context).habitsList;
+    /* List<Habit> habitsList =
+        Provider.of<HabitDatabase>(
+          context,
+        ).habitsList.where((habit) => !habit.isArchived).toList(); */
 
-    if (habitsList.isNotEmpty) {
+    if ( /* habitsList
+        .isNotEmpty  */ habitsList
+        .where((habit) => !habit.isArchived)
+        .isNotEmpty) {
       return MyShowcase(
         globalKey: _habitListKey2,
         title: "Habit Actions",
@@ -298,19 +307,25 @@ class _HomePageState extends State<HomePage> {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             onReorder: (n, i) => reorderTile(habitsList, n, i),
+
             children: [
-              for (final habit in habitsList)
-                HabitTile(
-                  key: ValueKey(habit.name),
-                  habit: habit,
-                  isCompleted: habitCompleted(
-                    habit.completedDays,
-                    DateTime.now(),
-                  ),
-                  checkboxChanged: (value) => checkHabitOnOff(value, habit),
-                  editHabit: (context) => editHabitBox(habit),
-                  deleteHabit: (context) => deleteHabitBox(habit),
-                ),
+              for (final habit
+                  in habitsList /* .where(
+                (habit) => !habit.isArchived,
+              )*/ )
+                habit.isArchived
+                    ? SizedBox(key: ValueKey('archived_${habit.name}'))
+                    : HabitTile(
+                      key: ValueKey(habit.name),
+                      habit: habit,
+                      isCompleted: habitCompleted(
+                        habit.completedDays,
+                        DateTime.now(),
+                      ),
+                      checkboxChanged: (value) => checkHabitOnOff(value, habit),
+                      editHabit: (context) => editHabitBox(habit),
+                      deleteHabit: (context) => deleteHabitBox(habit),
+                    ),
             ],
           ),
         ),

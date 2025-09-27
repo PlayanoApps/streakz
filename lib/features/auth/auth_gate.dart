@@ -33,12 +33,12 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/components/common/custom_dialog.dart';
 import 'package:habit_tracker/database/firestore_database.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:habit_tracker/pages/home_page.dart';
-import 'package:habit_tracker/pages/auth/login_or_register.dart';
+import 'package:habit_tracker/features/home_page.dart';
+import 'package:habit_tracker/features/auth/login_or_register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthPage extends StatefulWidget {
@@ -114,10 +114,95 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  Future<void> _loadFromFirestore(User user) async {
-    bool debug = false;
-
+  Future<bool> hasInternetConnection() async {
     try {
+      final result = await InternetAddress.lookup(
+        'google.com',
+      ).timeout(Duration(seconds: 3));
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
+
+  Future<void> _loadFromFirestore(User user) async {
+    bool debug = true;
+    bool forceReset = false;
+
+    /* if (forceReset) {
+      await HabitDatabase.isar.writeTxn(() async {
+        await HabitDatabase.isar.habits.clear();
+      });
+      if (debug) showCustomDialog(context, title: "DEBUG: Cleared Isar");
+    }  */
+
+    bool hasInternet = await hasInternetConnection();
+
+    // User has internet --> clear isar, download from firestore
+    if (hasInternet) {
+      if (debug)
+        showCustomDialog(
+          context,
+          title: "Internet connection --> Clear isar, load from firestore",
+        );
+
+      if (forceReset) {
+        await HabitDatabase.isar.writeTxn(() async {
+          await HabitDatabase.isar.habits.clear();
+        });
+      }
+
+      await FirestoreDatabase(
+        HabitDatabase.isar,
+      ).loadFromFirestore(user, context);
+
+      // No habits in Firestore --> new user
+      final countAfterDownload = await HabitDatabase.isar.habits.count();
+      if (countAfterDownload == 0) {
+        if (debug)
+          showCustomDialog(context, title: "Firestore empty --> new user");
+
+        final prefs = await SharedPreferences.getInstance();
+        final showOnboarding = prefs.getBool("showOnboarding");
+
+        if (showOnboarding == null || showOnboarding == true) {
+          await HabitDatabase.loadDefaultHabits();
+
+          try {
+            await FirestoreDatabase(
+              HabitDatabase.isar,
+            ).syncToFirestore(user, context: context);
+          } catch (e) {
+            if (debug) showCustomDialog(context, title: "Error during sync");
+          }
+        }
+      }
+    }
+    // User has no internet --> Load from isar
+    else {
+      if (debug)
+        showCustomDialog(
+          context,
+          title: "User has no internet --> Prioritize local habits",
+        );
+
+      // If user has internet now, sync with firestore
+      try {
+        bool hasInternet = await hasInternetConnection();
+
+        if (hasInternet) {
+          await FirestoreDatabase(HabitDatabase.isar)
+              .syncToFirestore(user, context: context)
+              .timeout(Duration(seconds: 5));
+          if (debug) showCustomDialog(context, title: "Sync successful");
+        } else if (debug)
+          showCustomDialog(context, title: "No internet - skipping sync");
+      } catch (e) {
+        if (debug) showCustomDialog(context, title: "Error syncing to cloud");
+      }
+    }
+
+    /*  try {
       final localCount = await HabitDatabase.isar.habits.count();
 
       // Isar habits empty --> Download from firestore
@@ -132,10 +217,12 @@ class _AuthPageState extends State<AuthPage> {
           HabitDatabase.isar,
         ).loadFromFirestore(user, context);
 
-        // No habits in Firestore either --> new user
         final countAfterDownload = await HabitDatabase.isar.habits.count();
 
+        // No habits in Firestore either --> new user
         if (countAfterDownload == 0) {
+          if (debug) showCustomDialog(context, title: "Firestore empty");
+
           final prefs = await SharedPreferences.getInstance();
           final showOnboarding = prefs.getBool("showOnboarding");
 
@@ -181,6 +268,6 @@ class _AuthPageState extends State<AuthPage> {
       }
     } catch (e) {
       rethrow;
-    }
+    } */
   }
 }

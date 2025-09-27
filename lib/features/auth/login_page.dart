@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/general/auth_button.dart';
-import 'package:habit_tracker/components/general/auth_textfield.dart';
-import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/components/common/auth_button.dart';
+import 'package:habit_tracker/components/common/auth_textfield.dart';
+import 'package:habit_tracker/components/common/custom_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {

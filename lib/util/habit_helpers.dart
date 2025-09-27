@@ -1,10 +1,5 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/general/custom_dialog.dart';
-
 /* Given a completedDays list of a habit, check if this habit is completed today */
 // For checking habit on and off (checkbox value)
 

@@ -47,8 +47,8 @@ class HabitDatabase extends ChangeNotifier {
             ..firstLaunchDate = DateTime.now();
       await isar.writeTxn(() => isar.appSettings.put(settings));
 
-      // Add default habits
-      loadDefaultHabits();
+      // Add default habits --> now from auth if isar is empty (new user)
+      // loadDefaultHabits();
     }
   }
 
@@ -210,6 +210,17 @@ class HabitDatabase extends ChangeNotifier {
 
     if (habit != null) {
       habit.description = "";
+      await isar.writeTxn(() => isar.habits.put(habit));
+    }
+    await updateHabitList();
+  }
+
+  /* Archive */
+  Future<void> archiveHabit(int id, bool bool) async {
+    final habit = await isar.habits.get(id);
+
+    if (habit != null) {
+      habit.isArchived = bool;
       await isar.writeTxn(() => isar.habits.put(habit));
     }
     updateHabitList();

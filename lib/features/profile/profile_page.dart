@@ -1,19 +1,17 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/general/auth_button.dart';
-import 'package:habit_tracker/components/general/back_button.dart';
-import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/components/common/app_bar.dart';
+import 'package:habit_tracker/components/common/auth_button.dart';
+import 'package:habit_tracker/components/common/custom_dialog.dart';
 import 'package:habit_tracker/database/habit_database.dart';
+import 'package:habit_tracker/features/profile/presentation/current_user.dart';
+import 'package:habit_tracker/features/profile/presentation/other_user_tile.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
 import 'package:habit_tracker/util/profile_helpers.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -29,16 +27,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final TextEditingController pwController = TextEditingController();
 
-  File? image;
+  /* File? image;
   final imagePicker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
     _loadImage(); // load saved image when app starts
-  }
+  } */
 
-  Future<void> pickImage(ImageSource source) async {
+  /* Future<void> pickImage(ImageSource source) async {
     final pickedFile = await imagePicker.pickImage(source: source);
 
     if (pickedFile != null) {
@@ -60,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
         image = File(imagePath);
       });
     }
-  }
+  } */
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserDetails() async {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -137,25 +135,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.only(top: 45, left: 20, bottom: 60),
-            child: Row(
-              children: [
-                MyBackButton(),
-                SizedBox(width: 15),
-                Text(
-                  "Profile",
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+          MyAppBar(
+            title: "My Profile",
+            bottomPadding: 70,
+            endIcon: Icons.edit,
+            endAction: () => updateProfile(context),
           ),
 
-          displayCurrentUser(),
+          //displayCurrentUser(),
+          CurrentUserTile(updateProfile: () => updateProfile(context)),
 
           displayFirstLaunchDate(context),
 
@@ -166,16 +154,26 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: EdgeInsets.all(10),
           ),
 
-          /* Expanded(child: Padding(
-            padding: EdgeInsets.only(bottom: 0),
-            child: displayAllUsers(),
-          )) */
+          SizedBox(height: 40),
+
+          /* Text(
+            "Other users",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.inversePrimary,
+              fontSize: 20,
+            ),
+          ),
+
+          SizedBox(height: 10),
+
+          Expanded(child: displayAllUsers()), */
         ],
       ),
     );
   }
 
-  Widget displayCurrentUser() {
+  /* Widget displayCurrentUser() {
     return FutureBuilder(
       future: getUserDetails(),
       builder: (context, snapshot) {
@@ -230,7 +228,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Text(
                       username,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.inversePrimary,
+                        color: Theme.of(context).colorScheme.onPrimary,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -250,7 +248,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Icon(
                           Icons.edit,
                           size: 21,
-                          color: Theme.of(context).colorScheme.inversePrimary,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onPrimary.withOpacity(0.8),
                         ),
                       ),
                     ),
@@ -263,7 +263,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   email,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
               ],
@@ -276,7 +276,7 @@ class _ProfilePageState extends State<ProfilePage> {
           );
       },
     );
-  }
+  } */
 
   Widget displayFirstLaunchDate(context) {
     return FutureBuilder(
@@ -290,7 +290,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
         return Text(
           "Member since ${numberToMonth(date.month)} ${date.day}th",
-          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
         );
       },
     );
@@ -299,6 +299,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget displayAllUsers() {
     return StreamBuilder(
       stream: FirebaseFirestore.instance.collection("Users").snapshots(),
+
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting)
           return Center(child: CupertinoActivityIndicator());
@@ -309,44 +310,11 @@ class _ProfilePageState extends State<ProfilePage> {
         final users = snapshot.data!.docs;
 
         return ListView.builder(
+          padding: EdgeInsets.zero,
           itemCount: users.length,
           itemBuilder: (context, index) {
-            // Get individuall user from users
             final user = users[index];
-
-            String username = user["username"];
-            String email = user["email"];
-
-            if (email == FirebaseAuth.instance.currentUser!.email)
-              return Container();
-
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                child: ListTile(
-                  title: Center(
-                    child: Text(
-                      username,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.inversePrimary,
-                      ),
-                    ),
-                  ),
-                  subtitle: Center(
-                    child: Text(
-                      email,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
+            return UserTile(user: user);
           },
         );
       },

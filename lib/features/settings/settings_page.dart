@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/components/common/custom_dialog.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
+import 'package:habit_tracker/features/settings/presentation/archive_page.dart';
+import 'package:habit_tracker/features/settings/presentation/settings_tile.dart';
+import 'package:habit_tracker/features/settings/presentation/theme_dialog.dart';
 import 'package:habit_tracker/services/noti_service.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -25,12 +28,12 @@ class _SettingsPageState extends State<SettingsPage> {
     if (widget.showThemes) {
       // ensure the context is ready
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showThemeDialog();
+        () => showThemeDialog(context);
       });
     }
   }
 
-  void showThemeDialog() {
+  /* void showThemeDialog() {
     HapticFeedback.lightImpact();
     showGeneralDialog(
       context: context,
@@ -91,7 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       },
     );
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -129,12 +132,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 10),
 
-          _settingsTile(
+          SettingsTile(
             onTap: () {
               HapticFeedback.lightImpact();
               final notiServiceProvider = Provider.of<NotiServiceProvider>(
@@ -165,7 +168,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           SizedBox(height: 14), // 14.5
 
-          _settingsTile(
+          SettingsTile(
             onTap: () {
               HapticFeedback.lightImpact();
               final themeProvider = Provider.of<ThemeProvider>(
@@ -191,7 +194,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
           Provider.of<ThemeProvider>(context).useSystemTheme
               ? SizedBox()
-              : _settingsTile(
+              : SettingsTile(
                 onTap: () {
                   HapticFeedback.lightImpact();
                   Provider.of<ThemeProvider>(
@@ -214,8 +217,8 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
           SizedBox(height: 14),
 
-          _settingsTile(
-            onTap: showThemeDialog,
+          SettingsTile(
+            onTap: () => showThemeDialog(context),
             onLongPress:
                 () => showCustomDialog(
                   context,
@@ -227,7 +230,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     () => Navigator.pop(context),
                     () {
                       Navigator.pop(context);
-                      showThemeDialog();
+                      showThemeDialog(context);
                     },
                   ),
                 ),
@@ -235,7 +238,7 @@ class _SettingsPageState extends State<SettingsPage> {
             trailing: Padding(
               padding: const EdgeInsets.only(right: 7),
               child: IconButton(
-                onPressed: showThemeDialog,
+                onPressed: () => showThemeDialog(context),
                 icon: Icon(
                   Icons.arrow_forward,
                   color: Theme.of(context).colorScheme.primary,
@@ -244,7 +247,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
-          _settingsTile(
+          SettingsTile(
             onTap: () {
               HapticFeedback.lightImpact();
 
@@ -281,6 +284,36 @@ class _SettingsPageState extends State<SettingsPage> {
                   listen: false,
                 ).toggleCrossCompletedHabits(value);
               },
+            ),
+          ),
+
+          SizedBox(height: 14),
+
+          SettingsTile(
+            onTap: () {
+              HapticFeedback.lightImpact();
+              Navigator.push(
+                context,
+                CupertinoPageRoute(builder: (context) => ArchivePage()),
+              );
+            },
+            onLongPress: () {},
+            text: "Archived Habits",
+            trailing: Padding(
+              padding: const EdgeInsets.only(right: 7),
+              child: IconButton(
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(builder: (context) => ArchivePage()),
+                  );
+                },
+                icon: Icon(
+                  Icons.arrow_forward,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
             ),
           ),
 
@@ -403,7 +436,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _settingsTile({
+  /* Widget _settingsTile({
     required void Function()? onTap,
     required void Function()? onLongPress,
     required String text,
@@ -459,5 +492,5 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
-  }
+  } */
 }

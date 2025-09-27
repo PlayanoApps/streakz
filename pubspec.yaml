@@ -1,7 +1,7 @@
 name: habit_tracker
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.6.0+28
+version: 1.7.10+39
 
 environment:
   sdk: ^3.7.2
@@ -23,7 +23,7 @@ dependencies:
   url_launcher: ^6.3.1
   flutter_local_notifications: ^19.3.0
   timezone: ^0.10.1
-  flutter_timezone: ^4.1.1
+  flutter_timezone: ^5.0.0
   google_fonts: ^6.3.0
   showcaseview: ^4.0.1
 
@@ -31,6 +31,7 @@ dependencies:
   firebase_auth: ^6.0.0
   cloud_firestore: ^6.0.0
   image_picker: ^1.2.0
+  package_info_plus: ^9.0.0
 
 
 dev_dependencies:

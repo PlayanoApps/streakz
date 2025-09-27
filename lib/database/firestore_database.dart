@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/components/common/custom_dialog.dart';
 import 'package:habit_tracker/models/app_settings.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:isar/isar.dart';
@@ -75,6 +75,7 @@ class FirestoreDatabase {
             "description": habit.description,
             "completedDays":
                 habit.completedDays.map((d) => d.toIso8601String()).toList(),
+            "archived": habit.isArchived,
             "order": habit.order,
           });
         }
@@ -120,6 +121,7 @@ class FirestoreDatabase {
               ..id = data["id"]
               ..name = data["name"] ?? ""
               ..description = data["description"] ?? ""
+              ..isArchived = data["archived"] ?? false
               ..completedDays =
                   (data["completedDays"] as List<dynamic>? ?? [])
                       .map((d) => DateTime.parse(d.toString()))

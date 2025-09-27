@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/components/habit/heatmap_dialog.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
@@ -195,7 +195,7 @@ class _MyHeatmapState extends State<MyHeatmap>
               showColorTip: false,
               flexible: true,
               monthFontSize: 16,
-              fontSize: 15.5,
+              fontSize: 15.4,
               weekTextColor: Theme.of(context).colorScheme.primary,
               onClick: (date) => showEditHeatmapDialog(date, context),
 
@@ -214,8 +214,12 @@ class HeatmapAnimation {
     BuildContext context,
     double animationValue,
   ) {
-    int habitsAmount = Provider.of<HabitDatabase>(context).habitsList.length;
-    List<Habit> habits = Provider.of<HabitDatabase>(context).habitsList;
+    List<Habit> habits =
+        Provider.of<HabitDatabase>(
+          context,
+        ).habitsList.where((habit) => !habit.isArchived).toList();
+    int habitsAmount =
+        habits.length; //Provider.of<HabitDatabase>(context).habitsList.length;
 
     if (habitsAmount <= 0) return {};
 
@@ -224,7 +228,7 @@ class HeatmapAnimation {
     if (alpha < 0) alpha = 0;
 
     // Set max alpha
-    int maxAlpha = 230;
+    int maxAlpha = 240; // 230
 
     // Get all completion dates for animation timing
     Set<DateTime> allDates = {};
@@ -330,7 +334,10 @@ class HeatmapAnimation {
     BuildContext context,
     double animationValue,
   ) {
-    List<Habit> habits = Provider.of<HabitDatabase>(context).habitsList;
+    List<Habit> habits =
+        Provider.of<HabitDatabase>(
+          context,
+        ).habitsList.where((habit) => !habit.isArchived).toList();
 
     Map<DateTime, int> dataset = {};
 

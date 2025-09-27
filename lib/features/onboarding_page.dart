@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/pages/auth/auth_gate.dart';
+import 'package:habit_tracker/features/auth/auth_gate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -31,11 +31,7 @@ class _MyWidgetState extends State<OnboardingPage> {
                 onLastPage = (index == 2);
               });
             },
-            children: [
-              introPage_1(), 
-              introPage_2(),
-              introPage_3()
-            ],
+            children: [introPage_1(), introPage_2(), introPage_3()],
           ),
 
           // Navigation
@@ -46,26 +42,29 @@ class _MyWidgetState extends State<OnboardingPage> {
               children: [
                 // dot indicator
                 dotIndicator(darkMode),
-                
+
                 SizedBox(height: 10),
 
                 // Next Button
                 GestureDetector(
                   onTap: () async {
-                    HapticFeedback.lightImpact(); 
+                    HapticFeedback.lightImpact();
 
                     if (onLastPage) {
                       // Now in home
                       /* final prefs = await SharedPreferences.getInstance();
                       prefs.setBool('showOnboarding', false); */
 
-                      Navigator.pushAndRemoveUntil(context, 
+                      Navigator.pushAndRemoveUntil(
+                        context,
                         CupertinoPageRoute(builder: (context) => AuthPage()),
-                        (route) => false
+                        (route) => false,
                       );
-                    }
-                    else
-                      _controller.nextPage(duration: Duration(milliseconds: 400), curve: Curves.easeOut);
+                    } else
+                      _controller.nextPage(
+                        duration: Duration(milliseconds: 400),
+                        curve: Curves.easeOut,
+                      );
                   },
                   child: Container(
                     width: 70,
@@ -73,34 +72,42 @@ class _MyWidgetState extends State<OnboardingPage> {
                     margin: EdgeInsets.only(top: 35),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25),
-                      color: (!darkMode) ? (onLastPage) ? Colors.white : Colors.grey[100]
-                                        : (onLastPage) ? Colors.grey[700] : Colors.grey[800],
+                      color:
+                          (!darkMode)
+                              ? (onLastPage)
+                                  ? Colors.white
+                                  : Colors.grey[100]
+                              : (onLastPage)
+                              ? Colors.grey[700]
+                              : Colors.grey[800],
                     ),
                     child: Icon(
-                      (onLastPage) ? Icons.done : Icons.arrow_forward, 
-                      color: darkMode ? Colors.grey[400] : Colors.grey[400]
+                      (onLastPage) ? Icons.done : Icons.arrow_forward,
+                      color: darkMode ? Colors.grey[400] : Colors.grey[400],
                     ),
-                    
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
-      )
+      ),
     );
   }
 
   Widget dotIndicator(darkMode) {
     return SmoothPageIndicator(
-      controller: _controller, 
+      controller: _controller,
       count: 3,
       effect: ExpandingDotsEffect(
-        dotColor: darkMode ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
-        activeDotColor: darkMode ? Colors.white.withOpacity(0.4) : Colors.white,      
-        dotHeight: 19, 
-        dotWidth: 26
-      )
+        dotColor:
+            darkMode
+                ? Colors.white.withOpacity(0.1)
+                : Colors.white.withOpacity(0.5),
+        activeDotColor: darkMode ? Colors.white.withOpacity(0.4) : Colors.white,
+        dotHeight: 19,
+        dotWidth: 26,
+      ),
     );
   }
 
@@ -119,14 +126,14 @@ class _MyWidgetState extends State<OnboardingPage> {
             Lottie.asset(
               "assets/calendar.json",
               fit: BoxFit.contain,
-              width: 600
+              width: 600,
             ),
             Text(
               "Welcome",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 48,
-                color: !isDarkMode ? Colors.grey[800] : Colors.grey[300]
+                color: !isDarkMode ? Colors.grey[800] : Colors.grey[300],
               ),
             ),
             SizedBox(height: 4),
@@ -135,13 +142,12 @@ class _MyWidgetState extends State<OnboardingPage> {
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 25,
-                color: Theme.of(context).colorScheme.primary            
+                color: Theme.of(context).colorScheme.primary,
               ),
-            )
-          ]
-          
+            ),
+          ],
         ),
-      )
+      ),
     );
   }
 
@@ -161,7 +167,7 @@ class _MyWidgetState extends State<OnboardingPage> {
               "assets/completed.json",
               fit: BoxFit.contain,
               width: 200,
-              repeat: false
+              repeat: false,
             ),
             SizedBox(height: 15),
             Text(
@@ -170,21 +176,21 @@ class _MyWidgetState extends State<OnboardingPage> {
                 fontWeight: FontWeight.bold,
                 fontSize: 49,
                 color: !isDarkMode ? Colors.grey[800] : Colors.grey[300],
-                //letterSpacing: -0.5    
+                //letterSpacing: -0.5
               ),
             ),
             SizedBox(height: 4),
             Text(
-              "habit tracking",//"choices, every day",
+              "habit tracking", //"choices, every day",
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 25,
-                color: Theme.of(context).colorScheme.primary            
+                color: Theme.of(context).colorScheme.primary,
               ),
-            )
-          ]      
+            ),
+          ],
         ),
-      )
+      ),
     );
   }
 
@@ -204,14 +210,14 @@ class _MyWidgetState extends State<OnboardingPage> {
               "assets/time.json",
               fit: BoxFit.contain,
               width: 250,
-              repeat: true
+              repeat: true,
             ),
             Text(
               "Everyday",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 50,
-                color: !isDarkMode ? Colors.grey[800] : Colors.grey[300]      
+                color: !isDarkMode ? Colors.grey[800] : Colors.grey[300],
               ),
             ),
             SizedBox(height: 6),
@@ -220,12 +226,12 @@ class _MyWidgetState extends State<OnboardingPage> {
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 22,
-                color: Theme.of(context).colorScheme.primary            
+                color: Theme.of(context).colorScheme.primary,
               ),
-            )
-          ]      
+            ),
+          ],
         ),
-      )
+      ),
     );
   }
 }
