@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import "package:timezone/data/latest.dart" as tz;
 import "package:flutter_timezone/flutter_timezone.dart";
