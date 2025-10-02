@@ -5,7 +5,7 @@ import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/features/home/home_page.dart';
 import 'package:provider/provider.dart';
 
-void editHabit(
+void editHabitName(
   BuildContext context,
   Habit habit,
   TextEditingController controller,
@@ -28,7 +28,7 @@ void editHabit(
   showCustomDialog(
     context,
     controller: controller,
-    title: "Edit name",
+    title: "Edit Habit",
     hintText: "New habit name",
     actions: (clear, updateHabit),
     zoomTransition: false,

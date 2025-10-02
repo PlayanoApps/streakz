@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:habit_tracker/features/analysis/analysis_page.dart';
+import 'package:habit_tracker/features/analysis/presentation/analysis_page.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
 import 'package:lottie/lottie.dart';

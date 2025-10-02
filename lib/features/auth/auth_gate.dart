@@ -127,14 +127,6 @@ class _AuthPageState extends State<AuthPage> {
 
   Future<void> _loadFromFirestore(User user) async {
     bool debug = true;
-    bool forceReset = false;
-
-    /* if (forceReset) {
-      await HabitDatabase.isar.writeTxn(() async {
-        await HabitDatabase.isar.habits.clear();
-      });
-      if (debug) showCustomDialog(context, title: "DEBUG: Cleared Isar");
-    }  */
 
     bool hasInternet = await hasInternetConnection();
 
@@ -146,26 +138,27 @@ class _AuthPageState extends State<AuthPage> {
           title: "Internet connection --> Clear isar, load from firestore",
         );
 
-      if (forceReset) {
-        await HabitDatabase.isar.writeTxn(() async {
-          await HabitDatabase.isar.habits.clear();
-        });
-      }
+      await HabitDatabase.isar.writeTxn(() async {
+        await HabitDatabase.isar.habits.clear();
+      });
 
+      // Load from Firestore
       await FirestoreDatabase(
         HabitDatabase.isar,
       ).loadFromFirestore(user, context);
 
-      // No habits in Firestore --> new user
       final countAfterDownload = await HabitDatabase.isar.habits.count();
+
+      // No habits in Firestore --> new user
       if (countAfterDownload == 0) {
-        if (debug)
-          showCustomDialog(context, title: "Firestore empty --> new user");
+        if (debug) showCustomDialog(context, title: "FS empty");
 
         final prefs = await SharedPreferences.getInstance();
         final showOnboarding = prefs.getBool("showOnboarding");
 
         if (showOnboarding == null || showOnboarding == true) {
+          if (debug) showCustomDialog(context, title: "New user");
+
           await HabitDatabase.loadDefaultHabits();
 
           try {
@@ -178,31 +171,16 @@ class _AuthPageState extends State<AuthPage> {
         }
       }
     }
-    // User has no internet --> Load from isar
+    // User has no internet --> Do not clear isar
     else {
       if (debug)
         showCustomDialog(
           context,
-          title: "User has no internet --> Prioritize local habits",
+          title: "User has no internet --> Prioritize local",
         );
-
-      // If user has internet now, sync with firestore
-      try {
-        bool hasInternet = await hasInternetConnection();
-
-        if (hasInternet) {
-          await FirestoreDatabase(HabitDatabase.isar)
-              .syncToFirestore(user, context: context)
-              .timeout(Duration(seconds: 5));
-          if (debug) showCustomDialog(context, title: "Sync successful");
-        } else if (debug)
-          showCustomDialog(context, title: "No internet - skipping sync");
-      } catch (e) {
-        if (debug) showCustomDialog(context, title: "Error syncing to cloud");
-      }
     }
 
-    /*  try {
+    /* try {
       final localCount = await HabitDatabase.isar.habits.count();
 
       // Isar habits empty --> Download from firestore

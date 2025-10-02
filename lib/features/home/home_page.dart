@@ -67,18 +67,10 @@ class _HomePageState extends State<HomePage> {
 
       // Delete default habits after showcase --> main
       // Set Onboarding pref to false --> main
-
-      /* await Future.delayed(Duration(seconds: 10));
-      ScaffoldMessenger.of(context).showSnackBar(
-        mySnackBar(
-          context, 
-          "Delete the demo habits and add your own to get started!"
-        ),
-      ); */
     });
   }
 
-  // text controller
+  // Boxes
   final TextEditingController textController = TextEditingController();
 
   void clear() async {
@@ -107,8 +99,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /* Functions to pass to HabitTile Widget */
-
+  // Habit actions
   void checkHabitOnOff(bool? value, Habit habit) {
     // Update habit completion status
     if (value != null) {
@@ -176,37 +167,14 @@ class _HomePageState extends State<HomePage> {
     final deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
-
-        title: Center(
-          child: Text("S T R E A K Z", style: TextStyle(fontSize: 19)),
-        ),
-        actions: [
-          MyShowcase(
-            globalKey: _addHabitKey,
-            description: "Add new habits here",
-            child: IconButton(
-              onPressed: createNewHabit,
-              icon: Icon(
-                Icons.add,
-                color: Theme.of(context).colorScheme.inversePrimary,
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: _appBar(),
       drawer: MyDrawer(),
       drawerEnableOpenDragGesture: false,
-
       body: Stack(
         children: [
           ListView(
             children: [
               _divider(),
-
-              //SizedBox(height: 0, child: _buildHeatmap()),
               _buildHeatmap(),
               SizedBox(height: 24), // 16
               _buildHabitList(),
@@ -216,6 +184,29 @@ class _HomePageState extends State<HomePage> {
           _bottomGradient(),
         ],
       ),
+    );
+  }
+
+  PreferredSizeWidget _appBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+      title: Center(
+        child: Text("S T R E A K Z", style: TextStyle(fontSize: 19)),
+      ),
+      actions: [
+        MyShowcase(
+          globalKey: _addHabitKey,
+          description: "Add new habits here",
+          child: IconButton(
+            onPressed: createNewHabit,
+            icon: Icon(
+              Icons.add,
+              color: Theme.of(context).colorScheme.inversePrimary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -281,17 +272,10 @@ class _HomePageState extends State<HomePage> {
   Widget _buildHabitList() {
     final isDarkMode = (Theme.of(context).brightness == Brightness.dark);
 
-    // Get list of habits, sort out archieved
+    // Get list of habits
     List<Habit> habitsList = Provider.of<HabitDatabase>(context).habitsList;
-    /* List<Habit> habitsList =
-        Provider.of<HabitDatabase>(
-          context,
-        ).habitsList.where((habit) => !habit.isArchived).toList(); */
 
-    if ( /* habitsList
-        .isNotEmpty  */ habitsList
-        .where((habit) => !habit.isArchived)
-        .isNotEmpty) {
+    if (habitsList.where((habit) => !habit.isArchived).isNotEmpty) {
       return MyShowcase(
         globalKey: _habitListKey2,
         title: "Habit Actions",
@@ -309,10 +293,7 @@ class _HomePageState extends State<HomePage> {
             onReorder: (n, i) => reorderTile(habitsList, n, i),
 
             children: [
-              for (final habit
-                  in habitsList /* .where(
-                (habit) => !habit.isArchived,
-              )*/ )
+              for (final habit in habitsList)
                 habit.isArchived
                     ? SizedBox(key: ValueKey('archived_${habit.name}'))
                     : HabitTile(

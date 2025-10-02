@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker/components/common/menu_items.dart';
 import 'package:habit_tracker/features/analysis/logic/analysis_functions.dart';
 import 'package:habit_tracker/features/analysis/presentation/analysis_heatmap.dart';
 import 'package:habit_tracker/features/analysis/presentation/analysis_tile.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
+import 'package:popover/popover.dart';
 import 'package:provider/provider.dart';
 
 class HabitAnalysisPage extends StatelessWidget {
@@ -147,7 +149,8 @@ class HabitAnalysisPage extends StatelessWidget {
                 padding: EdgeInsets.only(right: 10),
                 child: IconButton(
                   onPressed:
-                      () => editHabit(context, habit, nameController, clear),
+                      () =>
+                          editHabitName(context, habit, nameController, clear),
                   icon: Icon(
                     Icons.settings,
                     color: Theme.of(

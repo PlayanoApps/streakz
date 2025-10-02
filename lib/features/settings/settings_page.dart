@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:habit_tracker/components/common/custom_dialog.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:habit_tracker/features/settings/presentation/archive_page.dart';
+import 'package:habit_tracker/features/settings/archive_page.dart';
 import 'package:habit_tracker/features/settings/presentation/settings_tile.dart';
 import 'package:habit_tracker/features/settings/presentation/theme_dialog.dart';
 import 'package:habit_tracker/services/noti_service.dart';
