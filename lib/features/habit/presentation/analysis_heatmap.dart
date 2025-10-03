@@ -3,7 +3,7 @@ import 'package:habit_tracker/_heatmap_calendar/src/data/heatmap_color_mode.dart
 import 'package:habit_tracker/_heatmap_calendar/src/heatmap.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:habit_tracker/features/analysis/presentation/analysis_tile.dart';
+import 'package:habit_tracker/features/habit/presentation/analysis_tile.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
