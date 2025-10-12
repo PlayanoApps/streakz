@@ -89,3 +89,31 @@ String numberToMonth(int month) {
   }
   return count;
 } */
+
+int shiftMonth(int month, int shift) {
+  // Normalize to 0-11 range, apply shift, then back to 1-12 range
+  return ((month - 1 + shift) % 12 + 12) % 12 + 1;
+}
+/* 
+int calculateMonthDifference(int currentMonth, int lastMonth) {
+  int diff = currentMonth - lastMonth;
+  if (diff < 0) {
+    diff += 12;
+  }
+  return diff;
+}
+ */
+
+int calculateMonthDifference(
+  int currentMonth,
+  int currentYear,
+  int lastMonth,
+  int lastYear,
+) {
+  // Convert both dates to total months since year 0
+  int totalCurrent = currentYear * 12 + currentMonth;
+  int totalLast = lastYear * 12 + lastMonth;
+
+  // Difference in months (can be positive or negative)
+  return totalCurrent - totalLast;
+}

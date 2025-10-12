@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:habit_tracker/components/common/custom_dialog.dart";
 import "package:habit_tracker/database/habit_database.dart";
+import "package:habit_tracker/features/analytics/analytics_page.dart";
 import "package:habit_tracker/features/profile/profile_page.dart";
 import "package:habit_tracker/features/settings/settings_page.dart";
 import "package:lottie/lottie.dart";
@@ -44,12 +45,9 @@ class MyDrawer extends StatelessWidget {
         labels: ("Yes", "Cancel"),
         actions: (() => signOut(), () => Navigator.pop(context)),
       );
-
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingPage()));
     }
 
     return Drawer(
-      // Access background color from color schemes defined in my custom theme (assigned in main.dart)
       backgroundColor: Theme.of(context).colorScheme.surface,
 
       child: Column(
@@ -116,8 +114,33 @@ class MyDrawer extends StatelessWidget {
                   ),
                 ),
               ),
-              // Profile
               Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () async {
+                    HapticFeedback.mediumImpact();
+                    await Future.delayed(Duration(milliseconds: 155));
+
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AnalyticsPage()),
+                    );
+                  },
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.analytics_rounded,
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                    title: Text("A N A L Y S I S"),
+                    horizontalTitleGap: 20,
+                  ),
+                ),
+              ),
+
+              // Profile
+              /* Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
@@ -141,21 +164,6 @@ class MyDrawer extends StatelessWidget {
                     horizontalTitleGap: 20,
                   ),
                 ),
-              ),
-
-              /* Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: ListTile(
-                  leading: Icon(Icons.analytics, color: Theme.of(context).colorScheme.inversePrimary), 
-                  title: Text("A N A L Y T I C S"), 
-                  horizontalTitleGap: 20,
-                  onTap: () async {
-                    HapticFeedback.mediumImpact(); 
-                    await Future.delayed(Duration(milliseconds: 120));
-                    Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => StatisticsPage()));
-                  }
-                )
               ), */
             ],
           ),

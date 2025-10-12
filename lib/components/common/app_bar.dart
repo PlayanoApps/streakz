@@ -30,15 +30,20 @@ class MyAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           MyIconButton(icon: Icons.arrow_back_rounded),
-          //SizedBox(width: 15), // 15
-          Text(
-            title,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onPrimary,
-              fontSize: 21, // 22
-              fontWeight: FontWeight.w700,
+          SizedBox(width: 20),
+          Expanded(
+            child: Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+                fontSize: 21, // 22
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
+          SizedBox(width: 20),
           MyIconButton(icon: endIcon, onTap: endAction),
         ],
       ),
@@ -60,11 +65,11 @@ class MyIconButton extends StatelessWidget {
               ? null
               : onTap != null
               ? () {
-                HapticFeedback.lightImpact();
+                //HapticFeedback.lightImpact();
                 onTap!();
               }
               : () async {
-                HapticFeedback.lightImpact();
+                //HapticFeedback.lightImpact();
                 await Future.delayed(Duration(milliseconds: 120));
                 Navigator.pop(context);
               },

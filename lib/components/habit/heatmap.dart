@@ -218,6 +218,7 @@ class HeatmapAnimation {
         Provider.of<HabitDatabase>(
           context,
         ).habitsList.where((habit) => !habit.isArchived).toList();
+
     int habitsAmount =
         habits.length; //Provider.of<HabitDatabase>(context).habitsList.length;
 

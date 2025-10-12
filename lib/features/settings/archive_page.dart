@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:habit_tracker/components/common/app_bar.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/features/habit/presentation/analysis_page.dart';
 import 'package:habit_tracker/models/habit.dart';
@@ -12,7 +13,7 @@ class ArchivePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /* appBar: AppBar(
         title: Center(
           child: Text(
             "A R C H I V E D",
@@ -39,10 +40,10 @@ class ArchivePage extends StatelessWidget {
             icon: Icon(Icons.abc, color: Colors.transparent),
           ),
         ],
-      ),
+      ), */
       body: Column(
         children: [
-          // MyAppBar(title: "Archived habits", bottomPadding: 5),
+          MyAppBar(title: "Archived habits", bottomPadding: 20),
           Expanded(
             child: Consumer<HabitDatabase>(
               builder: (context, habitDatabase, child) {
@@ -64,6 +65,7 @@ class ArchivePage extends StatelessWidget {
                 }
 
                 return ListView.builder(
+                  padding: EdgeInsets.zero,
                   itemCount: archivedHabits.length,
                   itemBuilder: (context, index) {
                     return _tile(context, archivedHabits[index]);

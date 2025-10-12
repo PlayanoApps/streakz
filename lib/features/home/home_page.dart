@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:habit_tracker/components/common/bottom_gradient.dart';
 import 'package:habit_tracker/components/common/custom_dialog.dart';
 import 'package:habit_tracker/components/habit/habit_tile.dart';
 import 'package:habit_tracker/components/habit/heatmap.dart';
@@ -170,7 +171,30 @@ class _HomePageState extends State<HomePage> {
       appBar: _appBar(),
       drawer: MyDrawer(),
       drawerEnableOpenDragGesture: false,
-      body: Stack(
+      body: Column(
+        children: [
+          _divider(),
+          _buildHeatmap(),
+
+          Expanded(
+            child: Stack(
+              children: [
+                ListView(
+                  physics: BouncingScrollPhysics(),
+                  children: [
+                    SizedBox(height: 24),
+                    _buildHabitList(),
+                    SizedBox(height: 30),
+                  ],
+                ),
+                MyGradient(top: true, height: 30),
+                MyGradient(height: 40),
+              ],
+            ),
+          ),
+        ],
+      ),
+      /* body: Stack(
         children: [
           ListView(
             children: [
@@ -181,9 +205,9 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 30),
             ],
           ),
-          _bottomGradient(),
+          BottomGradient(height: 50), // 35
         ],
-      ),
+      ), */
     );
   }
 
@@ -191,6 +215,8 @@ class _HomePageState extends State<HomePage> {
     return AppBar(
       backgroundColor: Colors.transparent,
       foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+      surfaceTintColor: Colors.transparent, // Scroll color
+
       title: Center(
         child: Text("S T R E A K Z", style: TextStyle(fontSize: 19)),
       ),
@@ -207,31 +233,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _bottomGradient() {
-    return Positioned(
-      left: 0,
-      right: 0,
-      bottom: 0,
-      height: 35,
-      child: AbsorbPointer(
-        // Block touches (vs IgnorePointer)
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [
-                Theme.of(context).colorScheme.surface.withOpacity(1),
-                Theme.of(context).colorScheme.surface.withOpacity(0),
-              ],
-              stops: [0.25, 1],
-            ),
-          ),
-        ),
-      ),
     );
   }
 

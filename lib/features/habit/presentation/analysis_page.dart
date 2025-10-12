@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/common/menu_items.dart';
+import 'package:habit_tracker/components/common/app_bar.dart';
 import 'package:habit_tracker/features/habit/logic/analysis_functions.dart';
 import 'package:habit_tracker/features/habit/presentation/analysis_heatmap.dart';
 import 'package:habit_tracker/features/habit/presentation/analysis_tile.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
-import 'package:popover/popover.dart';
 import 'package:provider/provider.dart';
 
 class HabitAnalysisPage extends StatelessWidget {
@@ -122,7 +121,7 @@ class HabitAnalysisPage extends StatelessWidget {
         );
 
         return Scaffold(
-          appBar: AppBar(
+          /* appBar: AppBar(
             title: Center(
               child: Text(
                 currentHabit.name,
@@ -161,27 +160,42 @@ class HabitAnalysisPage extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-          body: ListView(
+          ), */
+          body: Column(
             children: [
-              SizedBox(height: 10),
-
-              _habitDescription(
-                context,
-                currentHabit,
-                descriptionController,
-                clear,
-                /* addHabitDescription,
-                deleteHabitDescription, */
+              MyAppBar(
+                title: currentHabit.name,
+                bottomPadding: 5,
+                endAction:
+                    () => editHabitName(context, habit, nameController, clear),
+                endIcon: Icons.edit,
               ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  physics: BouncingScrollPhysics(),
+                  children: [
+                    SizedBox(height: 10),
 
-              AnalysisHeatmap(habit: currentHabit),
+                    _habitDescription(
+                      context,
+                      currentHabit,
+                      descriptionController,
+                      clear,
+                      /* addHabitDescription,
+                    deleteHabitDescription, */
+                    ),
 
-              _streaks(context, currentHabit),
+                    AnalysisHeatmap(habit: currentHabit),
 
-              _archiveHabit(context, habit, clear),
+                    _streaks(context, currentHabit),
 
-              SizedBox(height: 20),
+                    _archiveHabit(context, habit, clear),
+
+                    SizedBox(height: 20),
+                  ],
+                ),
+              ),
             ],
           ),
         );

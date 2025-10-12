@@ -19,7 +19,7 @@ class SettingsTile extends StatelessWidget {
     bool darkMode = (Theme.of(context).brightness == Brightness.dark);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25), // 5.5
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20), // 25
       child: Material(
         child: InkWell(
           onTap: onTap,

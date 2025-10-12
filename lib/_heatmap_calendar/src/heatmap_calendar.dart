@@ -165,8 +165,10 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
         _currentDate!.month == _firstLaunchDate!.month;
   }
 
-  bool monthsInFuture(int amount) {
-    return _currentDate!.month == (DateTime.now().month + amount);
+  bool monthInFuture(int amount) {
+    //return _currentDate!.month == (DateTime.now().month + amount) ;
+    return _currentDate!.month == DateTime.now().month &&
+        _currentDate!.year == DateTime.now().year;
   }
 
   void changeMonth(int direction) {
@@ -188,6 +190,8 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
 
   /// Header widget which shows left, right buttons and year/month text.
   Widget _header(context) {
+    bool darkMode = (Theme.of(context).brightness == Brightness.dark);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -209,7 +213,7 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
           '${DateUtil.MONTH_LABEL[_currentDate?.month ?? 0]} ${_currentDate?.year}',
           style: TextStyle(
             fontSize: widget.monthFontSize ?? 12,
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: darkMode ? Colors.grey.shade300 : Colors.grey.shade800,
           ),
         ),
 
@@ -219,11 +223,11 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
             Icons.arrow_forward_ios,
             size: 14,
             color:
-                monthsInFuture(0)
+                monthInFuture(0)
                     ? Theme.of(context).colorScheme.primary.withAlpha(100)
                     : Theme.of(context).colorScheme.inversePrimary,
           ),
-          onPressed: monthsInFuture(0) ? null : () => changeMonth(1),
+          onPressed: monthInFuture(0) ? null : () => changeMonth(1),
         ),
       ],
     );

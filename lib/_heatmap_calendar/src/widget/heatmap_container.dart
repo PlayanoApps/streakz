@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:habit_tracker/components/habit/snackbar.dart';
 import '../data/heatmap_color.dart';
 
 class HeatMapContainer extends StatelessWidget {
@@ -42,6 +44,12 @@ class HeatMapContainer extends StatelessWidget {
             await Future.delayed(const Duration(microseconds: 50));
             if (onClick != null) onClick!(date);
           },
+          onTap: () {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(mySnackBar(context, "Long-press to edit heatmap"));
+          },
+
           borderRadius: BorderRadius.circular(borderRadius ?? 5),
           highlightColor: Colors.grey.withAlpha(70),
           splashColor: Colors.grey.withAlpha(40),

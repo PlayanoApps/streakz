@@ -90,107 +90,157 @@ class HeatMapCalendarRow extends StatelessWidget {
     this.datasets,
     this.maxValue,
     this.onClick,
-  })  : dayContainers = List<Widget>.generate(
-          7,
-          // If current week has first day of the month and
-          // the first day is not a sunday, it must have extra space on it.
-          // Then fill it with empty Container for extra space.
-          //
-          // Do same works if current week has last day of the month and
-          // the last day is not a saturday.
-          (i) => (startDate == DateUtil.startDayOfMonth(startDate) &&
-                      endDate.day - startDate.day != 7 &&
-                      i < (startDate.weekday % 7)) ||
-                  (endDate == DateUtil.endDayOfMonth(endDate) &&
-                      endDate.day - startDate.day != 7 &&
-                      i > (endDate.weekday % 7))
-              ? Container(
-                  width: size ?? 42,
-                  height: size ?? 42,
-                  margin: margin ?? const EdgeInsets.all(2),
-                )
-              // If the day is not a empty one then create HeatMapContainer.
-              : HeatMapContainer(
-                  // Given information about the week is that
-                  // start day of week value and end day of week.
-                  //
-                  // So we have to give every day information to each HeatMapContainer.
-                  date: DateTime(startDate.year, startDate.month,
-                      startDate.day - startDate.weekday % 7 + i),
-                  
-                  // HIGHLIGHED BACKGROUND COLOR
-                  backgroundColor: (() {
-                    final currentDate = DateTime(startDate.year,startDate.month, startDate.day - startDate.weekday % 7 + i);
-                    final normalizedCurrentDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
+  }) : dayContainers = List<Widget>.generate(
+         7,
+         // If current week has first day of the month and
+         // the first day is not a sunday, it must have extra space on it.
+         // Then fill it with empty Container for extra space.
+         //
+         // Do same works if current week has last day of the month and
+         // the last day is not a saturday.
+         (i) =>
+             (startDate == DateUtil.startDayOfMonth(startDate) &&
+                         endDate.day - startDate.day != 7 &&
+                         i < (startDate.weekday % 7)) ||
+                     (endDate == DateUtil.endDayOfMonth(endDate) &&
+                         endDate.day - startDate.day != 7 &&
+                         i > (endDate.weekday % 7))
+                 ? Container(
+                   width: size ?? 42,
+                   height: size ?? 42,
+                   margin: margin ?? const EdgeInsets.all(2),
+                 )
+                 // If the day is not a empty one then create HeatMapContainer.
+                 : HeatMapContainer(
+                   // Given information about the week is that
+                   // start day of week value and end day of week.
+                   //
+                   // So we have to give every day information to each HeatMapContainer.
+                   date: DateTime(
+                     startDate.year,
+                     startDate.month,
+                     startDate.day - startDate.weekday % 7 + i,
+                   ),
 
-                    final today = DateTime.now();
-                    final normalizedToday = DateTime(today.year, today.month, today.day);
+                   // HIGHLIGHED BACKGROUND COLOR
+                   backgroundColor:
+                       (() {
+                         final currentDate = DateTime(
+                           startDate.year,
+                           startDate.month,
+                           startDate.day - startDate.weekday % 7 + i,
+                         );
+                         final normalizedCurrentDate = DateTime(
+                           currentDate.year,
+                           currentDate.month,
+                           currentDate.day,
+                         );
 
-                    final isToday = (normalizedCurrentDate == normalizedToday);
-                    final noHabitCompleted = datasets?[normalizedCurrentDate] ?? 0;
+                         final today = DateTime.now();
+                         final normalizedToday = DateTime(
+                           today.year,
+                           today.month,
+                           today.day,
+                         );
 
-                    // If this tile is todays tile and no habits are yet completed
-                    return (isToday && noHabitCompleted == 0 && highlightedColor != null) ? highlightedColor : defaultColor;
-                  })(),
+                         final isToday =
+                             (normalizedCurrentDate == normalizedToday);
+                         final noHabitCompleted =
+                             datasets?[normalizedCurrentDate] ?? 0;
 
-                  highlightedBorderColor: (() {
-                    final currentDate = DateTime(startDate.year,startDate.month, startDate.day - startDate.weekday % 7 + i);
-                    final normalizedCurrentDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
+                         // If this tile is todays tile and no habits are yet completed
+                         return (isToday &&
+                                 noHabitCompleted == 0 &&
+                                 highlightedColor != null)
+                             ? highlightedColor
+                             : defaultColor;
+                       })(),
 
-                    final today = DateTime.now();
-                    final normalizedToday = DateTime(today.year, today.month, today.day);
+                   highlightedBorderColor:
+                       (() {
+                         final currentDate = DateTime(
+                           startDate.year,
+                           startDate.month,
+                           startDate.day - startDate.weekday % 7 + i,
+                         );
+                         final normalizedCurrentDate = DateTime(
+                           currentDate.year,
+                           currentDate.month,
+                           currentDate.day,
+                         );
 
-                    final isToday = (normalizedCurrentDate == normalizedToday);
-                    final noHabitCompleted = datasets?[normalizedCurrentDate] ?? 0;
+                         final today = DateTime.now();
+                         final normalizedToday = DateTime(
+                           today.year,
+                           today.month,
+                           today.day,
+                         );
 
-                    // If this tile is todays tile and no habits are yet completed
-                    return (isToday && noHabitCompleted == 0 && highlightedBorderColor != null) ? highlightedBorderColor : null;
-                  })(),
+                         final isToday =
+                             (normalizedCurrentDate == normalizedToday);
+                         final noHabitCompleted =
+                             datasets?[normalizedCurrentDate] ?? 0;
 
-                  highlightedBorderWith: highlightedBorderWith,
+                         // If this tile is todays tile and no habits are yet completed
+                         return (isToday &&
+                                 noHabitCompleted == 0 &&
+                                 highlightedBorderColor != null)
+                             ? highlightedBorderColor
+                             : null;
+                       })(),
 
-                  size: size,
-                  fontSize: fontSize,
-                  textColor: textColor,
-                  borderRadius: borderRadius,
-                  margin: margin,
-                  onClick: onClick,
-                  // If datasets has DateTime key which is equal to this HeatMapContainer's date,
-                  // we have to color the matched HeatMapContainer.
-                  //
-                  // If datasets is null or doesn't contains the equal DateTime value, send null.
-                  selectedColor: datasets?.keys.contains(DateTime(
-                              startDate.year,
-                              startDate.month,
-                              startDate.day - startDate.weekday % 7 + i)) ??
-                          false
-                      // If colorMode is ColorMode.opacity,
-                      ? colorMode == ColorMode.opacity
-                          // Color the container with first value of colorsets
-                          // and set opacity value to current day's datasets key
-                          // devided by maxValue which is the maximum value of the month.
-                          ? colorsets?.values.first.withOpacity((datasets?[
-                                      DateTime(
-                                          startDate.year,
-                                          startDate.month,
-                                          startDate.day +
-                                              i -
-                                              (startDate.weekday % 7))] ??
-                                  1) /
-                              (maxValue ?? 1))
-                          // Else if colorMode is ColorMode.Color.
-                          //
-                          // Get color value from colorsets which is filtered with DateTime value
-                          // Using DatasetsUtil.getColor()
-                          : DatasetsUtil.getColor(
-                              colorsets,
-                              datasets?[DateTime(
-                                  startDate.year,
-                                  startDate.month,
-                                  startDate.day + i - (startDate.weekday % 7))])
-                      : null,
-                ),
-        );
+                   highlightedBorderWith: highlightedBorderWith,
+
+                   size: size,
+                   fontSize: fontSize,
+                   textColor: textColor,
+                   borderRadius: borderRadius,
+                   margin: margin,
+                   onClick: onClick,
+                   // If datasets has DateTime key which is equal to this HeatMapContainer's date,
+                   // we have to color the matched HeatMapContainer.
+                   //
+                   // If datasets is null or doesn't contains the equal DateTime value, send null.
+                   selectedColor:
+                       datasets?.keys.contains(
+                                 DateTime(
+                                   startDate.year,
+                                   startDate.month,
+                                   startDate.day - startDate.weekday % 7 + i,
+                                 ),
+                               ) ??
+                               false
+                           // If colorMode is ColorMode.opacity,
+                           ? colorMode == ColorMode.opacity
+                               // Color the container with first value of colorsets
+                               // and set opacity value to current day's datasets key
+                               // devided by maxValue which is the maximum value of the month.
+                               ? colorsets?.values.first.withOpacity(
+                                 (datasets?[DateTime(
+                                           startDate.year,
+                                           startDate.month,
+                                           startDate.day +
+                                               i -
+                                               (startDate.weekday % 7),
+                                         )] ??
+                                         1) /
+                                     (maxValue ?? 1),
+                               )
+                               // Else if colorMode is ColorMode.Color.
+                               //
+                               // Get color value from colorsets which is filtered with DateTime value
+                               // Using DatasetsUtil.getColor()
+                               : DatasetsUtil.getColor(
+                                 colorsets,
+                                 datasets?[DateTime(
+                                   startDate.year,
+                                   startDate.month,
+                                   startDate.day + i - (startDate.weekday % 7),
+                                 )],
+                               )
+                           : null,
+                 ),
+       );
 
   @override
   Widget build(BuildContext context) {

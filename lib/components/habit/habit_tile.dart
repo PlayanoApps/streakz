@@ -19,6 +19,8 @@ class HabitTile extends StatelessWidget {
   final void Function(BuildContext)? editHabit;
   final void Function(BuildContext)? deleteHabit;
 
+  final double borderRadius = 16;
+
   const HabitTile({
     super.key,
     required this.habit,
@@ -99,15 +101,13 @@ class HabitTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25), // vertical 5
       child: Slidable(
         endActionPane: _endActionPane(darkMode),
-        // startActionPane: _startActionPane(darkMode),
 
         // Habit Tile
         child: Material(
           child: InkWell(
             // Checkbox provides value to callback function automatically
             onTap: () => checkboxChanged!(!isCompleted),
-            onLongPress: null,
-            borderRadius: BorderRadius.circular(16), // 10, 18
+            borderRadius: BorderRadius.circular(borderRadius), // 10, 18
             splashColor:
                 crossCompletedHabit
                     ? Colors.grey.withAlpha(0)
@@ -144,7 +144,7 @@ class HabitTile extends StatelessWidget {
                           ? Colors.grey.withAlpha(30)
                           : Colors.white.withAlpha(100),
                 ),
-                borderRadius: BorderRadius.circular(18), // 10
+                borderRadius: BorderRadius.circular(borderRadius), // 10
               ),
               child: _tileContent(
                 context,
@@ -279,7 +279,7 @@ class HabitTile extends StatelessWidget {
           backgroundColor:
               darkMode ? Colors.grey.shade800 : Colors.grey.shade600,
           icon: Icons.settings,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(borderRadius),
         ),
 
         SizedBox(width: 7),
@@ -294,27 +294,8 @@ class HabitTile extends StatelessWidget {
                   ? Color.fromARGB(222, 198, 40, 40)
                   : Color.fromARGB(233, 239, 83, 80),
           icon: Icons.delete,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(borderRadius),
         ),
-      ],
-    );
-  }
-
-  ActionPane _startActionPane(bool darkMode) {
-    return ActionPane(
-      motion: StretchMotion(),
-      extentRatio: 0.4,
-      children: [
-        SlidableAction(
-          onPressed: (BuildContext context) => navigateToHabitAnalysis(context),
-          backgroundColor:
-              darkMode
-                  ? Color.fromARGB(190, 33, 149, 243)
-                  : Color.fromARGB(190, 33, 149, 243),
-          icon: Icons.analytics,
-          borderRadius: BorderRadius.circular(18),
-        ),
-        SizedBox(width: 7),
       ],
     );
   }

@@ -126,7 +126,7 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Future<void> _loadFromFirestore(User user) async {
-    bool debug = true;
+    bool debug = false;
 
     bool hasInternet = await hasInternetConnection();
 

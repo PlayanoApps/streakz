@@ -1,7 +1,7 @@
 name: habit_tracker
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.7.17+46
+version: 1.8.6+53
 
 environment:
   sdk: ^3.7.2
@@ -33,6 +33,10 @@ dependencies:
   image_picker: ^1.2.0
   package_info_plus: ^9.0.0
   popover: ^0.3.1
+  fl_chart: ^0.69.0
+
+dependency_overrides:
+  vector_math: ^2.1.0
 
 
 dev_dependencies:

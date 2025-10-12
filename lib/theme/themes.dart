@@ -14,7 +14,7 @@ ThemeData lightMode = ThemeData(
     ), // Secondary but lighter (for heatmap background in analysis)
     tertiary: Colors.white,
     inversePrimary: Colors.grey.shade600,
-    onPrimary: Colors.grey.shade900,
+    onPrimary: Colors.grey.shade900, // 900
   ),
   textTheme: GoogleFonts.latoTextTheme(), // Roboto, inter, lato, poppings
 );
