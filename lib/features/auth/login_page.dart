@@ -59,8 +59,7 @@ class _LoginPageState extends State<LoginPage> {
       String message = e.code;
 
       if (e.code == "invalid-credential")
-        message =
-            "Please check your email and password.\n\nSupport: playano.info@gmail.com";
+        message = "Please check your email and password.";
       if (e.code == "invalid-email") message = "This email does not exist.";
 
       showCustomDialog(

@@ -26,13 +26,13 @@ import 'package:habit_tracker/components/common/my_blur.dart';
 
  */
 
-SnackBar mySnackBar(BuildContext context, String text) {
+SnackBar mySnackBar(BuildContext context, String text, int milliseconds) {
   return SnackBar(
     backgroundColor: Colors.transparent, // Important: no solid color
     elevation: 0,
-    duration: Duration(seconds: 2),
+    duration: Duration(milliseconds: milliseconds),
     behavior: SnackBarBehavior.floating,
-    margin: EdgeInsets.all(13),
+    margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
     padding: EdgeInsets.zero, // We’ll handle padding inside the blur box
 
     content: MyBlur(

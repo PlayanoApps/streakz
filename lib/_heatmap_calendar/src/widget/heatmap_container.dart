@@ -45,9 +45,10 @@ class HeatMapContainer extends StatelessWidget {
             if (onClick != null) onClick!(date);
           },
           onTap: () {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(mySnackBar(context, "Long-press to edit heatmap"));
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              mySnackBar(context, "Long-press to edit heatmap", 1500),
+            );
           },
 
           borderRadius: BorderRadius.circular(borderRadius ?? 5),

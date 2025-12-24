@@ -121,7 +121,7 @@ class HabitTile extends StatelessWidget {
                     ? (crossCompletedHabit ? null : accentColor[600])
                     : Colors.grey.withAlpha(50),
 
-            // Container
+            // Habit Container
             child: Ink(
               decoration: BoxDecoration(
                 color:
@@ -146,6 +146,7 @@ class HabitTile extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(borderRadius), // 10
               ),
+              // Row
               child: _tileContent(
                 context,
                 darkMode,
@@ -166,71 +167,79 @@ class HabitTile extends StatelessWidget {
     bool crossCompleted,
   ) {
     return Padding(
-      padding: EdgeInsets.only(
-        left: 26,
-        right: 24,
-        top: 16,
-        bottom: 16,
-      ), // top/btm 16
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: EdgeInsets.only(left: 26, right: 24, top: 16, bottom: 16),
+      child: Stack(
         children: [
-          // Leading Checkbox & Text
-          Expanded(
-            child: Row(
-              children: [
-                Checkbox(
-                  activeColor:
-                      crossCompleted
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
-                  checkColor:
-                      crossCompleted
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.white,
-                  value: isCompleted,
-                  onChanged: checkboxChanged,
-                ),
-                SizedBox(width: 16),
-                // Text
-                Expanded(
-                  child: Text(
-                    habit.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color:
-                          isCompleted
-                              ? (crossCompleted
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.white)
-                              : Theme.of(context).colorScheme.onPrimary,
-                      fontSize: 16.5,
-                      letterSpacing: 0.5,
-                      height: 1.4,
-                      decoration:
-                          (isCompleted && crossCompleted)
-                              ? TextDecoration.lineThrough
-                              : null,
-                      decorationColor: darkMode ? Colors.white : Colors.black,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Leading Checkbox & Text
+              Expanded(
+                child: Row(
+                  children: [
+                    Checkbox(
+                      activeColor:
+                          crossCompleted
+                              ? Theme.of(context).colorScheme.secondary
+                              : Colors.transparent,
+                      checkColor:
+                          crossCompleted
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.white,
+                      value: isCompleted,
+                      onChanged: checkboxChanged,
                     ),
+                    SizedBox(width: 16),
+                    // Text
+                    Expanded(
+                      child: Text(
+                        habit.name,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color:
+                              isCompleted
+                                  ? (crossCompleted
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.white)
+                                  : Theme.of(context).colorScheme.onPrimary,
+                          fontSize: 16.5,
+                          letterSpacing: 0.5,
+                          height: 1.4,
+                          decoration:
+                              (isCompleted && crossCompleted)
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                          decorationColor:
+                              darkMode ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Trailing Button
+              !isCompleted
+                  ? IconButton(
+                    onPressed: () => navigateToHabitAnalysis(context),
+                    icon: Icon(
+                      Icons.arrow_forward,
+                      size: 24,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                  : IconButton(
+                    onPressed: null,
+                    icon: Icon(Icons.abc, color: Colors.transparent),
                   ),
-                ),
-              ],
-            ),
+            ],
           ),
-          // Trailing Button
-          !isCompleted
-              ? IconButton(
-                onPressed: () => navigateToHabitAnalysis(context),
-                icon: Icon(
-                  Icons.arrow_forward,
-                  size: 24,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              )
-              : _showStreak(context, darkMode, crossCompleted),
-          //IconButton(onPressed: null, icon: Icon(Icons.abc, color: Colors.transparent))
+          Positioned(
+            right: 0,
+            child: _showStreak(context, darkMode, crossCompleted),
+          ),
         ],
       ),
     );
@@ -247,7 +256,7 @@ class HabitTile extends StatelessWidget {
         children: [
           SizedBox(
             width: 35,
-            height: 30.2,
+            height: 30.2, // 30.2
             child: LottieBuilder.asset("assets/streak4.json"),
           ),
           Text(

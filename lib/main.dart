@@ -36,6 +36,9 @@ void main() async {
   ); // Open instance here instead of in runApp
   await themeProvider.loadTheme();
 
+  // Lock orientation to portrait only
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   runApp(
     MultiProvider(
       providers: [

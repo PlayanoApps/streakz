@@ -13,7 +13,7 @@ class MyBlur extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2), // translucent overlay
             borderRadius: BorderRadius.circular(15),

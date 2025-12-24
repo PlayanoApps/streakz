@@ -193,8 +193,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
-      ),
-      /* body: Stack(
+      ) /* Stack(
         children: [
           ListView(
             children: [
@@ -205,9 +204,9 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 30),
             ],
           ),
-          BottomGradient(height: 50), // 35
+          MyGradient(height: 50), // 35
         ],
-      ), */
+      ), */,
     );
   }
 

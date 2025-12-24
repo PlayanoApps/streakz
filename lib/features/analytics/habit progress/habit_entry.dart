@@ -38,8 +38,11 @@ class HabitListEntry extends StatelessWidget {
   }
 
   Widget _progressSlider(context, darkMode) {
+    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
     Color accentColor =
-        Provider.of<ThemeProvider>(context).getAccentColor().shade400;
+        darkMode
+            ? themeProvider.getAccentColor().shade500
+            : themeProvider.getAccentColor().shade400;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -47,7 +50,7 @@ class HabitListEntry extends StatelessWidget {
 
         double width = constraints.maxWidth * progress;
 
-        double minOpacity = 0.4;
+        double minOpacity = 0.5;
         double restOpacity = (1 - minOpacity);
         double opacity = (minOpacity) + restOpacity * progress;
 

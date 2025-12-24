@@ -19,7 +19,7 @@ class HabitProgress extends StatelessWidget {
     bool darkMode = (Theme.of(context).brightness == Brightness.dark);
 
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 18),
+      padding: EdgeInsets.only(top: 16, bottom: 5, left: 18, right: 18),
 
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
@@ -35,7 +35,7 @@ class HabitProgress extends StatelessWidget {
 
           _subtext(context, darkMode),
 
-          SizedBox(height: 16),
+          SizedBox(height: 0),
 
           _habitList(context),
         ],
