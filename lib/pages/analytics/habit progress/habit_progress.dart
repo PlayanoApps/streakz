@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:habit_tracker/database/habit_database.dart';
-import 'package:habit_tracker/features/analytics/analytics_logic.dart';
-import 'package:habit_tracker/features/analytics/habit%20progress/habit_entry.dart';
+import 'package:habit_tracker/pages/analytics/analytics_logic.dart';
+import 'package:habit_tracker/pages/analytics/habit%20progress/habit_entry.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:provider/provider.dart';
 

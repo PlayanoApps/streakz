@@ -5,12 +5,12 @@ import 'package:habit_tracker/components/general/app_bar.dart';
 import 'package:habit_tracker/components/general/bottom_gradient.dart';
 import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:habit_tracker/database/habit_database.dart';
-import 'package:habit_tracker/features/profile/profile_page.dart';
+import 'package:habit_tracker/pages/profile/profile_page.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:habit_tracker/features/settings/archive_page.dart';
-import 'package:habit_tracker/features/settings/presentation/settings_tile.dart';
-import 'package:habit_tracker/features/settings/presentation/theme_dialog.dart';
-import 'package:habit_tracker/services/noti_service.dart';
+import 'package:habit_tracker/pages/settings/archive_page.dart';
+import 'package:habit_tracker/pages/settings/presentation/settings_tile.dart';
+import 'package:habit_tracker/pages/settings/presentation/theme_dialog.dart';
+import 'package:habit_tracker/noti_service.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 

@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/features/analytics/bar%20graph/bar_data.dart';
+import 'package:habit_tracker/pages/analytics/bar%20graph/bar_data.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
 import 'package:provider/provider.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/components/general/app_bar.dart';
-import 'package:habit_tracker/features/habit/logic/analysis_functions.dart';
-import 'package:habit_tracker/features/habit/presentation/analysis_heatmap.dart';
-import 'package:habit_tracker/features/habit/presentation/analysis_tile.dart';
+import 'package:habit_tracker/pages/habit/logic/analysis_functions.dart';
+import 'package:habit_tracker/pages/habit/presentation/analysis_heatmap.dart';
+import 'package:habit_tracker/pages/habit/presentation/analysis_tile.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';

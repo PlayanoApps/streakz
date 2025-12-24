@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:habit_tracker/components/general/app_bar.dart';
 import 'package:habit_tracker/database/habit_database.dart';
-import 'package:habit_tracker/features/habit/presentation/analysis_page.dart';
+import 'package:habit_tracker/pages/habit/presentation/analysis_page.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:provider/provider.dart';
 

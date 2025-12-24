@@ -9,7 +9,7 @@ import 'package:habit_tracker/components/general/drawer.dart';
 import 'package:habit_tracker/components/habit/showcase.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:habit_tracker/services/noti_service.dart';
+import 'package:habit_tracker/noti_service.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
 import 'package:provider/provider.dart';

@@ -1,4 +1,4 @@
-import 'package:habit_tracker/features/analytics/bar%20graph/individual_bar.dart';
+import 'package:habit_tracker/pages/analytics/bar%20graph/individual_bar.dart';
 
 class BarData {
   final double month0;

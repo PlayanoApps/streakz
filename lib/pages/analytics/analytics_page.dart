@@ -3,11 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:habit_tracker/components/general/app_bar.dart';
 import 'package:habit_tracker/components/general/bottom_gradient.dart';
 import 'package:habit_tracker/database/habit_database.dart';
-import 'package:habit_tracker/features/analytics/analytics_logic.dart';
-import 'package:habit_tracker/features/analytics/habit%20progress/habit_progress.dart';
-import 'package:habit_tracker/features/analytics/tiles/montly_progress_.dart';
-import 'package:habit_tracker/features/analytics/tiles/small_tile.dart';
-import 'package:habit_tracker/features/analytics/tiles/tile_row.dart';
+import 'package:habit_tracker/pages/analytics/analytics_logic.dart';
+import 'package:habit_tracker/pages/analytics/habit%20progress/habit_progress.dart';
+import 'package:habit_tracker/pages/analytics/tiles/montly_progress_.dart';
+import 'package:habit_tracker/pages/analytics/tiles/small_tile.dart';
+import 'package:habit_tracker/pages/analytics/tiles/tile_row.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
 import 'package:provider/provider.dart';
 

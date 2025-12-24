@@ -3,9 +3,9 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:habit_tracker/components/general/custom_dialog.dart";
 import "package:habit_tracker/database/habit_database.dart";
-import "package:habit_tracker/features/analytics/analytics_page.dart";
-import "package:habit_tracker/features/profile/profile_page.dart";
-import "package:habit_tracker/features/settings/settings_page.dart";
+import "package:habit_tracker/pages/analytics/analytics_page.dart";
+import "package:habit_tracker/pages/profile/profile_page.dart";
+import "package:habit_tracker/pages/settings/settings_page.dart";
 import "package:lottie/lottie.dart";
 import "package:shared_preferences/shared_preferences.dart";
 

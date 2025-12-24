@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/features/analytics/tiles/small_tile.dart';
+import 'package:habit_tracker/pages/analytics/tiles/small_tile.dart';
 
 class TileRow extends StatelessWidget {
   final double gap;
