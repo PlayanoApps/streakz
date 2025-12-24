@@ -1,7 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:habit_tracker/components/common/custom_dialog.dart";
+import "package:habit_tracker/components/general/custom_dialog.dart";
 import "package:habit_tracker/database/habit_database.dart";
 import "package:habit_tracker/features/analytics/analytics_page.dart";
 import "package:habit_tracker/features/profile/profile_page.dart";

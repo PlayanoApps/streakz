@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/common/bottom_gradient.dart';
-import 'package:habit_tracker/components/common/custom_dialog.dart';
+import 'package:habit_tracker/components/general/bottom_gradient.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:habit_tracker/components/habit/habit_tile.dart';
 import 'package:habit_tracker/components/habit/heatmap.dart';
-import 'package:habit_tracker/components/common/drawer.dart';
+import 'package:habit_tracker/components/general/drawer.dart';
 import 'package:habit_tracker/components/habit/showcase.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';

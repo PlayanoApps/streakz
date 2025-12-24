@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/common/custom_dialog.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/features/home/home_page.dart';

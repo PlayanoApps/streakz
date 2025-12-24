@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:habit_tracker/components/common/app_bar.dart';
-import 'package:habit_tracker/components/common/bottom_gradient.dart';
+import 'package:habit_tracker/components/general/app_bar.dart';
+import 'package:habit_tracker/components/general/bottom_gradient.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/features/analytics/analytics_logic.dart';
 import 'package:habit_tracker/features/analytics/habit%20progress/habit_progress.dart';

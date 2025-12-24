@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/common/app_bar.dart';
-import 'package:habit_tracker/components/common/bottom_gradient.dart';
-import 'package:habit_tracker/components/common/custom_dialog.dart';
+import 'package:habit_tracker/components/general/app_bar.dart';
+import 'package:habit_tracker/components/general/bottom_gradient.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/features/profile/profile_page.dart';
 import 'package:habit_tracker/models/habit.dart';

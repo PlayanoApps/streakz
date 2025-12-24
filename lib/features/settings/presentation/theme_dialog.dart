@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/common/custom_dialog.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 

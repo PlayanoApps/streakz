@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/common/my_blur.dart';
+import 'package:habit_tracker/components/general/my_blur.dart';
 
 /* SnackBar mySnackBar(context, text) {
   return SnackBar(

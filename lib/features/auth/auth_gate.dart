@@ -33,7 +33,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/common/custom_dialog.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:habit_tracker/database/firestore_database.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habit_tracker/components/common/app_bar.dart';
+import 'package:habit_tracker/components/general/app_bar.dart';
 import 'package:habit_tracker/features/habit/logic/analysis_functions.dart';
 import 'package:habit_tracker/features/habit/presentation/analysis_heatmap.dart';
 import 'package:habit_tracker/features/habit/presentation/analysis_tile.dart';
