@@ -1,7 +1,7 @@
 name: habit_tracker
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.8.7+54
+version: 1.9.7+62
 
 environment:
   sdk: ^3.7.2
@@ -12,9 +12,8 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   provider: ^6.1.4
-  isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
   path_provider: ^2.1.5
+
   flutter_slidable: ^4.0.0
   flutter_heatmap_calendar: ^1.0.5
   lottie: ^3.3.1
@@ -35,6 +34,10 @@ dependencies:
   popover: ^0.3.1
   fl_chart: ^0.69.0
 
+  isar_community: ^3.3.0
+  isar_community_flutter_libs: ^3.3.0
+  isar_community_generator: ^3.3.0
+
 dependency_overrides:
   vector_math: ^2.1.0
 
@@ -44,7 +47,6 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^5.0.0
-  isar_generator: ^3.1.0+1
   build_runner: ^2.4.13
 
   flutter_launcher_icons: ^0.14.3

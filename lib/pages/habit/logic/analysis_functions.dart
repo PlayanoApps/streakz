@@ -25,14 +25,33 @@ void editHabitName(
     }
   }
 
-  showCustomDialog(
+  createHabitDialog(
+    context,
+    controller: controller,
+    hintText: "Rename habit",
+    title: "Rename habit",
+    topWidget: Padding(
+      padding: EdgeInsets.only(top: 10),
+      child: Icon(
+        Icons.edit,
+        size: 50,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    ),
+    actions: (clear, updateHabit),
+    labels: ("Cancel", "Rename"),
+    rename: true,
+    currentHabitName: habit.name,
+  );
+
+  /* showCustomDialog(
     context,
     controller: controller,
     title: "Edit Habit",
     hintText: "New habit name",
     actions: (clear, updateHabit),
     zoomTransition: false,
-  );
+  ); */
 }
 
 void addHabitDescription(

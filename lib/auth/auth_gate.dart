@@ -84,13 +84,13 @@ class _AuthPageState extends State<AuthPage> {
                   );
                 }
 
-                // Error
+                // Error #1
                 if (loadingSnapshot.hasError) {
                   return Scaffold(
                     backgroundColor: Theme.of(context).colorScheme.surface,
                     body: Center(
                       child: Text(
-                        'Error: ${loadingSnapshot.error}',
+                        'Error: ${loadingSnapshot.error} #1',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
@@ -138,9 +138,10 @@ class _AuthPageState extends State<AuthPage> {
           title: "Internet connection --> Clear isar, load from firestore",
         );
 
-      await HabitDatabase.isar.writeTxn(() async {
+      // Clear isar   REMOVE THIS LINE??
+      /* await HabitDatabase.isar.writeTxn(() async {
         await HabitDatabase.isar.habits.clear();
-      });
+      }); */
 
       // Load from Firestore
       await FirestoreDatabase(

@@ -1,4 +1,5 @@
-import "package:isar/isar.dart";
+//import "package:isar/isar.dart";
+import "package:isar_community/isar.dart";
 
 /* 
   To store custom objects in Isar database, we need to create the g file with the following command: 

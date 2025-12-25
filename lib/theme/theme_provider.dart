@@ -14,7 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/app_settings.dart';
 import 'package:habit_tracker/theme/themes.dart';
-import 'package:isar/isar.dart';
+//import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {

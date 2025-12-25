@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:habit_tracker/models/app_settings.dart';
 import 'package:habit_tracker/models/habit.dart';
-import 'package:isar/isar.dart';
+//import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 /* Firebase also used in Isar database, auth_gate, register and helper functions */
 

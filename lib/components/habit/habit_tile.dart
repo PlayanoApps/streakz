@@ -236,10 +236,12 @@ class HabitTile extends StatelessWidget {
                   ),
             ],
           ),
-          Positioned(
-            right: 0,
-            child: _showStreak(context, darkMode, crossCompleted),
-          ),
+          crossCompleted
+              ? Positioned(
+                right: 0,
+                child: _showStreak(context, darkMode, crossCompleted),
+              )
+              : SizedBox.shrink(),
         ],
       ),
     );

@@ -1,4 +1,5 @@
-import 'package:isar/isar.dart';
+//import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 /* 
   To store custom objects in Isar database, we need to create the g file with the following command: 
@@ -9,12 +10,13 @@ part "app_settings.g.dart";
 @Collection()
 class AppSettings {
   //Id id = Isar.autoIncrement;
-  Id id = 0;  // fixed
+  Id id = 0; // fixed
   DateTime? firstLaunchDate;
 
   bool darkModeEnabled = false;
 
-  int selectedColor = 1;      // Accent color / theme
+  int selectedColor = 1; // Accent color / theme
 
-  bool crossCompletedHabits = false;  // Wether completed habit should be highlighed or crossed
+  bool crossCompletedHabits =
+      false; // Wether completed habit should be highlighed or crossed
 }

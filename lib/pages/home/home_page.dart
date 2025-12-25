@@ -12,6 +12,7 @@ import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/noti_service.dart';
 import 'package:habit_tracker/theme/theme_provider.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -92,11 +93,22 @@ class _HomePageState extends State<HomePage> {
     }
 
     await Future.delayed(Duration(milliseconds: 100));
-    showCustomDialog(
+    /* showCustomDialog(
       context,
       controller: textController,
       hintText: "Create a new habit",
       actions: (clear, saveHabit),
+    ); */
+    createHabitDialog(
+      context,
+      controller: textController,
+      hintText: "Create a new habit",
+      topWidget: SizedBox(
+        width: 65,
+        child: LottieBuilder.asset("assets/streak4.json"),
+      ),
+      actions: (clear, saveHabit),
+      labels: ("Cancel", "Create"),
     );
   }
 
@@ -144,13 +156,33 @@ class _HomePageState extends State<HomePage> {
       clear();
     }
 
-    showCustomDialog(
+    /* showCustomDialog(
       context,
       controller: textController,
       title: "Delete this habit?",
       actions: (clear, deleteHabit),
       labels: ("Cancel", "Delete"),
       zoomTransition: true,
+    ); */
+
+    bool darkMode = (Theme.of(context).brightness == Brightness.dark);
+
+    createHabitDialog(
+      context,
+      topWidget: Padding(
+        padding: EdgeInsets.only(top: 15),
+        child: Icon(
+          Icons.delete,
+          size: 50,
+          color: darkMode ? Colors.red.shade700 : Colors.red.shade300,
+        ),
+      ),
+      title: habit.name,
+      description: "Are you sure you want to delete this habit?",
+      actions: (clear, deleteHabit),
+      labels: ("Cancel", "Delete"),
+      buttonColor: darkMode ? Colors.red.shade800 : Colors.red.shade300,
+      labelColor: Colors.white,
     );
   }
 

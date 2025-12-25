@@ -1,6 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:google_fonts/google_fonts.dart";
 import "package:habit_tracker/components/general/custom_dialog.dart";
 import "package:habit_tracker/database/habit_database.dart";
 import "package:habit_tracker/pages/analytics/analytics_page.dart";
@@ -72,6 +73,7 @@ class MyDrawer extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 25, right: 25, bottom: 20),
                 child: Divider(color: Colors.white),
               ),
+
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25),
                 child: InkWell(
@@ -85,11 +87,12 @@ class MyDrawer extends StatelessWidget {
                       Icons.home,
                       color: Theme.of(context).colorScheme.inversePrimary,
                     ),
-                    title: Text("H O M E"),
+                    title: Text("H A B I T S"),
                     horizontalTitleGap: 20,
                   ),
                 ),
               ),
+
               // Settings
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25),
@@ -114,6 +117,7 @@ class MyDrawer extends StatelessWidget {
                   ),
                 ),
               ),
+
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25),
                 child: InkWell(

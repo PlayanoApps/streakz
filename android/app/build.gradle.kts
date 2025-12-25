@@ -25,8 +25,9 @@ android {
     ndkVersion = flutter.ndkVersion */
 
     /*  */
-    compileSdk = 35
-    ndkVersion = "27.0.12077973"
+    compileSdk = 36
+    //ndkVersion = "27.0.12077973"
+    ndkVersion =  "29.0.14206865"
     /*  */
 
     compileOptions {
@@ -38,7 +39,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = "11"
     }
 
     defaultConfig {
@@ -50,10 +51,18 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         //minSdk = flutter.minSdkVersion
-        minSdk = 23
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 24
+        targetSdk = 36//flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        /* NEW */
+        ndk.debugSymbolLevel = "FULL"
+        externalNativeBuild {
+            cmake {
+                arguments += "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+            }
+        }
     }
 
     signingConfigs {
