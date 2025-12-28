@@ -151,27 +151,7 @@ class NotiServiceProvider extends ChangeNotifier {
       hour: 21,
       minute: 00,
       id: 2
-    );
-
-    final index = Random().nextInt(2); // 0 or 1
-
-    if(index == 0) {
-      NotiService().scheduleNotification(
-        title: "Ready to Go?",
-        body: "Small habits lead to big results. Let's keep moving!",
-        hour: 6,
-        minute: 30,
-        id: 3
-      );
-    } else {
-      NotiService().scheduleNotification(
-        title: "Today is Yours",
-        body: "Each choice shapes your path. Choose well today.",
-        hour: 6,
-        minute: 30,
-        id: 3
-      );
-    } */
+    ); */
 
     NotiService().showNotification(
       title: "",

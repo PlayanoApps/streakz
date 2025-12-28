@@ -225,7 +225,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         title: "⚡ Consistency",
         text: "${logic.getConsistency(month, year, context)}%",
         subtext:
-            "${logic.getActiveDays(month, year, context)}/${logic.daysInMonth(month, year)} active days",
+            "${logic.getActiveDays(month, year, context)}/${(month == DateTime.now().month && year == DateTime.now().year) ? DateTime.now().day : logic.daysInMonth(month, year)} active days",
       ),
       tile2: SmallTile(
         title: "🔥 Streak",

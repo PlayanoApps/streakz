@@ -50,8 +50,7 @@ void createHabitDialog(
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 19,
-                              color:
-                                  Theme.of(context).colorScheme.inversePrimary,
+                              color: Theme.of(context).colorScheme.onPrimary,
                             ),
                           ),
                         )
@@ -148,34 +147,47 @@ Widget _createHabitButton({
             ? (controller.text != currentHabitName)
             : (controller.text.isNotEmpty);
 
-  return MaterialButton(
-    onPressed: onPressed,
-    enableFeedback: true,
-    elevation: 0,
-    highlightElevation: 0,
+  return AnimatedContainer(
+    duration: const Duration(milliseconds: 250),
+    curve: Curves.easeOut,
+    decoration: BoxDecoration(
+      color:
+          enabled
+              ? color ?? Theme.of(context).colorScheme.onPrimary
+              : Colors.transparent,
+      borderRadius: BorderRadius.circular(18),
+    ),
+    child: MaterialButton(
+      onPressed: onPressed,
+      enableFeedback: true,
+      elevation: 0,
+      highlightElevation: 0,
 
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-    color: enabled ? color ?? Theme.of(context).colorScheme.onPrimary : null,
-    splashColor: Colors.transparent,
-    highlightColor:
-        enabled
-            ? darkMode
-                ? Colors.grey.shade400
-                : Theme.of(context).colorScheme.inversePrimary.withOpacity(0.35)
-            : Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      //color: enabled ? color ?? Theme.of(context).colorScheme.onPrimary : null,
+      splashColor: Colors.transparent,
+      highlightColor:
+          enabled
+              ? darkMode
+                  ? Colors.grey.shade500
+                  : Theme.of(
+                    context,
+                  ).colorScheme.inversePrimary.withOpacity(0.6)
+              : Colors.transparent,
 
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 9, vertical: 13),
-      child: Text(
-        label,
-        style: TextStyle(
-          color:
-              enabled
-                  ? darkMode
-                      ? labelColor ?? Colors.black
-                      : labelColor ?? Theme.of(context).colorScheme.tertiary
-                  : Theme.of(context).colorScheme.primary,
-          fontSize: 15.5,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 9, vertical: 13),
+        child: Text(
+          label,
+          style: TextStyle(
+            color:
+                enabled
+                    ? darkMode
+                        ? labelColor ?? Colors.black
+                        : labelColor ?? Theme.of(context).colorScheme.tertiary
+                    : Theme.of(context).colorScheme.primary,
+            fontSize: 15.5,
+          ),
         ),
       ),
     ),

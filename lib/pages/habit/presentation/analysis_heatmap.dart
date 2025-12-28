@@ -136,14 +136,14 @@ class AnalysisHeatmap extends StatelessWidget {
             colorMode: ColorMode.color,
             showColorTip: false,
             scrollable: true,
-            size: 34,
+            size: 34, // 34
             showText: true,
             defaultColor:
                 darkMode
                     ? Theme.of(context).colorScheme.secondary
                     : Color.fromARGB(255, 210, 210, 210),
             textColor: Theme.of(context).colorScheme.tertiary,
-            borderRadius: 8.5,
+            borderRadius: 7.6, //8.5
 
             highlightedColor:
                 !darkMode

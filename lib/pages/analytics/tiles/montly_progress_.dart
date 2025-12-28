@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/pages/analytics/analytics_logic.dart';
 import 'package:habit_tracker/pages/analytics/bar%20graph/bar_graph.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
-import 'package:provider/provider.dart';
 
 class MonthlyProgressTile extends StatelessWidget {
   final int month;
@@ -143,7 +141,7 @@ class MonthlyProgressTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Last Month",
+                  "Last month",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 13,

@@ -14,27 +14,39 @@ class MyTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool darkMode = (Theme.of(context).brightness == Brightness.dark);
+
     return TextField(
       obscureText: obscureText,
       controller: controller,
 
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.inversePrimary
-      ),
-    
+      style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary),
-          borderRadius: BorderRadius.circular(12)
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.secondary,
+            width: 0.7,
+          ),
+          borderRadius: BorderRadius.circular(12),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
-          borderRadius: BorderRadius.circular(12)
+          borderSide: BorderSide(
+            color:
+                darkMode
+                    ? Colors.grey.shade800
+                    : Theme.of(context).colorScheme.tertiary,
+            width: 1.4,
+          ),
+          borderRadius: BorderRadius.circular(12),
         ),
         fillColor: Theme.of(context).colorScheme.secondary,
         filled: true,
         hintText: hintText,
-        hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary)
+        hintStyle: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
+          fontSize: 16.3,
+        ),
       ),
     );
   }

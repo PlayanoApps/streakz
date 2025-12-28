@@ -27,8 +27,13 @@ class AnalyticsLogic {
   }
 
   int getConsistency(int month, int year, context) {
+    DateTime now = DateTime.now();
+
     int activeDays = getActiveDays(month, year, context);
-    int totalDays = daysInMonth(month, year);
+    int totalDays =
+        (month == now.month && year == now.year)
+            ? now.day
+            : daysInMonth(month, year);
 
     int consistency = (activeDays / totalDays * 100).round();
 
@@ -237,13 +242,17 @@ class AnalyticsLogic {
 
   double getHabitProgressPercentage(Habit habit, int month, int year) {
     List<DateTime> completedDays = habit.completedDays;
+    DateTime now = DateTime.now();
 
     int daysCompletedThisMonth = 0;
 
     for (var day in completedDays)
       if (day.month == month && day.year == year) daysCompletedThisMonth++;
 
-    int totalDays = daysInMonth(month, year);
+    int totalDays =
+        (month == now.month && year == now.year)
+            ? now.day
+            : daysInMonth(month, year);
 
     double percentage = (daysCompletedThisMonth / totalDays) * 100;
     return (percentage * 10).round() / 10; // Rounds to 1 decimal place

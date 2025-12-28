@@ -159,16 +159,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    "Forgot password?",
+                    "",
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ],
               ),
-
-              SizedBox(height: 10),
-
+              SizedBox(height: 10), // 10
               // Register button
               MyButton(text: "Register", onTap: register),
 

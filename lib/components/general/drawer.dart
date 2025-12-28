@@ -1,11 +1,10 @@
 import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:google_fonts/google_fonts.dart";
 import "package:habit_tracker/components/general/custom_dialog.dart";
 import "package:habit_tracker/database/habit_database.dart";
 import "package:habit_tracker/pages/analytics/analytics_page.dart";
-import "package:habit_tracker/pages/profile/profile_page.dart";
 import "package:habit_tracker/pages/settings/settings_page.dart";
 import "package:lottie/lottie.dart";
 import "package:shared_preferences/shared_preferences.dart";
@@ -100,11 +99,12 @@ class MyDrawer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   onTap: () async {
                     HapticFeedback.mediumImpact();
-                    await Future.delayed(Duration(milliseconds: 155));
+                    await Future.delayed(Duration(milliseconds: 100)); //155
                     Navigator.pop(context);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SettingsPage()),
+                      CupertinoPageRoute(builder: (context) => SettingsPage()),
+                      //MaterialPageRoute(builder: (context) => SettingsPage()),
                     );
                   },
                   child: ListTile(
@@ -124,12 +124,12 @@ class MyDrawer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   onTap: () async {
                     HapticFeedback.mediumImpact();
-                    await Future.delayed(Duration(milliseconds: 155));
+                    await Future.delayed(Duration(milliseconds: 100));
 
                     Navigator.pop(context);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AnalyticsPage()),
+                      CupertinoPageRoute(builder: (context) => AnalyticsPage()),
                     );
                   },
                   child: ListTile(

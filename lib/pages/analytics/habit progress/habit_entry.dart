@@ -69,7 +69,9 @@ class HabitListEntry extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            Container(
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeOutCubic,
               height: 13,
               width: width, // proportional width
               decoration: BoxDecoration(

@@ -285,8 +285,9 @@ class HabitTile extends StatelessWidget {
 
         SlidableAction(
           onPressed:
-              (context) =>
-                  navigateToHabitAnalysis(context, delay: 100), //editHabit,
+              (context) => editHabit!(
+                context,
+              ), //navigateToHabitAnalysis(context, delay: 100),
           backgroundColor:
               darkMode ? Colors.grey.shade800 : Colors.grey.shade600,
           icon: Icons.settings,

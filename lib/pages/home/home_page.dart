@@ -77,7 +77,6 @@ class _HomePageState extends State<HomePage> {
 
   void clear() async {
     Navigator.pop(context);
-    //textController.clear();
   }
 
   void createNewHabit() async {
@@ -102,7 +101,7 @@ class _HomePageState extends State<HomePage> {
     createHabitDialog(
       context,
       controller: textController,
-      hintText: "Create a new habit",
+      hintText: "Journal, Read, Exercise...", //Create a new habit
       topWidget: SizedBox(
         width: 65,
         child: LottieBuilder.asset("assets/streak4.json"),
@@ -140,12 +139,23 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    showCustomDialog(
+    createHabitDialog(
       context,
       controller: textController,
-      hintText: "New habit name",
+      hintText: "Rename habit",
+      title: "Rename habit",
+      topWidget: Padding(
+        padding: EdgeInsets.only(top: 10),
+        child: Icon(
+          Icons.edit,
+          size: 50,
+          color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.6),
+        ),
+      ),
       actions: (clear, () => editHabit(habit)),
-      zoomTransition: true,
+      labels: ("Cancel", "Rename"),
+      rename: true,
+      currentHabitName: habit.name,
     );
   }
 
