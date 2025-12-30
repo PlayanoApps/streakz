@@ -10,14 +10,10 @@ import "../../_heatmap_calendar/flutter_heatmap_calendar.dart";
 /* class MyHeatmap extends StatelessWidget {
   final DateTime startDate;
 
-  const MyHeatmap({
-    super.key,
-    required this.startDate,
-  });
+  const MyHeatmap({super.key, required this.startDate});
 
   @override
   Widget build(BuildContext context) {
-
     //bool darkMode = Provider.of<ThemeProvider>(context).isDarkMode;
     bool darkMode = (Theme.of(context).brightness == Brightness.dark);
 
@@ -25,15 +21,19 @@ import "../../_heatmap_calendar/flutter_heatmap_calendar.dart";
       padding: EdgeInsets.symmetric(horizontal: 24),
       child: HeatMapCalendar(
         datasets: prepDataset(context),
-      
+
         colorMode: ColorMode.color,
         defaultColor: Theme.of(context).colorScheme.secondary,
 
-        highlightedColor: !darkMode ? const Color.fromARGB(255, 230, 230, 230)  // def. 38
-                                    : Theme.of(context).colorScheme.secondary,
-        highlightedBorderColor: !darkMode ? Color.fromARGB(255, 238, 238, 238)
-                                    : Color.fromARGB(255, 70, 70, 70),
-        highlightedBorderWith: !darkMode? 2 : 1.5,
+        highlightedColor:
+            !darkMode
+                ? Color.fromARGB(255, 230, 230, 230) // def. 38
+                : Theme.of(context).colorScheme.secondary,
+        highlightedBorderColor:
+            !darkMode
+                ? Color.fromARGB(255, 238, 238, 238)
+                : Color.fromARGB(255, 70, 70, 70),
+        highlightedBorderWith: !darkMode ? 2 : 1.5,
 
         textColor: Theme.of(context).colorScheme.tertiary,
         showColorTip: false,
@@ -44,7 +44,7 @@ import "../../_heatmap_calendar/flutter_heatmap_calendar.dart";
         onClick: (date) => showEditHeatmapDialog(date, context),
 
         borderRadius: 6,
-      
+
         colorsets: prepColorsets(context),
       ),
     );
@@ -53,35 +53,37 @@ import "../../_heatmap_calendar/flutter_heatmap_calendar.dart";
 
 // Prepare heat map colorsets
 Map<int, Color> prepColorsets(BuildContext context) {
-  int habitsAmount = Provider.of<HabitDatabase>(context).habitsList.length;
+  int habitsAmount =
+      Provider.of<HabitDatabase>(context).getActiveHabits().length;
 
-  if (habitsAmount <= 0)
-    return {};
+  if (habitsAmount <= 0) return {};
 
-  int alpha = 130 - (habitsAmount * 10);   // min alpha for first habit (more habits --> less)
+  int alpha =
+      130 -
+      (habitsAmount * 10); // min alpha for first habit (more habits --> less)
   // if min alpha becomes negative, set to 0
   if (alpha < 0) alpha = 0;
 
-  int maxAlpha = 230;                     // Don't exceed this value
+  int maxAlpha = 230; // Don't exceed this value
   Color accentColor = Provider.of<ThemeProvider>(context).getAccentColor();
 
-  if (habitsAmount == 1)
-    return { 1: accentColor.withAlpha(maxAlpha) };
+  if (habitsAmount == 1) return {1: accentColor.withAlpha(maxAlpha)};
 
   Map<int, Color> colorset = {};
-  int incrementStep = habitsAmount > 1 ? ((maxAlpha - alpha) / (habitsAmount - 1)).toInt() : 0;
+  int incrementStep =
+      habitsAmount > 1 ? ((maxAlpha - alpha) / (habitsAmount - 1)).toInt() : 0;
 
   for (int i = 1; i <= habitsAmount; i++) {
     // Start first habit with initial alpha. Then, increment
     alpha = (i == 1) ? alpha : min(alpha + incrementStep, maxAlpha);
-    colorset[i] = accentColor.withAlpha(alpha); 
+    colorset[i] = accentColor.withAlpha(alpha);
   }
   return colorset;
 }
 
 // Prepare heat map dataset
 Map<DateTime, int> prepDataset(BuildContext context) {
-  List<Habit> habits = Provider.of<HabitDatabase>(context).habitsList;
+  List<Habit> habits = Provider.of<HabitDatabase>(context).getActiveHabits();
 
   Map<DateTime, int> dataset = {};
 
@@ -94,11 +96,11 @@ Map<DateTime, int> prepDataset(BuildContext context) {
       if (dataset.containsKey(normalizedDate))
         dataset[normalizedDate] = dataset[normalizedDate]! + 1;
       else
-        dataset[normalizedDate] = 1; 
+        dataset[normalizedDate] = 1;
     }
   }
   return dataset;
-} */
+}  */
 
 class MyHeatmap extends StatefulWidget {
   final DateTime startDate;

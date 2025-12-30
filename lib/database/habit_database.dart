@@ -109,6 +109,10 @@ class HabitDatabase extends ChangeNotifier {
   // List of habits
   final List<Habit> habitsList = [];
 
+  List<Habit> getActiveHabits() {
+    return habitsList.where((habit) => !habit.isArchived).toList();
+  }
+
   /* Sync habits list with db and update UI */
   Future<void> updateHabitList() async {
     // when fetching habits, sort by order
