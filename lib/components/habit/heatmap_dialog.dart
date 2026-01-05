@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/components/habit/snackbar.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
 import 'package:provider/provider.dart';
 
 void showEditHeatmapDialog(date, context) {
-  showDialog(
+  DateTime now = DateTime.now();
+
+  if (date.day > now.day && date.month == now.month && date.year == now.year) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(mySnackBar(context, "Cannot edit future days", 1000));
+    return;
+  }
+
+  showGeneralDialog(
     context: context,
-    builder:
-        (context) => Consumer<HabitDatabase>(
+    barrierDismissible: true,
+    barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+    //barrierColor: Colors.black.withOpacity(darkMode ? 0.7 : 0.55),
+    pageBuilder:
+        (context, x, y) => Consumer<HabitDatabase>(
           builder:
               // Alert Dialog
               (context, value, child) => AlertDialog(
@@ -16,6 +31,8 @@ void showEditHeatmapDialog(date, context) {
                   "${numberToMonth(date.month)} ${date.day}th",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onPrimary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 22,
                   ),
                 ),
                 // List
@@ -68,6 +85,8 @@ void showEditHeatmapDialog(date, context) {
                 ),
               ),
         ),
+    transitionDuration: const Duration(milliseconds: 300),
+    transitionBuilder: zoomInTransition(),
   );
 }
 

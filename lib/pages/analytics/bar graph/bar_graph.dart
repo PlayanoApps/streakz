@@ -67,6 +67,31 @@ class MyBarGraph extends StatelessWidget {
           ),
         ),
 
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            tooltipRoundedRadius: 12,
+            tooltipPadding: EdgeInsets.all(8),
+            tooltipMargin: 10,
+            getTooltipColor:
+                (data) =>
+                    (data.x == 6 - shiftAmount)
+                        ? accentColor[500]!.withOpacity(0.8)
+                        : Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(darkMode ? 0.9 : 0.8),
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              return BarTooltipItem(
+                '${rod.toY.toStringAsFixed(1)}%',
+                TextStyle(
+                  color: Colors.grey.shade100, // 👈 text color
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.5,
+                ),
+              );
+            },
+          ),
+        ),
+
         barGroups:
             barData.barData
                 .map(

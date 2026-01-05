@@ -201,6 +201,7 @@ class AnalyticsLogic {
 
   double getMonthProgressPercentage(int month, int year, context) {
     List<Habit> habitsList = Provider.of<HabitDatabase>(context).habitsList;
+    DateTime now = DateTime.now();
 
     // Filter out archived habits
     List<Habit> activeHabits =
@@ -211,13 +212,20 @@ class AnalyticsLogic {
     int totalPossibleCompletions = 0;
     int actualCompletions = 0;
 
+    final totalDays =
+        (month == now.month && year == now.year)
+            ? now.day
+            : daysInMonth(month, year);
+
     for (var habit in activeHabits) {
       // Count how many days this habit could be completed (days in month)
-      totalPossibleCompletions += daysInMonth(month, year);
+      // totalPossibleCompletions += daysInMonth(month, year);
+      totalPossibleCompletions += totalDays;
 
       // Count how many days this habit was actually completed in this month
       for (var day in habit.completedDays) {
-        if (day.month == month && day.year == year) actualCompletions++;
+        if (day.month == month && day.year == year && day.day <= totalDays)
+          actualCompletions++;
       }
     }
 
@@ -229,8 +237,16 @@ class AnalyticsLogic {
   }
 
   double getPercentageIncrease(int month, int lastMonth, year, context) {
+    int prevYear = year;
+
+    // January
+    if (lastMonth == 0) {
+      lastMonth = 12;
+      prevYear -= 1;
+    }
+
     double newValue = getMonthProgressPercentage(month, year, context);
-    double oldValue = getMonthProgressPercentage(lastMonth, year, context);
+    double oldValue = getMonthProgressPercentage(lastMonth, prevYear, context);
 
     double difference = newValue - oldValue;
     return (difference * 10).round() / 10;
@@ -246,13 +262,14 @@ class AnalyticsLogic {
 
     int daysCompletedThisMonth = 0;
 
-    for (var day in completedDays)
-      if (day.month == month && day.year == year) daysCompletedThisMonth++;
-
     int totalDays =
         (month == now.month && year == now.year)
             ? now.day
             : daysInMonth(month, year);
+
+    for (var day in completedDays)
+      if (day.month == month && day.year == year && day.day <= totalDays)
+        daysCompletedThisMonth++;
 
     double percentage = (daysCompletedThisMonth / totalDays) * 100;
     return (percentage * 10).round() / 10; // Rounds to 1 decimal place
