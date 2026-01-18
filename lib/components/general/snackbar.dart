@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/components/general/my_blur.dart';
 
@@ -25,6 +23,13 @@ import 'package:habit_tracker/components/general/my_blur.dart';
 }
 
  */
+
+showSnackbar(context, String text, int duration) {
+  ScaffoldMessenger.of(context).clearSnackBars();
+  ScaffoldMessenger.of(
+    context,
+  ).showSnackBar(mySnackBar(context, text, duration));
+}
 
 SnackBar mySnackBar(BuildContext context, String text, int milliseconds) {
   return SnackBar(

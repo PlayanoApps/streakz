@@ -154,8 +154,7 @@ class _HomePageState extends State<HomePage> {
       ),
       actions: (clear, () => editHabit(habit)),
       labels: ("Cancel", "Rename"),
-      rename: true,
-      currentHabitName: habit.name,
+      currentControllerText: habit.name,
     );
   }
 

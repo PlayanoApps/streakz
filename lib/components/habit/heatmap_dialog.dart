@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/components/general/custom_dialog.dart';
-import 'package:habit_tracker/components/habit/snackbar.dart';
+import 'package:habit_tracker/components/general/snackbar.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/util/habit_helpers.dart';
 import 'package:provider/provider.dart';

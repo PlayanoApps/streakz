@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/components/general/custom_dialog.dart';
+import 'package:habit_tracker/components/general/snackbar.dart';
 import 'package:habit_tracker/database/habit_database.dart';
 import 'package:habit_tracker/models/habit.dart';
 import 'package:habit_tracker/pages/home/home_page.dart';
@@ -40,8 +41,7 @@ void editHabitName(
     ),
     actions: (clear, updateHabit),
     labels: ("Cancel", "Rename"),
-    rename: true,
-    currentHabitName: habit.name,
+    currentControllerText: habit.name,
   );
 
   /* showCustomDialog(
@@ -61,6 +61,37 @@ void addHabitDescription(
   VoidCallback clear,
 ) {
   controller.text = habit.description;
+
+  createHabitDialog(
+    context,
+    title: "Add description",
+    controller: controller,
+    currentControllerText: habit.description,
+    topWidget: Padding(
+      padding: EdgeInsets.only(top: 10),
+      child: Icon(
+        Icons.edit,
+        size: 50,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    ),
+    hintText: "Add description",
+    labels: ("Cancel", "Save"),
+    actions: (
+      clear,
+      () async {
+        String description = controller.text;
+        if (description != "") {
+          await Provider.of<HabitDatabase>(
+            context,
+            listen: false,
+          ).addDescription(habit.id, description);
+          clear();
+        }
+      },
+    ),
+  );
+  return;
 
   showCustomDialog(
     context,
@@ -92,6 +123,56 @@ Future<void> deleteHabitDescription(BuildContext context, Habit habit) async {
 }
 
 void archiveHabit(BuildContext context, Habit habit, VoidCallback clear) {
+  bool darkMode = (Theme.of(context).brightness == Brightness.dark);
+
+  Widget topWidget = Padding(
+    padding: EdgeInsets.only(top: 10),
+    child: Icon(
+      Icons.archive,
+      size: 50,
+      color: Theme.of(context).colorScheme.primary,
+    ),
+  );
+
+  createHabitDialog(
+    context,
+    title: "Archive ${habit.name}",
+    description:
+        "Archived habits can be restored in settings. Your progress remains.",
+    topWidget: topWidget,
+    labels: ("Cancel", "Save"),
+    actions: (
+      clear,
+      () {
+        Provider.of<HabitDatabase>(
+          context,
+          listen: false,
+        ).archiveHabit(habit.id, true);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+        showSnackbar(context, "To unarchive, go to settings", 5000);
+
+        /* createHabitDialog(
+          context,
+          title: "Archived ${habit.name}",
+          description: "To restore this habit, go to settings",
+          topWidget: topWidget,
+          labels: ("Restore", "Save"),
+          actions: (
+            () => Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute(builder: (context) => ArchivePage()),
+            ),
+            () => Navigator.pop(context),
+          ),
+        ); */
+      },
+    ),
+  );
+  return;
+
   showCustomDialog(
     context,
     title: "Archive habit?",

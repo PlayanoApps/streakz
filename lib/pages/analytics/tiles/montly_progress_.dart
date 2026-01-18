@@ -41,6 +41,13 @@ class MonthlyProgressTile extends StatelessWidget {
   }
 
   Widget _titleRow(context, darkMode) {
+    double percentage = logic.getPercentageIncrease(
+      month,
+      month - 1,
+      year,
+      context,
+    );
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18),
       child: Row(
@@ -72,30 +79,43 @@ class MonthlyProgressTile extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             decoration: BoxDecoration(
               color:
-                  darkMode
-                      ? Colors.green.shade900.withOpacity(0.5)
-                      : Colors.green.shade100.withOpacity(0.9),
+                  percentage > 0
+                      ? darkMode
+                          ? Colors.green.shade900.withOpacity(0.5)
+                          : Colors.green.shade100.withOpacity(0.9)
+                      : darkMode
+                      ? Colors.deepOrange.shade600.withOpacity(0.2)
+                      : Colors.deepOrange.shade100.withOpacity(0.9),
               borderRadius: BorderRadius.circular(5),
             ),
             child: Row(
               children: [
                 Icon(
-                  logic.getPercentageIncrease(month, month - 1, year, context) >
-                          0
+                  percentage > 0
                       ? Icons.arrow_upward_rounded
                       : Icons.arrow_downward_rounded,
                   size: 16,
                   color:
-                      darkMode ? Colors.green.shade200 : Colors.green.shade500,
+                      percentage > 0
+                          ? darkMode
+                              ? Colors.green.shade200
+                              : Colors.green.shade500
+                          : darkMode
+                          ? Colors.deepOrange.shade200
+                          : Colors.deepOrange.shade500,
                 ),
                 SizedBox(width: 2),
                 Text(
                   "${logic.getPercentageIncrease(month, month - 1, year, context).abs()}%",
                   style: GoogleFonts.roboto(
                     color:
-                        darkMode
-                            ? Colors.green.shade300
-                            : Colors.green.shade500,
+                        percentage > 0
+                            ? darkMode
+                                ? Colors.green.shade300
+                                : Colors.green.shade500
+                            : darkMode
+                            ? Colors.deepOrange.shade300
+                            : Colors.deepOrange.shade500,
                     fontSize: 13.5,
                     fontWeight: FontWeight.w500,
                   ),

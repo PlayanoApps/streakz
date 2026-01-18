@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:habit_tracker/components/habit/snackbar.dart';
+import 'package:habit_tracker/components/general/snackbar.dart';
 import '../data/heatmap_color.dart';
 
 class HeatMapContainer extends StatelessWidget {

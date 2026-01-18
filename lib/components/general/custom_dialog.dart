@@ -17,8 +17,7 @@ void createHabitDialog(
   Color? labelColor,
 
   // Rename
-  rename = false,
-  String? currentHabitName,
+  String? currentControllerText,
 }) {
   bool darkMode = (Theme.of(context).brightness == Brightness.dark);
   showGeneralDialog(
@@ -102,8 +101,7 @@ void createHabitDialog(
                               },
                               controller: controller,
                               label: labels.$2,
-                              rename: rename,
-                              currentHabitName: currentHabitName,
+                              currentControllerText: currentControllerText,
                               color: buttonColor,
                               labelColor: labelColor,
                             ),
@@ -129,8 +127,7 @@ Widget _createHabitButton({
   required label,
 
   // For rename
-  bool rename = false,
-  String? currentHabitName,
+  String? currentControllerText,
 
   // For delete
   Color? color,
@@ -139,12 +136,14 @@ Widget _createHabitButton({
   bool darkMode = (Theme.of(context).brightness == Brightness.dark);
   bool enabled; // Condition for when habit is enabled
 
+  bool rename = currentControllerText != null;
+
   if (controller == null)
     enabled = true;
   else
     enabled =
         (rename)
-            ? (controller.text != currentHabitName)
+            ? (controller.text != currentControllerText)
             : (controller.text.isNotEmpty);
 
   return AnimatedContainer(
