@@ -31,8 +31,9 @@ class AuthPage extends StatelessWidget {
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:habit_tracker/auth/skeleton_screen.dart';
 import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:habit_tracker/database/firestore_database.dart';
 import 'package:habit_tracker/database/habit_database.dart';
@@ -74,18 +75,28 @@ class _AuthPageState extends State<AuthPage> {
                 // Loading
                 if (loadingSnapshot.connectionState ==
                     ConnectionState.waiting) {
-                  return Scaffold(
+                  /* return Scaffold(
                     backgroundColor: Theme.of(context).colorScheme.surface,
                     body: Center(
                       child: CupertinoActivityIndicator(
                         color: Theme.of(context).colorScheme.tertiary,
                       ),
                     ),
-                  );
+                  ); */
+                  return SkeletonScreen();
                 }
 
                 // Error #1
                 if (loadingSnapshot.hasError) {
+                  // Automatischer Reload nach 3 Sekunden
+                  Future.delayed(Duration(seconds: 3), () {
+                    if (mounted) {
+                      setState(() {
+                        _loadingFuture = _loadFromFirestore(user);
+                      });
+                    }
+                  });
+
                   return Scaffold(
                     backgroundColor: Theme.of(context).colorScheme.surface,
                     body: Center(

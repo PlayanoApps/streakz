@@ -1,7 +1,7 @@
 name: habit_tracker
 description: "A new Flutter project."
 publish_to: 'none'
-version: 1.10.1+67
+version: 1.11.0+68
 
 environment:
   sdk: ^3.7.2
@@ -37,6 +37,7 @@ dependencies:
   isar_community: ^3.3.0
   isar_community_flutter_libs: ^3.3.0
   isar_community_generator: ^3.3.0
+  shimmer: ^3.0.0
 
 dependency_overrides:
   vector_math: ^2.1.0
