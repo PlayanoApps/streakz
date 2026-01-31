@@ -31,7 +31,7 @@ class AuthPage extends StatelessWidget {
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:habit_tracker/auth/skeleton_screen.dart';
 import 'package:habit_tracker/components/general/custom_dialog.dart';

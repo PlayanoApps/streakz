@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habit_tracker/auth/skeleton_screen.dart';
 import 'package:habit_tracker/components/general/bottom_gradient.dart';
 import 'package:habit_tracker/components/general/custom_dialog.dart';
 import 'package:habit_tracker/components/habit/habit_tile.dart';

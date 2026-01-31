@@ -129,6 +129,17 @@ class MonthlyProgressTile extends StatelessWidget {
   }
 
   Widget _percentagesRow(context) {
+    
+    int lastMonth, lastYear;
+
+    if (month == 1) {
+      lastMonth = 12;
+      lastYear = year - 1;
+    } else {
+      lastMonth = month - 1;
+      lastYear = year;
+    }
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18),
       child: Row(
@@ -169,7 +180,7 @@ class MonthlyProgressTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "${logic.getMonthProgressPercentage(month - 1, year, context)}%",
+                  "${logic.getMonthProgressPercentage(lastMonth, lastYear, context)}%",
                   style: GoogleFonts.roboto(
                     color: Theme.of(context).colorScheme.onPrimary,
                     fontSize: 20.5,
